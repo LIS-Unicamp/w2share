@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+{% block title %}Workflows Run{% endblock %}
+{% block body %}
+    <h1>Workflow <small>{{ workflow }}</small></h1>
+<h2>Processes</h2>
+<table class="table-bordered">
+    <thead>
+        <tr>
+            <th>Process</th>
+            <th>View</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for row in result2 %}
+    <tr>
+        <td>{{ row.process }}</td>
+        <td><a href="{{ path('process', { 'process': row.process|url_encode }) }}">Details</a></td>
+    </tr>
+{% endfor %}
+    </tbody>
+</table>
+
+<h2>Workflow Runs</h2>
+<table class="table-bordered">
+    <thead>
+        <tr>
+            <th>Workflow Run</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for row in result1 %}
+    <tr>
+        <td><a href="{{ path('workflow-run', { 'workflow_run': row.workflowRun|url_encode }) }}">{{ row.workflowRun }}</a></td>
+        <td>{{ row.startedAtTime }}</a></td>
+        <td>{{ row.endedAtTime }}</td>
+    </tr>
+{% endfor %}
+    </tbody>
+</table>
+
+<h2>Inputs / Outputs</h2>
+{% endblock %}  
+{% block javascripts %}            
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 

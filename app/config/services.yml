@@ -1,0 +1,15 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+parameters:
+#    parameter_name: value
+
+services:
+    # keep your service names short
+    app.odbc_driver:
+        class: AppBundle\Utils\Driver
+        arguments: ["VOS", "dba", "lucas"]
+        calls:
+            - [db_connect]
+#    service_name:
+#        class: AppBundle\Directory\ClassName
+#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

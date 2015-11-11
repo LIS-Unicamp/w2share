@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+{% block title %}Workflows Run{% endblock %}
+{% block body %}
+    <!-- Essa página mostrará:
+        1. os processos executados durante essa execução do workflow.
+        2. o tempo de execução de cada processo
+        3. as entradas e saídas de cada processo
+    -->
+    <h1>Workflow Run <small>{{ workflow_run }}</small></h1>
+    <h2>Processes Runned</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Process Run</th>
+                    <th>Process</th>
+                    <th>Inputs</th>
+                    <th>Outputs</th>            
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for row in result %}
+            <tr>
+                <td>{{ row.processRun}}</td>
+                <td><a href="{{ path('process', { 'process': row.process|url_encode }) }}">{{ row.process }}</a></td>
+                <td></a></td>
+                <td></a></td>
+                <td>{{ row.startedAtTime }}</a></td>
+                <td>{{ row.endedAtTime }}</td>
+            </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+<h2>Inputs / Outputs</h2>
+{% endblock %}  
+{% block javascripts %}            
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 
