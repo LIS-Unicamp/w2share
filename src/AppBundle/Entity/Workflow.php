@@ -11,12 +11,7 @@ class Workflow
     /**
      * @var integer
      */
-    private $id;
-
-    /**
-     * @var string
-     */
-    private $name;
+    private $id;    
 
     /**
      * @var string
@@ -37,31 +32,7 @@ class Workflow
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Workflow
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
+    }    
 
     /**
      * Set author
@@ -141,63 +112,117 @@ class Workflow
         return $this->title;
     }
             
-    private $file;
+    private $workflow_file;
 
-    private $temp;
+    private $workflow_temp;
+    
+    private $provenance_file;
+
+    private $provenance_temp;
 
     /**
      * Sets file.
      *
      * @param UploadedFile $file
      */
-    public function setFile(UploadedFile $file = null)
-    {
-        $this->file = $file;
+    public function setWorkflowFile(UploadedFile $file = null)
+    {     
+        $this->workflow_file = $file;
         // check if we have an old image path
-        if (isset($this->path)) {
+        if (isset($this->workflow_path)) {
             // store the old name to delete after the update
-            $this->temp = $this->path;
-            $this->path = null;
+            $this->workflow_temp = $this->workflow_path;
+            $this->workflow_path = null;
         } else {
-            $this->path = 'initial';
+            $this->workflow_path = 'initial';
+        }
+    }
+    
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setProvenanceFile(UploadedFile $file = null)
+    {
+        $this->provenance_file = $file;
+        // check if we have an old image path
+        if (isset($this->provenance_path)) {
+            // store the old name to delete after the update
+            $this->provenance_temp = $this->provenance_path;
+            $this->provenance_path = null;
+        } else {
+            $this->provenance_path = 'initial';
         }
     }
 
     public function preUpload()
     {
-        if (null !== $this->getFile()) {
+        if (null !== $this->getWorkflowFile()) {
             // do whatever you want to generate a unique name
             $filename = sha1(uniqid(mt_rand(), true));
-            $this->path = $filename.'.'.$this->getFile()->getClientOriginalExtension();
+            $this->workflow_path = $filename.'.'.$this->getWorkflowFile()->getClientOriginalExtension();
+        }
+        
+        if (null !== $this->getProvenanceFile()) {
+            // do whatever you want to generate a unique name
+            $filename = sha1(uniqid(mt_rand(), true));
+            $this->provenance_path = $filename.'.'.$this->getProvenanceFile()->getClientOriginalExtension();
         }
     }
 
     public function upload()
     {
-        if (null === $this->getFile()) {
+        if (null === $this->getWorkflowFile() && null === $this->getProvenanceFile()) {
             return;
         }
+        
+        if (null !== $this->getWorkflowFile())
+        {
+            // if there is an error when moving the file, an exception will
+            // be automatically thrown by move(). This will properly prevent
+            // the entity from being persisted to the database on error
+            $this->getWorkflowFile()->move($this->getUploadRootDir(), $this->workflow_path);
 
-        // if there is an error when moving the file, an exception will
-        // be automatically thrown by move(). This will properly prevent
-        // the entity from being persisted to the database on error
-        $this->getFile()->move($this->getUploadRootDir(), $this->path);
-
-        // check if we have an old image
-        if (isset($this->temp) && $this->temp != '') {
-            // delete the old image
-            unlink($this->getUploadRootDir().'/'.$this->temp);
-            // clear the temp image path
-            $this->temp = null;
+            // check if we have an old image
+            if (isset($this->workflow_temp) && $this->workflow_temp != '') {
+                // delete the old image
+                @unlink($this->getUploadRootDir().'/'.$this->workflow_temp);
+                // clear the temp image path
+                $this->workflow_temp = null;
+            }
+            $this->workflow_file = null;
         }
-        $this->file = null;
+        
+        if (null !== $this->getProvenanceFile())
+        {
+            // if there is an error when moving the file, an exception will
+            // be automatically thrown by move(). This will properly prevent
+            // the entity from being persisted to the database on error
+            $this->getProvenanceFile()->move($this->getUploadRootDir(), $this->provenance_path);
+
+            // check if we have an old image
+            if (isset($this->provenance_temp) && $this->provenance_temp != '') {
+                // delete the old image
+                @unlink($this->getUploadRootDir().'/'.$this->provenance_temp);
+                // clear the temp image path
+                $this->provenance_temp = null;
+            }
+            $this->provenance_file = null;
+        }
+        
     }
 
     public function removeUpload()
     {
-        $file = $this->getAbsolutePath();
-        if ($file) {
-            unlink($file);
+        $workflow_file = $this->getWorkflowAbsolutePath();
+        if ($workflow_file) {
+            @unlink($workflow_file);
+        }
+        
+        $provenance_file = $this->getProvenanceAbsolutePath();
+        if ($provenance_file) {
+            @unlink($provenance_file);
         }
     }
 
@@ -206,16 +231,33 @@ class Workflow
      *
      * @return UploadedFile
      */
-    public function getFile()
+    public function getWorkflowFile()
     {
-        return $this->file;
+        return $this->workflow_file;
     }
     
-    public function getAbsolutePath()
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getProvenanceFile()
     {
-        return null === $this->path
+        return $this->provenance_file;
+    }
+    
+    public function getProvenanceAbsolutePath()
+    {
+        return null === $this->provenance_path && $this->provenance_path != ''
             ? null
-            : $this->getUploadRootDir().'/'.$this->path;
+            : $this->getUploadRootDir().'/'.$this->provenance_path;
+    }
+    
+    public function getWorkflowAbsolutePath()
+    {
+        return null === $this->workflow_path && $this->workflow_path != ''
+            ? null
+            : $this->getUploadRootDir().'/'.$this->workflow_path;
     }
 
     public function getWebPath()
@@ -239,35 +281,6 @@ class Workflow
         return 'uploads/documents';
     }
         
-    /**
-     * @var string
-     */
-    private $path;
-
-
-    /**
-     * Set path
-     *
-     * @param string $path
-     *
-     * @return Workflow
-     */
-    public function setPath($path)
-    {
-        $this->path = $path;
-
-        return $this;
-    }
-
-    /**
-     * Get path
-     *
-     * @return string
-     */
-    public function getPath()
-    {
-        return $this->path;
-    }
     /**
      * @var string
      */

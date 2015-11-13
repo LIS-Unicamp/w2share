@@ -14,7 +14,8 @@ class WorkflowUploadType extends AbstractType
             ->add('title', 'text', array('label' => 'Title'))
             ->add('author', 'text', array('label' => 'Author'))
             ->add('description', 'textarea', array('label' => 'Description'))
-            ->add('file', 'file', array('label' => 'XML File'))
+            ->add('provenance_file', 'file', array('label' => 'Provenance File', 'required' => false))
+            ->add('workflow_file', 'file', array('label' => 'Workflow File', 'required' => false))
             ->add('save', 'submit', array(
                     'label' => 'Salvar',
                     'attr' => array('class' => 'btn blue')
