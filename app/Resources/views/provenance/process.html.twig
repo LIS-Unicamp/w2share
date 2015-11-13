@@ -35,7 +35,7 @@
             {% endfor %}
             </ul>
         </td>
-        <td><a href="{{ path("workflow-run", { 'workflow_run': row.workflowRun|url_encode() } )}}">{{ row.workflowRun }}</td>
+        <td><a href="{{ path("provenance-workflow-run", { 'workflow_run': row.workflowRun|url_encode() } )}}">{{ row.workflowRun }}</td>
     </tr>
 {% endfor %}
     </tbody>

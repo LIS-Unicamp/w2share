@@ -34,15 +34,14 @@ class ProvenanceController extends Controller
      * @Route("/", name="homepage")
      */
     public function indexAction(Request $request)
-    {        
-        
+    {                
         return $this->render('provenance/index.html.twig', array(
             
         ));
     }
     
     /**
-     * @Route("/query", name="query")
+     * @Route("/provenance/query", name="provenance-query")
      */
     public function queryAction(Request $request)
     {
@@ -65,7 +64,7 @@ class ProvenanceController extends Controller
     }
     
     /**
-     * @Route("/workflows-run", name="workflows-run")
+     * @Route("/provenance/workflows-run", name="provenance-workflows-run")
      */
     public function workflowsRunAction(Request $request)
     {
@@ -92,7 +91,7 @@ class ProvenanceController extends Controller
     }
     
     /**
-     * @Route("/workflow-run", name="workflow-run")
+     * @Route("/provenance/workflow-run", name="provenance-workflow-run")
      */
     public function workflowRunAction(Request $request)
     {
@@ -123,7 +122,7 @@ class ProvenanceController extends Controller
     }
     
     /**
-     * @Route("/workflow", name="workflow")
+     * @Route("/provenance/workflow", name="provenance-workflow")
      */
     public function workflowAction(Request $request)
     {
@@ -162,7 +161,29 @@ class ProvenanceController extends Controller
     }
     
     /**
-     * @Route("/workflows", name="workflows")
+     * @Route("/provenance/workflow/{workflow}/delete", name="provenance-workflow-delete")
+     */
+    public function workflowDeleteAction(Request $request)
+    {
+        $workflow = $request->get('workflow');
+        $odbc = $this->get('app.odbc_driver'); 
+        
+        $workflow = urldecode($workflow);
+    
+        $query1 = "
+            $this->prefix  
+            DELETE data FROM <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
+                <$workflow> rdf:type wfdesc:Workflow.                
+            }
+            ";  
+        
+        $query = $odbc->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query1 . '\', NULL, 0)');   
+        
+        return $this->redirect($this->generateUrl('provenance-workflows'));
+    }
+    
+    /**
+     * @Route("/provenance/workflows", name="provenance-workflows")
      */
     public function workflowsAction(Request $request)
     {
@@ -183,8 +204,9 @@ class ProvenanceController extends Controller
         ));
     }
     
+    
     /**
-     * @Route("/process", name="process")
+     * @Route("/provenance/process", name="provenance-process")
      */
     public function processAction(Request $request)
     {
@@ -240,9 +262,13 @@ class ProvenanceController extends Controller
         $result3 = $query->_odbc_fetch_array2();
 
         $outputs = array();
-        foreach($result3 as $row)
+        
+        if (is_array($result3))
         {
-            $outputs[$row['processRun']][] = $row['content'];
+            foreach($result3 as $row)
+            {
+                $outputs[$row['processRun']][] = $row['content'];
+            }
         }
         
         return $this->render('provenance/process.html.twig', array(

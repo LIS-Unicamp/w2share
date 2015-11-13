@@ -14,8 +14,8 @@
     <tbody>
 {% for row in result %}
     <tr>
-        <td><a href="{{ path('workflow-run', { 'workflow_run': row.workflowRun|url_encode }) }}">{{ row.workflowRun}}</a></td>
-        <td><a href="{{ path('workflow', { 'workflow': row.workflow|url_encode }) }}">{{ row.label }}</a></td>
+        <td><a href="{{ path('provenance-workflow-run', { 'workflow_run': row.workflowRun|url_encode }) }}">{{ row.workflowRun}}</a></td>
+        <td><a href="{{ path('provenance-workflow', { 'workflow': row.workflow|url_encode }) }}">{{ row.label }}</a></td>
         <td>{{ row.startedAtTime }}</a></td>
         <td>{{ row.endedAtTime }}</td>
     </tr>

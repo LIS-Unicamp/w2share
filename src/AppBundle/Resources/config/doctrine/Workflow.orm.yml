@@ -1,0 +1,31 @@
+AppBundle\Entity\Workflow:
+    type: entity
+    table: tb_workflow
+    id:
+        id:
+            type: integer
+            generator: { strategy: AUTO }
+    fields:
+        title:
+            type: string
+            length: 100
+        author:
+            type: string
+            length: 100
+        description:
+            type: text
+        uri:
+            type: string
+        workflow_path:
+            type: string
+            length: 100
+        provenance_path:
+            type: string
+            length: 100
+    lifecycleCallbacks:
+      postRemove: [removeUpload]
+#      preRemove: [storeFilenameForRemove]
+      postPersist: [upload]
+      postUpdate: [upload]
+      prePersist: [preUpload]
+      preUpdate: [preUpload]
