@@ -4,42 +4,46 @@
 <h1>Process <small>{{ process }}</small></h1>
 
 <h2>Process Runs</h2>
-<table class="table-bordered">
-    <thead>
+ <div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Process Run</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Inputs</th>
+                <th>Outputs</th>
+                <th>Workflow Run</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for row in result %}
         <tr>
-            <th>Process Run</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Inputs</th>
-            <th>Outputs</th>
-            <th>Workflow Run</th>
+            <td>{{ row.processRun }}</td>
+            <td>{{ row.startedAtTime }}</a></td>
+            <td>{{ row.endedAtTime }}</td>
+            <td>
+                <ul>
+                {% if inputs|length > 0 %}
+                    {% for i in inputs[row.processRun] %}
+                        <li>{{ i }}</li>
+                    {% endfor %}
+                {% endif %}
+                </ul>
+            </td>
+            <td>
+                <ul>
+                {% for i in outputs[row.processRun] %}
+                    <li>{{ i }}</li>
+                {% endfor %}
+                </ul>
+            </td>
+            <td><a href="{{ path("provenance-workflow-run", { 'workflow_run': row.workflowRun|url_encode() } )}}">{{ row.workflowRun }}</td>
         </tr>
-    </thead>
-    <tbody>
-{% for row in result %}
-    <tr>
-        <td>{{ row.processRun }}</td>
-        <td>{{ row.startedAtTime }}</a></td>
-        <td>{{ row.endedAtTime }}</td>
-        <td>
-            <ul>
-            {% for i in inputs[row.processRun] %}
-                <li>{{ i }}</li>
-            {% endfor %}
-            </ul>
-        </td>
-        <td>
-            <ul>
-            {% for i in outputs[row.processRun] %}
-                <li>{{ i }}</li>
-            {% endfor %}
-            </ul>
-        </td>
-        <td><a href="{{ path("provenance-workflow-run", { 'workflow_run': row.workflowRun|url_encode() } )}}">{{ row.workflowRun }}</td>
-    </tr>
-{% endfor %}
-    </tbody>
-</table>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 <h2>Inputs / Outputs</h2>
 

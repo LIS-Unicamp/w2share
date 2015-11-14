@@ -138,8 +138,11 @@ class WorkflowController extends Controller
         
             $query1 = "LOAD bif:concat (\"file://".$workflow->getProvenanceAbsolutePath()."\") INTO GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/>";
 
-            echo $query1;
-            $query = $odbc->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query1 . '\', NULL, 0)');   
+            $odbc->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query1 . '\', NULL, 0)');   
+            
+            $query2 = "LOAD bif:concat (\"file://".$workflow->getWfdescAbsolutePath()."\") INTO GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/>";
+
+            $odbc->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query2 . '\', NULL, 0)');   
         }
         
         return $this->render('workflow/form.html.twig', array(

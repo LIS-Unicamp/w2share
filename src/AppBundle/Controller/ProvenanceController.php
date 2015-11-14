@@ -105,6 +105,7 @@ class ProvenanceController extends Controller
         SELECT DISTINCT * WHERE {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
             ?processRun wfprov:describedByProcess ?process.
             ?processRun a wfprov:ProcessRun.
+            ?processRun rdfs:label ?label.
             ?processRun prov:endedAtTime ?endedAtTime.
             ?processRun prov:startedAtTime ?startedAtTime.
             ?processRun wfprov:wasPartOfWorkflowRun <".$workflow_run.">.
@@ -235,6 +236,7 @@ class ProvenanceController extends Controller
                 ?processRun wfprov:describedByProcess <".$process.">.
                 ?processRun a wfprov:ProcessRun.
                 ?processRun wfprov:usedInput ?usedInput.
+                ?processRun prov:startedAtTime ?startedAtTime.
                 ?usedInput tavernaprov:content ?content.
             }}
             ORDER BY  DESC(?startedAtTime)
@@ -243,9 +245,12 @@ class ProvenanceController extends Controller
         $result2 = $query->_odbc_fetch_array2();
 
         $inputs = array();
-        foreach($result2 as $row)
-        {
-            $inputs[$row['processRun']][] = $row['content'];
+        if ($result2 != '')
+        {        
+            foreach($result2 as $row)
+            {
+                $inputs[$row['processRun']][] = $row['content'];
+            }
         }
 
         $query = "
@@ -253,6 +258,7 @@ class ProvenanceController extends Controller
             SELECT DISTINCT * WHERE {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
                 ?processRun wfprov:describedByProcess <".$process.">.
                 ?processRun a wfprov:ProcessRun.
+                ?processRun prov:startedAtTime ?startedAtTime.
                 ?output prov:wasGeneratedBy ?processRun.
                 ?output tavernaprov:content ?content.
             }}

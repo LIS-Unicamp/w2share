@@ -7,7 +7,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th style="width:50px">Action</th>
+                <th style="width:80px">Action</th>
                 <th>Title</th>
                 <th>Author</th>
                 <th>Description</th>
@@ -17,8 +17,11 @@
         <tbody>
     {% for row in result %}
         <tr>
-            <td><a href="{{ path('workflow-edit', { 'workflow_id':row.id }) }}"><i class="glyphicon glyphicon-edit"></i></a>
-                <a href="{{ path('workflow-delete', { 'workflow_id':row.id }) }}"><i class="glyphicon glyphicon-trash"></i></a></td> 
+            <td>
+                <a href="{{ path('workflow-edit', { 'workflow_id':row.id }) }}"><i class="glyphicon glyphicon-edit"></i></a>
+                <a href="{{ path('workflow-delete', { 'workflow_id':row.id }) }}"><i class="glyphicon glyphicon-trash"></i></a>
+                <a href="{{ path('provenance-workflow', { 'workflow':row.uri }) }}"><i class="glyphicon glyphicon-fast-backward"></i></a>
+            </td> 
             <td>{{ row.title }}</td>
             <td>{{ row.author }}</a></td>
             <td>{{ row.description }}</td> 

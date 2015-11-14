@@ -19,6 +19,9 @@ AppBundle\Entity\Workflow:
         workflow_path:
             type: string
             length: 100
+        wfdesc_path:
+            type: string
+            length: 100
         provenance_path:
             type: string
             length: 100

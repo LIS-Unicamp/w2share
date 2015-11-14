@@ -24,7 +24,7 @@
         {% for row in result %}
             <tr>
                 <td>{{ row.processRun}}</td>
-                <td><a href="{{ path('provenance-process', { 'process': row.process|url_encode }) }}">{{ row.process }}</a></td>
+                <td><a href="{{ path('provenance-process', { 'process': row.process|url_encode }) }}">{{ row.label }}</a></td>
                 <td></a></td>
                 <td></a></td>
                 <td>{{ row.startedAtTime }}</a></td>

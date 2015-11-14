@@ -13,9 +13,11 @@ class WorkflowUploadType extends AbstractType
         $builder
             ->add('title', 'text', array('label' => 'Title'))
             ->add('author', 'text', array('label' => 'Author'))
+            ->add('uri', 'text', array('label' => 'URI'))
             ->add('description', 'textarea', array('label' => 'Description'))
             ->add('provenance_file', 'file', array('label' => 'Provenance File', 'required' => false))
-            ->add('workflow_file', 'file', array('label' => 'Workflow File', 'required' => false))
+            ->add('workflow_file', 'file', array('label' => 'Workflow Spec (Sculf) File', 'required' => false))
+            ->add('wfdesc_file', 'file', array('label' => 'Workflow Desc (ttl) File', 'required' => false))
             ->add('save', 'submit', array(
                     'label' => 'Salvar',
                     'attr' => array('class' => 'btn blue')
