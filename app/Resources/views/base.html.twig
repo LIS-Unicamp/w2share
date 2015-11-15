@@ -46,7 +46,12 @@
               </ul>
             </li>
             <li><a href="{{ path('provenance-workflows-run') }}">Executions</a></li>
-          </ul>          
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+              <li>
+                  {{ render(controller('AppBundle:Provenance:concepts', { 'query':app.request.get('query'), 'concept':app.request.get('concept') } )) }}
+              </li>
+          </ul>
         </div><!--/.nav-collapse -->
       </div>
     </nav>

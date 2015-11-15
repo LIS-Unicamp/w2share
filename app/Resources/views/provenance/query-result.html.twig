@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+{% block title %}Query Result{% endblock %}
+{% block body %}
+    <h1>Query Result</h1>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>                
+            </tr>
+        </thead>
+        <tbody>
+    {% for row in result %}
+        <tr>
+            <td>{{ row.title }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="3">No result.</td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}  
+{% block javascripts %}            
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 

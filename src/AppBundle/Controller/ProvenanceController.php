@@ -41,23 +41,52 @@ class ProvenanceController extends Controller
     }
     
     /**
+     * @Route("/provenance/concepts", name="provenance-concepts")
+     */
+    public function conceptsAction(Request $request)
+    {
+        $odbc = $this->get('app.odbc_driver'); 
+        $concept = $request->get('concept');
+        $query = $request->get('query');
+        
+        $query2 = "
+        $this->prefix
+        select distinct ?concept ?label where { GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
+            [] a ?concept
+            OPTIONAL { ?concept skos:prefLabel ?label. }
+        }}
+        ";
+        $query2 = $odbc->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query2 . '\', NULL, 0)');
+        $result = $query2->_odbc_fetch_array2();
+        
+        return $this->render('provenance/concepts-select.html.twig', array(
+            'concept' => $concept,
+            'query' => $query,
+            'result' => $result
+        ));
+    }
+    
+    /**
      * @Route("/provenance/query", name="provenance-query")
      */
     public function queryAction(Request $request)
     {
         $odbc = $this->get('app.odbc_driver'); 
+        $concept = urldecode($request->get('concept'));
+        $query = urldecode($request->get('query'));
         
         $query2 = "
         $this->prefix
-        SELECT DISTINCT ?concept
-        WHERE
-        {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {[] a ?concept}}
+        SELECT DISTINCT * WHERE {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
+            ?title a <".$concept.">
+            FILTER regex(?title, \"".$query."\", \"i\" )
+        }}
         ";
-    
+
         $query = $odbc->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query2 . '\', NULL, 0)');
         $result = $query->_odbc_fetch_array2();
         
-        return $this->render('provenance/hello.html.twig', array(
+        return $this->render('provenance/query-result.html.twig', array(
             'name' => "lucas",
             'result' => $result
         ));
@@ -132,6 +161,7 @@ class ProvenanceController extends Controller
         
         $workflow = urldecode($workflow);
     
+        // workflow run information
         $query1 = "
             $this->prefix  
             SELECT DISTINCT * WHERE {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
@@ -140,13 +170,43 @@ class ProvenanceController extends Controller
                 ?workflowRun prov:startedAtTime ?startedAtTime.
             }}
             ";
+        
+        // process information
         $query2 = "
             $this->prefix  
             SELECT DISTINCT * WHERE {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
                 <$workflow> dct:hasPart ?process.
                 ?process a wfdesc:Process.
+                OPTIONAL { ?process rdfs:label ?label. }
             }}
             ";
+        
+        // inputs information
+        $query = "
+            $this->prefix 
+            SELECT * WHERE {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
+                <".$workflow."> a wfdesc:Workflow;
+                wfdesc:hasInput ?input.
+                OPTIONAL { ?input rdfs:label ?label. }
+                OPTIONAL { ?input dcterms:description ?description. }
+            }}
+            ";
+        $query3 = $odbc->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query . '\', NULL, 0)');   
+        $inputs = $query3->_odbc_fetch_array2();        
+
+        // outputs information
+        $query = "
+            $this->prefix 
+            SELECT * WHERE {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
+                <".$workflow."> a wfdesc:Workflow;
+                wfdesc:hasOutput ?output.
+                OPTIONAL { ?output rdfs:label ?label. }
+                OPTIONAL { ?output dcterms:description ?description. }
+            }}
+            ";
+        
+        $query4 = $odbc->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query . '\', NULL, 0)');   
+        $outputs = $query4->_odbc_fetch_array2();        
 
         $query = $odbc->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query1 . '\', NULL, 0)');   
         $result1 = $query->_odbc_fetch_array2();
@@ -157,6 +217,8 @@ class ProvenanceController extends Controller
         return $this->render('provenance/workflow.html.twig', array(
             'result1' => $result1,
             'result2' => $result2,
+            'inputs' => $inputs,
+            'outputs' => $outputs,
             'workflow' => $workflow
         ));
     }
@@ -193,7 +255,9 @@ class ProvenanceController extends Controller
         $query1 = "
             $this->prefix
             SELECT DISTINCT * WHERE {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
-                ?s rdf:type wfdesc:Workflow.            
+                ?workflow rdf:type wfdesc:Workflow.
+                OPTIONAL { ?workflow dcterms:description ?description. }
+                OPTIONAL { ?workflow dcterms:title ?title. }
             }}
         ";
 
@@ -216,6 +280,7 @@ class ProvenanceController extends Controller
         
         $process = urldecode($process);
     
+        // Process information
         $query = "
             $this->prefix 
             SELECT DISTINCT * WHERE {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
@@ -230,6 +295,7 @@ class ProvenanceController extends Controller
         $query = $odbc->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query . '\', NULL, 0)');   
         $result1 = $query->_odbc_fetch_array2();
 
+        // inputs information
         $query = "
             $this->prefix 
             SELECT DISTINCT * WHERE {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
@@ -253,6 +319,7 @@ class ProvenanceController extends Controller
             }
         }
 
+        // outputs information
         $query = "
             $this->prefix 
             SELECT DISTINCT * WHERE {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {

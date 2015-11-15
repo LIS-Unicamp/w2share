@@ -6,17 +6,21 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Workflow</th>
+                <th>Title</th>
+                <th>Description</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
     {% for row in result %}
         <tr>
-            <td>{{ row.s }}</td>
-            <td><a href="{{ path('provenance-workflow', { 'workflow': row.s|url_encode }) }}">Details</a> 
-                | <a href="{{ path('provenance-workflows-run', { 'workflow': row.s|url_encode }) }}">Runs</a>
-                | <a href="{{ path('provenance-workflow-delete', { 'workflow': row.s|url_encode }) }}">Delete</a></td>
+            <td {% if not row.description %} colspan="2"{% endif %}>{{ row.title?row.title:row.workflow }}</td>
+            {% if row.description %}
+            <td>{{ row.description }}</td>
+            {% endif %}
+            <td><a href="{{ path('provenance-workflow', { 'workflow': row.workflow|url_encode }) }}">Details</a> 
+                | <a href="{{ path('provenance-workflows-run', { 'workflow': row.workflow|url_encode }) }}">Runs</a>
+                | <a href="{{ path('provenance-workflow-delete', { 'workflow': row.workflow|url_encode }) }}">Delete</a></td>
         </tr>
     {% else %}
         <tr>

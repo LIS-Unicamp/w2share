@@ -42,6 +42,11 @@
                 </div>
                 <div class="row">
                     <div class="form-group">
+                        <img src="/prototype/web/uploads/documents/{{ workflow.id }}.png">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
                         {{ form_label(form.workflow_file) }}
                         {{ form_widget(form.workflow_file, { 'attr': { 'class':'form-control' } }) }}
                         {{ form_errors(form.workflow_file) }}

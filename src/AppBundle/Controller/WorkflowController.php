@@ -67,13 +67,17 @@ class WorkflowController extends Controller
             $this->get('session')
                 ->getFlashBag()
                 ->add('success', 'Workflow uploaded!')
-            ;                        
+            ; 
             
-            return $this->redirect($this->generateUrl('workflow-edit', array('workflow_id' => $workflow->getId())));
+            $command = "ruby script.by";            
+            system($command);
+            
+            return $this->redirect($this->generateUrl('workflow-edit',array('workflow_id' => $workflow->getId())));
         }
         
         return $this->render('workflow/form.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'workflow' => $workflow
         ));
     }
     
@@ -146,7 +150,8 @@ class WorkflowController extends Controller
         }
         
         return $this->render('workflow/form.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'workflow' => $workflow
         ));
     }
 }
