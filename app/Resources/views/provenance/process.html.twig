@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
 {% block title %}Process Run{% endblock %}
 {% block body %}
-<h1>Process <small>{{ process }}</small></h1>
+<h1>Process <small><button class="btn btn-xs" data-clipboard-text="{{ process }}">
+                        <i class="glyphicon glyphicon-copy"></i>
+                    </button></small></h1>
 
 <h2>Process Runs</h2>
  <div class="table-responsive">
@@ -19,7 +21,11 @@
         <tbody>
     {% for row in result %}
         <tr>
-            <td>{{ row.processRun }}</td>
+            <td>
+                <button class="btn btn-xs" data-clipboard-text="{{ row.processRun }}">
+                    <i class="glyphicon glyphicon-copy"></i>
+                </button>
+            </td>
             <td>{{ row.startedAtTime }}</a></td>
             <td>{{ row.endedAtTime }}</td>
             <td>
@@ -38,7 +44,12 @@
                 {% endfor %}
                 </ul>
             </td>
-            <td><a href="{{ path("provenance-workflow-run", { 'workflow_run': row.workflowRun|url_encode() } )}}">{{ row.workflowRun }}</td>
+            <td>
+                <button class="btn btn-xs" data-clipboard-text="{{ row.workflowRun }}">
+                    <i class="glyphicon glyphicon-copy"></i>
+                </button>
+                <a href="{{ path("provenance-workflow-run", { 'workflow_run': row.workflowRun|url_encode() } )}}"> <i class="glyphicon glyphicon-link"></i></a>
+            </td>
         </tr>
     {% endfor %}
         </tbody>
@@ -48,7 +59,9 @@
 <h2>Inputs / Outputs</h2>
 
 {% endblock %}  
-{% block javascripts %}            
+{% block javascripts %}   
+    <script type="text/javascript">
+    </script>
 {% endblock %}
 {% block stylesheets %}
 {% endblock %} 

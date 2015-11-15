@@ -10,6 +10,9 @@ services:
         arguments: ["VOS", "dba", "lucas"]
         calls:
             - [db_connect]
+    model.provenance:
+        class: AppBundle\Model\Provenance
+        arguments: ["@app.odbc_driver"]
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

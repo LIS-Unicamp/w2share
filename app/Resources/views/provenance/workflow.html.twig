@@ -1,7 +1,13 @@
 {% extends 'base.html.twig' %}
 {% block title %}Workflows Run{% endblock %}
 {% block body %}
-    <h1>Workflow <small>{{ workflow }}</small></h1>
+    <h1>Workflow 
+        <small>
+            <button class="btn btn-xs" data-clipboard-text="{{ workflow }}">
+                <i class="glyphicon glyphicon-copy"></i>
+            </button>
+        </small>
+    </h1>
 <h2>Processes</h2>
 <div class="table-responsive">
     <table class="table table-striped">
@@ -35,7 +41,12 @@
         <tbody>
     {% for row in result1 %}
         <tr>
-            <td><a href="{{ path('provenance-workflow-run', { 'workflow_run': row.workflowRun|url_encode }) }}">{{ row.workflowRun }}</a></td>
+            <td>
+                <button class="btn btn-xs" data-clipboard-text="{{ row.workflowRun }}">
+                    <i class="glyphicon glyphicon-copy"></i>
+                </button>
+                <a href="{{ path('provenance-workflow-run', { 'workflow_run': row.workflowRun|url_encode }) }}"><i class="glyphicon glyphicon-link"></i></a>
+            </td>
             <td>{{ row.startedAtTime }}</a></td>
             <td>{{ row.endedAtTime }}</td>
         </tr>

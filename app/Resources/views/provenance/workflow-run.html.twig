@@ -6,7 +6,9 @@
         2. o tempo de execução de cada processo
         3. as entradas e saídas de cada processo
     -->
-    <h1>Workflow Run <small>{{ workflow_run }}</small></h1>
+    <h1>Workflow Run <small><button class="btn btn-xs" data-clipboard-text="{{ workflow_run }}">
+                    <i class="glyphicon glyphicon-copy"></i>
+                    </button></small></h1>
     <h2>Processes Run</h2>
     <div class="table-responsive">
         <table class="table table-striped">
@@ -23,8 +25,16 @@
             <tbody>
         {% for row in result %}
             <tr>
-                <td>{{ row.processRun}}</td>
-                <td><a href="{{ path('provenance-process', { 'process': row.process|url_encode }) }}">{{ row.label }}</a></td>
+                <td>
+                    <button class="btn btn-xs" data-clipboard-text="{{ row.processRun}}">
+                        <i class="glyphicon glyphicon-copy"></i>
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-xs" data-clipboard-text="{{ row.process }}">
+                        <i class="glyphicon glyphicon-copy"></i>
+                    </button>
+                    <a href="{{ path('provenance-process', { 'process': row.process|url_encode }) }}">{{ row.label }}</a></td>
                 <td></a></td>
                 <td></a></td>
                 <td>{{ row.startedAtTime }}</a></td>
@@ -37,7 +47,9 @@
 
 <h2>Inputs / Outputs</h2>
 {% endblock %}  
-{% block javascripts %}            
+{% block javascripts %}   
+<script type="text/javascript">
+</script>
 {% endblock %}
 {% block stylesheets %}
 {% endblock %} 

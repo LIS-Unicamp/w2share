@@ -1,6 +1,11 @@
 require 'taverna-t2flow'
-foo = File.new("/home/lucas/Dropbox/Doutorado/Fapesp/Presentations/workflows/setup-claudia-presentation.t2flow", "r")
-bar = T2Flow::Parser.new.parse(foo)
-output_file = File.new("/home/lucas/Dropbox/Doutorado/Fapesp/Presentations/workflows/setup-claudia-presentation.png", "w+")
-T2Flow::Dot.new.write_dot(output_file, bar)
-`dot -Tpng -o "/home/lucas/Dropbox/Doutorado/Fapesp/Presentations/workflows/setup-claudia-presentation.png" #{output_file.path}`
+
+file_workflow_path = ARGV[0]
+file_image_path = ARGV[1]
+
+file_workflow = File.new(file_workflow_path, "r")
+workflow_object = T2Flow::Parser.new.parse(file_workflow)
+
+file_image = File.new(file_image_path, "w+")
+T2Flow::Dot.new.write_dot(file_image, workflow_object)
+`dot -Tpng -o #{file_image_path} #{file_image.path}`

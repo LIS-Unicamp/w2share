@@ -14,11 +14,13 @@
         <tbody>
     {% for row in result %}
         <tr>
-            <td {% if not row.description %} colspan="2"{% endif %}>{{ row.title?row.title:row.workflow }}</td>
-            {% if row.description %}
+            <td>{{ row.title }}</td>
             <td>{{ row.description }}</td>
-            {% endif %}
-            <td><a href="{{ path('provenance-workflow', { 'workflow': row.workflow|url_encode }) }}">Details</a> 
+            <td>
+                <button class="btn btn-xs" data-clipboard-text="{{ row.workflow }}">
+                    <i class="glyphicon glyphicon-copy"></i>
+                </button>
+                <a href="{{ path('provenance-workflow', { 'workflow': row.workflow|url_encode }) }}">Details</a> 
                 | <a href="{{ path('provenance-workflows-run', { 'workflow': row.workflow|url_encode }) }}">Runs</a>
                 | <a href="{{ path('provenance-workflow-delete', { 'workflow': row.workflow|url_encode }) }}">Delete</a></td>
         </tr>
@@ -31,7 +33,8 @@
     </table>
 </div>
 {% endblock %}  
-{% block javascripts %}            
+{% block javascripts %}  
+
 {% endblock %}
 {% block stylesheets %}
 {% endblock %} 

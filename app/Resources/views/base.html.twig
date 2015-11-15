@@ -63,7 +63,9 @@
     
 <script src="{{ app.request.basepath }}/js/jquery-1.11.3.min.js" type="text/javascript"></script>
 <script src="{{ app.request.basepath }}/js/bootstrap.min.js" type="text/javascript"></script>
-<script type="text/javascript">        
+<script src="{{ app.request.basepath }}/js/clipboard.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var clipboard = new Clipboard('.btn');
 </script>
 {% block javascripts %}{% endblock %}
 </body>

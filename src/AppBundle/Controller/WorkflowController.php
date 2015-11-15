@@ -7,29 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class WorkflowController extends Controller
-{
-    var $prefix = "
-    prefix dc:  <http://purl.org/dc/elements/1.1/>
-    prefix prov:  <http://www.w3.org/ns/prov#>
-    prefix cnt:  <http://www.w3.org/2011/content#>
-    prefix foaf:  <http://xmlns.com/foaf/0.1/>
-    prefix dcmitype:  <http://purl.org/dc/dcmitype/>
-    prefix wfprov:  <http://purl.org/wf4ever/wfprov#>
-    prefix dcam:  <http://purl.org/dc/dcam/>
-    prefix xml:  <http://www.w3.org/XML/1998/namespace>
-    prefix vs:  <http://www.w3.org/2003/06/sw-vocab-status/ns#>
-    prefix dcterms:  <http://purl.org/dc/terms/>
-    prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
-    prefix wot:  <http://xmlns.com/wot/0.1/>
-    prefix wfdesc:  <http://purl.org/wf4ever/wfdesc#>
-    prefix dct:  <http://purl.org/dc/terms/>
-    prefix tavernaprov:  <http://ns.taverna.org.uk/2012/tavernaprov/>
-    prefix owl:  <http://www.w3.org/2002/07/owl#>
-    prefix xsd:  <http://www.w3.org/2001/XMLSchema#>
-    prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    prefix skos:  <http://www.w3.org/2004/02/skos/core#>
-    prefix scufl2:  <http://ns.taverna.org.uk/2010/scufl2#>";
-    
+{        
     /**
      * @Route("/workflows", name="workflows")
      */
@@ -69,8 +47,10 @@ class WorkflowController extends Controller
                 ->add('success', 'Workflow uploaded!')
             ; 
             
-            $command = "ruby script.by";            
-            system($command);
+            $root_path = $this->get('kernel')->getRootDir();
+
+            $model = $this->get('app.provenance'); 
+            $model->workflow($workflow, $root_path);
             
             return $this->redirect($this->generateUrl('workflow-edit',array('workflow_id' => $workflow->getId())));
         }
@@ -92,16 +72,9 @@ class WorkflowController extends Controller
                                 
         if ($workflow)  
         {                          
-            $odbc = $this->get('app.odbc_driver'); 
-        
-            $query1 = "
-                $this->prefix  
-                DELETE data FROM <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
-                    <".$workflow->getUri()."> rdf:type wfdesc:Workflow.                
-                }
-                ";  
-            $query = $odbc->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query1 . '\', NULL, 0)');
-            
+            $model = $this->get('model.provenance'); 
+            $model->deleteWorkflow($workflow->getUri());
+                        
             $em->remove($workflow);
             $em->flush();
 
@@ -138,15 +111,10 @@ class WorkflowController extends Controller
                 ->add('success', 'Workflow edited!')
             ;
             
-            $odbc = $this->get('app.odbc_driver'); 
-        
-            $query1 = "LOAD bif:concat (\"file://".$workflow->getProvenanceAbsolutePath()."\") INTO GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/>";
+            $root_path = $this->get('kernel')->getRootDir();
 
-            $odbc->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query1 . '\', NULL, 0)');   
-            
-            $query2 = "LOAD bif:concat (\"file://".$workflow->getWfdescAbsolutePath()."\") INTO GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/>";
-
-            $odbc->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query2 . '\', NULL, 0)');   
+            $model = $this->get('model.provenance'); 
+            $model->workflow($workflow, $root_path);
         }
         
         return $this->render('workflow/form.html.twig', array(
