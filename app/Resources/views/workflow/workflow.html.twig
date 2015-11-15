@@ -3,7 +3,7 @@
 {% block body %}
     <h1>Workflow 
         <small>
-            <button class="btn btn-xs" data-clipboard-text="{{ workflow }}">
+            <button class="btn btn-xs" data-clipboard-text="{{ workflow_uri }}">
                 <i class="glyphicon glyphicon-copy"></i>
             </button>
         </small>
@@ -14,41 +14,16 @@
         <thead>
             <tr>
                 <th>Process</th>
+                <th>Description</th>
                 <th>View</th>
             </tr>
         </thead>
         <tbody>
-    {% for row in result2 %}
+    {% for row in processes %}
         <tr>
             <td>{{ row.label }}</td>
-            <td><a href="{{ path('provenance-process', { 'process': row.process|url_encode }) }}">Details</a></td>
-        </tr>
-    {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-<h2>Workflow Runs</h2>
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Workflow Run</th>
-                <th>Start Time</th>
-                <th>End Time</th>
-            </tr>
-        </thead>
-        <tbody>
-    {% for row in result1 %}
-        <tr>
-            <td>
-                <button class="btn btn-xs" data-clipboard-text="{{ row.workflowRun }}">
-                    <i class="glyphicon glyphicon-copy"></i>
-                </button>
-                <a href="{{ path('provenance-workflow-run', { 'workflow_run': row.workflowRun|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>
-            </td>
-            <td>{{ row.startedAtTime }}</a></td>
-            <td>{{ row.endedAtTime }}</td>
+            <td>{{ row.description }}</td>
+            <td><a href="{{ path('workflow-process', { 'process': row.process|url_encode }) }}">Details</a></td>
         </tr>
     {% endfor %}
         </tbody>
@@ -102,6 +77,10 @@
         </tbody>
     </table>
 </div>
+{% if workflow %}
+<img src="/prototype/web/uploads/documents/{{ workflow.id }}.png">
+{% endif %}
+
 {% endblock %}  
 {% block javascripts %}            
 {% endblock %}

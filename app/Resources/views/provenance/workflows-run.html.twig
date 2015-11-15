@@ -19,7 +19,7 @@
                 <button class="btn btn-xs" data-clipboard-text="{{ row.workflowRun }}">
                     <i class="glyphicon glyphicon-copy"></i>
                 </button>
-                <a href="{{ path('provenance-workflow-run', { 'workflow_run': row.workflowRun|url_encode }) }}"><i class="glyphicon glyphicon-link"></i></a></td>
+                <a href="{{ path('provenance-workflow-run', { 'workflow_run': row.workflowRun|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a></td>
             <td><a href="{{ path('provenance-workflow', { 'workflow': row.workflow|url_encode }) }}">{{ row.label }}</a></td>
             <td>{{ row.startedAtTime }}</a></td>
             <td>{{ row.endedAtTime }}</td>

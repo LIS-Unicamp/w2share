@@ -1,0 +1,11 @@
+services:
+    app.form.icon_button_extension:
+        class: AppBundle\Form\Extension\IconButtonExtension
+        tags:
+            - { name: form.type_extension, alias: button }            
+            
+    app.twig.extension:
+        class: AppBundle\Twig\Extension\PaginationExtension
+        arguments: [@service_container]
+        tags:
+        - { name: twig.extension }

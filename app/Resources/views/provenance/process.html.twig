@@ -1,9 +1,15 @@
 {% extends 'base.html.twig' %}
 {% block title %}Process Run{% endblock %}
 {% block body %}
-<h1>Process <small><button class="btn btn-xs" data-clipboard-text="{{ process }}">
+<h1>Process <small><button class="btn btn-xs" data-clipboard-text="{{ process_uri }}">
                         <i class="glyphicon glyphicon-copy"></i>
-                    </button></small></h1>
+                    </button></small>
+</h1>
+                        
+<ul>
+    <li>Title: {{ process.label }}</li>
+    <li>Description: {{ process.description }}</li>
+</ul>
 
 <h2>Process Runs</h2>
  <div class="table-responsive">
@@ -11,11 +17,12 @@
         <thead>
             <tr>
                 <th>Process Run</th>
+                <th>Workflow Run</th>
                 <th>Start</th>
                 <th>End</th>
                 <th>Inputs</th>
                 <th>Outputs</th>
-                <th>Workflow Run</th>
+                
             </tr>
         </thead>
         <tbody>
@@ -25,6 +32,12 @@
                 <button class="btn btn-xs" data-clipboard-text="{{ row.processRun }}">
                     <i class="glyphicon glyphicon-copy"></i>
                 </button>
+            </td>
+            <td>
+                <button class="btn btn-xs" data-clipboard-text="{{ row.workflowRun }}">
+                    <i class="glyphicon glyphicon-copy"></i>
+                </button>
+                <a href="{{ path("provenance-workflow-run", { 'workflow_run': row.workflowRun|url_encode() } )}}"> <i class="glyphicon glyphicon-search"></i></a>
             </td>
             <td>{{ row.startedAtTime }}</a></td>
             <td>{{ row.endedAtTime }}</td>
@@ -44,19 +57,60 @@
                 {% endfor %}
                 </ul>
             </td>
-            <td>
-                <button class="btn btn-xs" data-clipboard-text="{{ row.workflowRun }}">
-                    <i class="glyphicon glyphicon-copy"></i>
-                </button>
-                <a href="{{ path("provenance-workflow-run", { 'workflow_run': row.workflowRun|url_encode() } )}}"> <i class="glyphicon glyphicon-link"></i></a>
-            </td>
+            
         </tr>
     {% endfor %}
         </tbody>
     </table>
 </div>
 
-<h2>Inputs / Outputs</h2>
+<h2>Inputs</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for row in process_inputs %}
+        <tr>
+            <td>{{ row.label }}</a></td>
+            <td>{{ row.description }}</a></td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="2">No input.</td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
+    
+<h2>Outputs</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for row in process_outputs %}
+        <tr>
+            <td>{{ row.label }}</a></td>
+            <td>{{ row.description }}</a></td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="2">No output.</td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}  
 {% block javascripts %}   

@@ -49,8 +49,8 @@ class WorkflowController extends Controller
             
             $root_path = $this->get('kernel')->getRootDir();
 
-            $model = $this->get('app.provenance'); 
-            $model->workflow($workflow, $root_path);
+            $model = $this->get('model.provenance'); 
+            $model->storeWorkflow($workflow, $root_path);
             
             return $this->redirect($this->generateUrl('workflow-edit',array('workflow_id' => $workflow->getId())));
         }
@@ -114,12 +114,62 @@ class WorkflowController extends Controller
             $root_path = $this->get('kernel')->getRootDir();
 
             $model = $this->get('model.provenance'); 
-            $model->workflow($workflow, $root_path);
+            $model->storeWorkflow($workflow, $root_path);
         }
         
         return $this->render('workflow/form.html.twig', array(
             'form' => $form->createView(),
             'workflow' => $workflow
+        ));
+    }
+    
+    /**
+     * @Route("/workflow", name="workflow-details")
+     */
+    public function workflowAction(Request $request)
+    {       
+        $workflow_uri = urldecode($request->get('workflow'));
+        
+        $em = $this->get('doctrine')->getManager();
+                
+        $workflow = $em->getRepository('AppBundle:Workflow')
+                ->findOneBy(array('uri'=>$workflow_uri));
+    
+        $model_workflow = $this->get('model.workflow'); 
+
+        // workflow run information
+        $processes = $model_workflow->processes($workflow_uri);
+        
+        $model_provenance = $this->get('model.provenance'); 
+        $inputs = $model_provenance->workflowInputs($workflow_uri);
+        $outputs = $model_provenance->workflowOutputs($workflow_uri);                                        
+        
+        return $this->render('workflow/workflow.html.twig', array(
+            'processes' => $processes,
+            'inputs' => $inputs,
+            'outputs' => $outputs,
+            'workflow' => $workflow,
+            'workflow_uri' => $workflow_uri
+        ));
+    }
+    
+    /**
+     * @Route("/workflow/process", name="workflow-process")
+     */
+    public function processAction(Request $request)
+    {
+        $process_uri = urldecode($request->get('process'));
+
+        $model = $this->get('model.provenance');             
+        $process_inputs = $model->processInputs($process_uri);
+        $process_outputs = $model->processOutputs($process_uri);
+        $process = $model->process($process_uri);
+                
+        return $this->render('workflow/process.html.twig', array(
+            'process' => $process,
+            'process_uri' => $process_uri,
+            'process_inputs' => $process_inputs,
+            'process_outputs' => $process_outputs,
         ));
     }
 }

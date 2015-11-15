@@ -1,10 +1,5 @@
 <?php
 namespace AppBundle\Model;
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  * Description of Provenance
@@ -43,7 +38,7 @@ class Provenance
     }
     
     
-    public function workflow($workflow, $root_path)
+    public function storeWorkflow($workflow, $root_path)
     {
         $this->load($workflow->getProvenanceAbsolutePath());
         $this->load($workflow->getWfdescAbsolutePath());        
@@ -184,6 +179,8 @@ class Provenance
                 <$workflow> dct:hasPart ?process.
                 ?process a wfdesc:Process.
                 OPTIONAL { ?process rdfs:label ?label. }
+                OPTIONAL { ?process dcterms:description ?description }
+                OPTIONAL { ?process prov:specializationOf ?subworkflow. }
             }}
             ";
         
@@ -191,7 +188,7 @@ class Provenance
         return $query->_odbc_fetch_array2();
     }
     
-    public function inputs($workflow)
+    public function workflowInputs($workflow)
     {
         // inputs information
         $query = "
@@ -208,7 +205,7 @@ class Provenance
         return $query->_odbc_fetch_array2();
     }
     
-    public function outputs($workflow)
+    public function workflowOutputs($workflow)
     {
         // outputs information
         $query = "
@@ -244,7 +241,7 @@ class Provenance
         return $query->_odbc_fetch_array2();
     }
     
-    public function processInputs($process)
+    public function processRunInputs($process)
     {
         // inputs information
         $query = "
@@ -263,7 +260,7 @@ class Provenance
         return $query->_odbc_fetch_array2();
     }
     
-    public function processOutputs($process)
+    public function processRunOutputs($process)
     {
         // outputs information
         $query = "
@@ -280,5 +277,61 @@ class Provenance
         
         $query = $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query . '\', NULL, 0)');   
         return $query->_odbc_fetch_array2();
+    }
+    
+    public function processOutputs($process)
+    {
+        // outputs information
+        $query = "
+            $this->prefix 
+            SELECT DISTINCT * WHERE {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
+                <".$process."> a wfdesc:Process;
+                wfdesc:hasOutput ?output.
+                OPTIONAL { ?output rdfs:label ?label }
+                OPTIONAL { ?output dcterms:description ?description }
+            }}
+            ";
+        
+        $query = $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query . '\', NULL, 0)');   
+        return $query->_odbc_fetch_array2();
+    }
+    
+    public function processInputs($process)
+    {
+        $query = "
+            $this->prefix 
+            SELECT DISTINCT * WHERE {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
+                <".$process."> a wfdesc:Process;
+                wfdesc:hasInput ?input.
+                OPTIONAL { ?input rdfs:label ?label }
+                OPTIONAL { ?input dcterms:description ?description }
+            }}
+            ";
+        
+        $query = $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query . '\', NULL, 0)');   
+        return $query->_odbc_fetch_array2();
+    }
+    
+    public function process($process)
+    {
+        $query = "
+            $this->prefix 
+            SELECT DISTINCT * WHERE {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
+                <".$process."> a wfdesc:Process.
+                ?workflow wfdesc:hasSubProcess <".$process.">.
+                OPTIONAL { <".$process."> rdfs:label ?label }
+                OPTIONAL { <".$process."> dcterms:description ?description }
+                OPTIONAL { <".$process."> prov:specializationOf ?subworkflow. }
+            }}
+            ";
+        
+        $query = $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query . '\', NULL, 0)');   
+        return $query->_odbc_fetch_array2()[0];
+    }
+    
+    public function clearGraph()
+    {
+        $query = "CLEAR GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/>";        
+        $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query . '\', NULL, 0)');   
     }
 }

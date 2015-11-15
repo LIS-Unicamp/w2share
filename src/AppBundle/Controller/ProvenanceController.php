@@ -93,8 +93,8 @@ class ProvenanceController extends Controller
         // workflow run information
         $workflow_runs = $model->workflowRuns($workflow);
         $processes = $model->processes($workflow);
-        $inputs = $model->inputs($workflow);
-        $outputs = $model->outputs($workflow);                                        
+        $inputs = $model->workflowInputs($workflow);
+        $outputs = $model->workflowOutputs($workflow);                                        
         
         return $this->render('provenance/workflow.html.twig', array(
             'result1' => $workflow_runs,
@@ -136,13 +136,16 @@ class ProvenanceController extends Controller
      */
     public function processAction(Request $request)
     {
-        $process = urldecode($request->get('process'));
+        $process_uri = urldecode($request->get('process'));
 
         $model = $this->get('model.provenance'); 
            
-        $result1 = $model->processRun($process);
-        $result2 = $model->processInputs($process);
-        $result3 = $model->processOutputs($process);               
+        $result1 = $model->processRun($process_uri);
+        $result2 = $model->processRunInputs($process_uri);
+        $result3 = $model->processRunOutputs($process_uri); 
+        $process_inputs = $model->processInputs($process_uri);
+        $process_outputs = $model->processOutputs($process_uri);
+        $process = $model->process($process_uri);
 
         $inputs = array();
         if ($result2 != '')
@@ -166,7 +169,10 @@ class ProvenanceController extends Controller
             'result' => $result1,
             'inputs' => $inputs,
             'outputs' => $outputs,
-            'process' => $process
+            'process' => $process,
+            'process_uri' => $process_uri,
+            'process_inputs' => $process_inputs,
+            'process_outputs' => $process_outputs,
         ));
     }
 }

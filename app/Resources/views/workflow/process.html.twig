@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+{% block title %}Process{% endblock %}
+{% block body %}
+<h1>Process <small><button class="btn btn-xs" data-clipboard-text="{{ process_uri }}">
+                        <i class="glyphicon glyphicon-copy"></i>
+                    </button></small>
+</h1>
+                        
+<ul>
+    <li>Title: {{ process.label }}</li>
+    <li>Description: {{ process.description }}</li>
+</ul>
+    <a href="{{ path('workflow-details', { 'workflow': process.workflow }) }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-arrow-left"> Workflow</i></a>
+{% if process.subworkflow %}
+    <a href="{{ path('workflow-details', { 'workflow': process.subworkflow }) }}" class="btn btn-sm btn-info">Subworkflow <i class="glyphicon glyphicon-arrow-right"></i></a>
+{% endif %}
+<h2>Inputs</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for row in process_inputs %}
+        <tr>
+            <td>{{ row.label }}</a></td>
+            <td>{{ row.description }}</a></td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="2">No input.</td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
+    
+<h2>Outputs</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for row in process_outputs %}
+        <tr>
+            <td>{{ row.label }}</a></td>
+            <td>{{ row.description }}</a></td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="2">No output.</td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}  
+{% block javascripts %}   
+    <script type="text/javascript">
+    </script>
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 
