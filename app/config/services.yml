@@ -5,6 +5,11 @@ parameters:
 
 services:
     # keep your service names short
+    app.twig.app_extension:
+        class: AppBundle\Twig\Extension\AppExtension
+        tags:
+            - { name: twig.extension }
+            
     app.odbc_driver:
         class: AppBundle\Utils\Driver
         arguments: ["VOS", "dba", "lucas"]
@@ -17,6 +22,7 @@ services:
     model.workflow:
         class: AppBundle\Model\Workflow
         arguments: ["@doctrine.orm.default_entity_manager","@app.odbc_driver"]
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+        
+    model.annotation:
+        class: AppBundle\Model\Annotation
+        arguments: ["@app.odbc_driver"]       

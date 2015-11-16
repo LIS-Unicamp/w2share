@@ -23,7 +23,10 @@
         <tr>
             <td>{{ row.label }}</td>
             <td>{{ row.description }}</td>
-            <td><a href="{{ path('workflow-process', { 'process': row.process|url_encode }) }}">Details</a></td>
+            <td>
+                <a href="{{ path('workflow-process', { 'process': row.process|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('annotate-form', { 'artefact':'process', 'uri': row.process|url_encode }) }}"><i class="glyphicon glyphicon-plus-sign"></i></a>
+            </td>
         </tr>
     {% endfor %}
         </tbody>

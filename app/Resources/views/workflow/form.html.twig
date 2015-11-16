@@ -73,7 +73,8 @@
         </div>
     </div>
     <div class="form-actions">
-            {{ form_widget(form.save) }}                                                                                 
+            {{ form_widget(form.save) }} 
+            <a href="{{ path('workflow-details', { 'workflow':workflow.uri }) }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-search"></i></a>
     </div>
     {{ form_end(form) }}
 </form>
