@@ -52,9 +52,11 @@
             </td>
             <td>
                 <ul>
-                {% for i in outputs[row.processRun] %}
-                    <li>{{ i }}</li>
-                {% endfor %}
+                {% if outputs and row.processRun in outputs %}
+                    {% for i in outputs[row.processRun] %}
+                        <li>{{ i }}</li>
+                    {% endfor %}
+                {% endif %}
                 </ul>
             </td>
             

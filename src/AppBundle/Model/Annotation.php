@@ -30,7 +30,8 @@ class Annotation
     prefix xsd:  <http://www.w3.org/2001/XMLSchema#>
     prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     prefix skos:  <http://www.w3.org/2004/02/skos/core#>
-    prefix scufl2:  <http://ns.taverna.org.uk/2010/scufl2#>";
+    prefix scufl2:  <http://ns.taverna.org.uk/2010/scufl2#>
+    prefix oa:      <http://www.w3.org/ns/oa#>";
     
     public function __construct($driver)
     {
@@ -39,18 +40,31 @@ class Annotation
     
     public function ontology()
     {
-
+        return array('http://purl.org/dc/terms/dcterms:description');
     }
     
     public function insertAnnotation($subject, $property, $object)
     {
-        $query = "INSERT DATA
+        $now = new \Datetime();
+        if (strpos("<", $object) === false)
+        {
+            $object = "\"".$object."\"";
+        }
+        
+        $query = "$this->prefix
+        INSERT        
         { 
-            GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> 
+            GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/annotations/> 
             { 
-              ".$subject." ".$property." ".$object." 
+                _:annotation a oa:Annotation ;
+                oa:hasTarget <".$subject.">;
+                <".$property."> ".$object.";
+                oa:motivatedBy oa:tagging ;
+                oa:annotatedAt \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\";
+                oa:serializedAt \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\".
             } 
         }";
+        //oa:annotatedBy ex:Person1 ;
         $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query . '\', NULL, 0)'); 
     }
 }

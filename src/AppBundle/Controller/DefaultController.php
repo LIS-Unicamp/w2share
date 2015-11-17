@@ -23,7 +23,17 @@ class DefaultController extends Controller
         $model_workflow->clearUploads($root_path);
                     
         return $this->redirect($this->generateUrl('homepage'));
-    }        
+    }     
+    
+    /**
+     * @Route("/", name="homepage")
+     */
+    public function homepageAction(Request $request)
+    {        
+        return $this->render('default/index.html.twig', array(
+            
+        ));
+    }     
 }
 
 

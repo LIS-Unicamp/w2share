@@ -7,17 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class ProvenanceController extends Controller
-{        
-    /**
-     * @Route("/", name="homepage")
-     */
-    public function indexAction(Request $request)
-    {                
-        return $this->render('provenance/index.html.twig', array(
-            
-        ));
-    }
-    
+{               
     /**
      * @Route("/provenance/concepts", name="provenance-concepts")
      */
