@@ -331,7 +331,7 @@ class Provenance
     
     public function clearGraph()
     {
-        $query = "CLEAR GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/>";        
-        $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query . '\', NULL, 0)');   
+        $query1 = "CLEAR GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/>";        
+        $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query1 . '\', NULL, 0)');                  
     }
 }

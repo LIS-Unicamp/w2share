@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% block title %}Annotation List{% endblock %}
+{% block body %}
+    <h1>Annotations 
+        <small>
+            <button class="btn btn-xs" data-clipboard-text="{{ uri }}">
+                <i class="glyphicon glyphicon-copy"></i>
+            </button>
+        </small>
+    </h1>
+<h2>List</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Person</th>
+                <th>Annotated At</th>
+                <th>Property</th>
+                <th>Object</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for row in annotations %}
+        <tr>
+            <td>{{ row.person }}</td>
+            <td>{{ row.annotatedAt }}</td>
+            <td>{{ row.property }}</td> 
+            <td>{{ row.object }}</td>            
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}  
+{% block javascripts %}            
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 

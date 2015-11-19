@@ -9,11 +9,11 @@ use Symfony\Component\HttpFoundation\Request;
 class AnnotationController extends Controller
 {                
     /**
-     * @Route("/annotate", name="annotate-form")
+     * @Route("/annotation/form", name="annotatation-form")
      */
     public function annotateAction(Request $request)
     {        
-        $uri = $request->get('uri');
+        $uri = urldecode($request->get('uri'));
         $artefact = $request->get('artefact');
         
         $model = $this->get('model.annotation'); 
@@ -38,7 +38,43 @@ class AnnotationController extends Controller
             'subject' => $subject,
             'property' => $property
         ));
-    }        
+    }    
+    
+    /**
+     * @Route("/annotatation/list", name="annotatation-list")
+     */
+    public function annotatationListAction(Request $request)
+    {        
+        $uri = urldecode($request->get('uri'));
+        $artefact = $request->get('artefact');
+        $object = $request->get('object');
+
+        $model = $this->get('model.annotation'); 
+        $annotations = $model->listAnnotations($uri);
+        
+        $model_provenance = $this->get('model.provenance'); 
+        if ($artefact == 'process')
+        {
+            $object = $model_provenance->process($uri);
+        }
+                    
+        return $this->render('annotation/list.html.twig', array(
+            'object' => $object,
+            'uri' => $uri,
+            'annotations' => $annotations
+        ));
+    }  
+    
+    /**
+     * @Route("/annotatation/reset", name="annotation-reset")
+     */
+    public function annotatationResetAction(Request $request)
+    {                
+        $model = $this->get('model.annotation'); 
+        $model->clearGraph();
+        
+        return $this->redirect($this->generateUrl('homepage'));
+    }  
 }
 
 

@@ -25,7 +25,8 @@
             <td>{{ row.description }}</td>
             <td>
                 <a href="{{ path('workflow-process', { 'process': row.process|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>
-                <a href="{{ path('annotate-form', { 'artefact':'process', 'uri': row.process|url_encode }) }}"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                <a href="{{ path('annotatation-form', { 'artefact':'process', 'uri': row.process|url_encode }) }}"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                <a href="{{ path('annotatation-list', { 'artefact':'process', 'uri': row.process|url_encode }) }}"><i class="glyphicon glyphicon glyphicon-list-alt"></i></a>
             </td>
         </tr>
     {% endfor %}

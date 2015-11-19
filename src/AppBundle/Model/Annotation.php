@@ -51,21 +51,77 @@ class Annotation
             $object = "\"".$object."\"";
         }
         
+        $query1 = "$this->prefix
+        SELECT * WHERE        
+        { 
+            GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/annotations/> 
+            {
+                ?annotation a oa:Annotation ;
+                oa:hasTarget <".$subject.">;
+                oa:hasBody ?body.
+            }
+        }";
+        //oa:annotatedBy ex:Person1 ;
+        $result1 = $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query1 . '\', NULL, 0)');
+        $array = $result1->_odbc_fetch_array2();
+        
+        if ($array !== "")
+        {
+            $body = $array[0]['body'];
+            
+            $query2 = "$this->prefix
+            INSERT        
+            { 
+                GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/annotations/> 
+                { 
+                    <".$body."> <".$property."> ".$object.".
+                }
+            }";
+        }
+        else
+        {
+            $query2 = "$this->prefix
+            INSERT        
+            { 
+                GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/annotations/> 
+                { 
+                    _:annotation a oa:Annotation ;
+                    oa:hasTarget <".$subject.">;
+                    oa:hasBody [<".$property."> ".$object."];
+                    oa:motivatedBy oa:tagging ;
+                    oa:annotatedAt \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\";
+                    oa:serializedAt \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\".
+                }
+            }";
+        }
+        
+        
+        //oa:annotatedBy ex:Person1 ;
+        $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query2 . '\', NULL, 0)'); 
+    }
+    
+    public function listAnnotations($subject)
+    {                
         $query = "$this->prefix
-        INSERT        
+        SELECT * WHERE        
         { 
             GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/annotations/> 
             { 
                 _:annotation a oa:Annotation ;
                 oa:hasTarget <".$subject.">;
-                <".$property."> ".$object.";
-                oa:motivatedBy oa:tagging ;
-                oa:annotatedAt \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\";
-                oa:serializedAt \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\".
+                oa:hasBody ?body;
+                oa:annotatedAt ?annotatedAt.
+                ?body ?property ?object.
+                OPTIONAL { <".$subject."> oa:annotatedBy ?person }
             } 
         }";
-        //oa:annotatedBy ex:Person1 ;
-        $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query . '\', NULL, 0)'); 
+        $query = $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query . '\', NULL, 0)'); 
+        return $query->_odbc_fetch_array2();
+    }
+    
+    public function clearGraph()
+    {
+        $query1 = "CLEAR GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/annotations/>";        
+        $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query1 . '\', NULL, 0)');                  
     }
 }
-
