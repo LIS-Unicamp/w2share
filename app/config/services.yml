@@ -25,4 +25,7 @@ services:
         
     model.annotation:
         class: AppBundle\Model\Annotation
-        arguments: ["@app.odbc_driver"]       
+        arguments: ["@app.odbc_driver"]          
+        
+    model.yesworkflow:
+        class: AppBundle\Model\YesWorkflow
