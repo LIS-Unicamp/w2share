@@ -29,7 +29,7 @@ class DefaultController extends Controller
      * @Route("/", name="homepage")
      */
     public function homepageAction(Request $request)
-    {        
+    {           
         return $this->render('default/index.html.twig', array(
             
         ));

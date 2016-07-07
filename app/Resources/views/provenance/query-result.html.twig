@@ -6,13 +6,15 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Title</th>                
+                <th>Title</th>    
+                <th>Title</th>    
             </tr>
         </thead>
         <tbody>
     {% for row in result %}
         <tr>
-            <td>{{ row.title }}</td>
+            <td>{{ row.title.value }}</td>
+            <td>{{ row.title.value }}</td>
         </tr>
     {% else %}
         <tr>

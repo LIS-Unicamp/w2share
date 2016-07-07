@@ -21,12 +21,12 @@
         <tbody>
     {% for row in processes %}
         <tr>
-            <td>{{ row.label }}</td>
-            <td>{{ row.description }}</td>
+            <td>{{ row.label.value }}</td>
+            <td>{% if 'description' in row %}{{ row.description.value }}{% endif %}</td>
             <td>
-                <a href="{{ path('workflow-process', { 'process': row.process|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>
-                <a href="{{ path('annotatation-form', { 'artefact':'process', 'uri': row.process|url_encode }) }}"><i class="glyphicon glyphicon-plus-sign"></i></a>
-                <a href="{{ path('annotatation-list', { 'artefact':'process', 'uri': row.process|url_encode }) }}"><i class="glyphicon glyphicon glyphicon-list-alt"></i></a>
+                <a href="{{ path('workflow-process', { 'process': row.process.value|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('annotatation-form', { 'artefact':'process', 'uri': row.process.value|url_encode }) }}"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                <a href="{{ path('annotatation-list', { 'artefact':'process', 'uri': row.process.value|url_encode }) }}"><i class="glyphicon glyphicon glyphicon-list-alt"></i></a>
             </td>
         </tr>
     {% endfor %}
@@ -46,8 +46,8 @@
         <tbody>
     {% for row in inputs %}
         <tr>
-            <td>{{ row.label }}</a></td>
-            <td>{{ row.description }}</a></td>
+            <td>{{ row.label.value }}</a></td>
+            <td>{% if 'description' in row %}{{ row.description.value }}{% endif %}</a></td>
         </tr>
     {% else %}
         <tr>
@@ -70,8 +70,8 @@
         <tbody>
     {% for row in outputs %}
         <tr>
-            <td>{{ row.label }}</a></td>
-            <td>{{ row.description }}</a></td>
+            <td>{{ row.label.value }}</a></td>
+            <td>{% if 'description' in row %}{{ row.description.value }}{% endif %}</a></td>
         </tr>
     {% else %}
         <tr>

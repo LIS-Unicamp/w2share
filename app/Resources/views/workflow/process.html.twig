@@ -7,12 +7,12 @@
 </h1>
                         
 <ul>
-    <li>Title: {{ process.label }}</li>
-    <li>Description: {{ process.description }}</li>
+    <li>Title: {{ process.label.value }}</li>
+    <li>Description: {% if 'description' in process %}{{ process.description }}{% endif %}</li>
 </ul>
-    <a href="{{ path('workflow-details', { 'workflow': process.workflow }) }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-arrow-left"> Workflow</i></a>
-{% if process.subworkflow %}
-    <a href="{{ path('workflow-details', { 'workflow': process.subworkflow }) }}" class="btn btn-sm btn-info">Subworkflow <i class="glyphicon glyphicon-arrow-right"></i></a>
+    <a href="{{ path('workflow-details', { 'workflow': process.workflow.value }) }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-arrow-left"> Workflow</i></a>
+{% if 'subworkflow' in process %}
+    <a href="{{ path('workflow-details', { 'workflow': process.subworkflow.value }) }}" class="btn btn-sm btn-info">Subworkflow <i class="glyphicon glyphicon-arrow-right"></i></a>
 {% endif %}
 <h2>Inputs</h2>
 <div class="table-responsive">
@@ -26,8 +26,8 @@
         <tbody>
     {% for row in process_inputs %}
         <tr>
-            <td>{{ row.label }}</a></td>
-            <td>{{ row.description }}</a></td>
+            <td>{{ row.label.value }}</a></td>
+            <td>{% if 'description' in row %}{{ row.description.value }}{% endif %}</a></td>
         </tr>
     {% else %}
         <tr>
@@ -51,7 +51,7 @@
     {% for row in process_outputs %}
         <tr>
             <td>{{ row.label }}</a></td>
-            <td>{{ row.description }}</a></td>
+            <td>{% if 'description' in row %}{{ row.description }}{% endif %}</a></td>
         </tr>
     {% else %}
         <tr>

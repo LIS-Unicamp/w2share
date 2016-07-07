@@ -15,17 +15,21 @@ services:
         arguments: ["VOS", "dba", "lucas"]
         calls:
             - [db_connect]
+            
+    app.rest_api:
+        class: AppBundle\Utils\RestAPI
+            
     model.provenance:
         class: AppBundle\Model\Provenance
-        arguments: ["@app.odbc_driver"]
+        arguments: ["@app.rest_api"]
         
     model.workflow:
         class: AppBundle\Model\Workflow
-        arguments: ["@doctrine.orm.default_entity_manager","@app.odbc_driver"]
+        arguments: ["@doctrine.orm.default_entity_manager","@app.rest_api"]
         
     model.annotation:
         class: AppBundle\Model\Annotation
-        arguments: ["@app.odbc_driver"]          
+        arguments: ["@app.rest_api"]          
         
     model.yesworkflow:
         class: AppBundle\Model\YesWorkflow

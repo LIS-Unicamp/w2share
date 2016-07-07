@@ -57,7 +57,7 @@ class Workflow
         // process information
         $query = "
             $this->prefix  
-            SELECT DISTINCT * WHERE {GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/> {
+            SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <$workflow> wfdesc:hasSubProcess ?process.
                 ?process a wfdesc:Process.
                 OPTIONAL { ?process rdfs:label ?label. }
@@ -66,13 +66,12 @@ class Workflow
             }}
             ";
         
-        $query = $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query . '\', NULL, 0)');   
-        return $query->_odbc_fetch_array2();
+        return $this->driver->getResults($query);
     }
     
     public function clearGraph()
     {
-        $query1 = "CLEAR GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/workflows/>";        
-        $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query1 . '\', NULL, 0)');                  
+        $query = "CLEAR GRAPH <".$this->driver->getDefaultGraph().">";        
+        return $this->driver->getResults($query);              
     }
 }

@@ -7,8 +7,8 @@
 </h1>
                         
 <ul>
-    <li>Title: {{ process.label }}</li>
-    <li>Description: {{ process.description }}</li>
+    <li>Title: {{ process.label.value }}</li>
+    <li>Description: {% if 'description' in process %}{{ process.description.value }}{% endif %}</li>
 </ul>
 
 <h2>Process Runs</h2>
@@ -29,22 +29,22 @@
     {% for row in result %}
         <tr>
             <td>
-                <button class="btn btn-xs" data-clipboard-text="{{ row.processRun }}">
+                <button class="btn btn-xs" data-clipboard-text="{{ row.processRun.value }}">
                     <i class="glyphicon glyphicon-copy"></i>
                 </button>
             </td>
             <td>
-                <button class="btn btn-xs" data-clipboard-text="{{ row.workflowRun }}">
+                <button class="btn btn-xs" data-clipboard-text="{{ row.workflowRun.value }}">
                     <i class="glyphicon glyphicon-copy"></i>
                 </button>
-                <a href="{{ path("provenance-workflow-run", { 'workflow_run': row.workflowRun|url_encode() } )}}"> <i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path("provenance-workflow-run", { 'workflow_run': row.workflowRun.value|url_encode() } )}}"> <i class="glyphicon glyphicon-search"></i></a>
             </td>
-            <td>{{ row.startedAtTime }}</a></td>
-            <td>{{ row.endedAtTime }}</td>
+            <td>{{ row.startedAtTime.value }}</a></td>
+            <td>{{ row.endedAtTime.value }}</td>
             <td>
                 <ul>
                 {% if inputs|length > 0 %}
-                    {% for i in inputs[row.processRun] %}
+                    {% for i in inputs[row.processRun.value] %}
                         <li>{{ i }}</li>
                     {% endfor %}
                 {% endif %}
@@ -53,7 +53,7 @@
             <td>
                 <ul>
                 {% if outputs and row.processRun in outputs %}
-                    {% for i in outputs[row.processRun] %}
+                    {% for i in outputs[row.processRun.value] %}
                         <li>{{ i }}</li>
                     {% endfor %}
                 {% endif %}
@@ -78,8 +78,8 @@
         <tbody>
     {% for row in process_inputs %}
         <tr>
-            <td>{{ row.label }}</a></td>
-            <td>{{ row.description }}</a></td>
+            <td>{{ row.label.value }}</a></td>
+            <td>{% if 'description' in row %}{{ row.description.value }}{% endif %}</a></td>
         </tr>
     {% else %}
         <tr>
@@ -102,8 +102,8 @@
         <tbody>
     {% for row in process_outputs %}
         <tr>
-            <td>{{ row.label }}</a></td>
-            <td>{{ row.description }}</a></td>
+            <td>{{ row.label.value }}</a></td>
+            <td>{% if 'description' in row %}{{ row.description.value }}{% endif %}</a></td>
         </tr>
     {% else %}
         <tr>

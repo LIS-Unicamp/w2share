@@ -142,7 +142,7 @@ class ProvenanceController extends Controller
         {        
             foreach($result2 as $row)
             {
-                $inputs[$row['processRun']][] = $row['content'];
+                $inputs[$row['processRun']['value']][] = $row['content']['value'];
             }
         }        
 
@@ -151,7 +151,7 @@ class ProvenanceController extends Controller
         {
             foreach($result3 as $row)
             {
-                $outputs[$row['processRun']][] = $row['content'];
+                $outputs[$row['processRun']['value']][] = $row['content']['value'];
             }
         }
         

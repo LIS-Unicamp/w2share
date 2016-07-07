@@ -20,8 +20,8 @@
         <tbody>
     {% for row in result2 %}
         <tr>
-            <td>{{ row.label }}</td>
-            <td><a href="{{ path('provenance-process', { 'process': row.process|url_encode }) }}">Details</a></td>
+            <td>{{ row.label.value }}</td>
+            <td><a href="{{ path('provenance-process', { 'process': row.process.value|url_encode }) }}">Details</a></td>
         </tr>
     {% endfor %}
         </tbody>
@@ -42,13 +42,13 @@
     {% for row in result1 %}
         <tr>
             <td>
-                <button class="btn btn-xs" data-clipboard-text="{{ row.workflowRun }}">
+                <button class="btn btn-xs" data-clipboard-text="{{ row.workflowRun.value }}">
                     <i class="glyphicon glyphicon-copy"></i>
                 </button>
-                <a href="{{ path('provenance-workflow-run', { 'workflow_run': row.workflowRun|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('provenance-workflow-run', { 'workflow_run': row.workflowRun.value|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>
             </td>
-            <td>{{ row.startedAtTime }}</a></td>
-            <td>{{ row.endedAtTime }}</td>
+            <td>{{ row.startedAtTime.value }}</a></td>
+            <td>{{ row.endedAtTime.value }}</td>
         </tr>
     {% endfor %}
         </tbody>
@@ -67,8 +67,8 @@
         <tbody>
     {% for row in inputs %}
         <tr>
-            <td>{{ row.label }}</a></td>
-            <td>{{ row.description }}</a></td>
+            <td>{{ row.label.value }}</a></td>
+            <td>{% if 'description' in row %}{{ row.description.value }}{% endif %}</a></td>
         </tr>
     {% else %}
         <tr>
@@ -91,8 +91,8 @@
         <tbody>
     {% for row in outputs %}
         <tr>
-            <td>{{ row.label }}</a></td>
-            <td>{{ row.description }}</a></td>
+            <td>{{ row.label.value }}</a></td>
+            <td>{% if 'description' in row %}{{ row.description.value }}{% endif %}</a></td>
         </tr>
     {% else %}
         <tr>

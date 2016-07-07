@@ -22,10 +22,10 @@
         <tbody>
     {% for row in annotations %}
         <tr>
-            <td>{{ row.person }}</td>
-            <td>{{ row.annotatedAt }}</td>
-            <td>{{ row.property }}</td> 
-            <td>{{ row.object }}</td>            
+            <td>{{ row.body.value }}</td>
+            <td>{{ row.annotatedAt.value }}</td>
+            <td>{{ row.property.value }}</td> 
+            <td>{{ row.object.value }}</td>            
         </tr>
     {% endfor %}
         </tbody>

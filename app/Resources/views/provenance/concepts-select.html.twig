@@ -6,7 +6,7 @@
     <div class="form-group">
         <select name="concept" class="form-control">
             {% for row in result %}
-                <option value="{{ row.concept }}" {% if row.concept == concept %}selected{% endif %}>{{ row.concept }}</option>
+                <option value="{{ row.concept.value }}" {% if row.concept.value == concept %}selected{% endif %}>{{ row.concept.value }}</option>
             {% endfor %}
         </select>
     </div>

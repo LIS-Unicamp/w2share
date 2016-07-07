@@ -51,28 +51,26 @@ class Annotation
             $object = "\"".$object."\"";
         }
         
-        $query1 = "$this->prefix
-        SELECT * WHERE        
+        $query1 = $this->prefix.
+        "SELECT * WHERE        
         { 
-            GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/annotations/> 
+            GRAPH <".$this->driver->getDefaultGraph('annotations')."> 
             {
                 ?annotation a oa:Annotation ;
                 oa:hasTarget <".$subject.">;
                 oa:hasBody ?body.
             }
         }";
-        //oa:annotatedBy ex:Person1 ;
-        $result1 = $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query1 . '\', NULL, 0)');
-        $array = $result1->_odbc_fetch_array2();
+        $array = $this->driver->getSingleResult($query1,true);
         
-        if ($array !== "")
+        if ($array)
         {
-            $body = $array[0]['body'];
+            $body = $array['body'];
             
-            $query2 = "$this->prefix
-            INSERT        
+            $query2 = $this->prefix.
+            "INSERT        
             { 
-                GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/annotations/> 
+                GRAPH <".$this->driver->getDefaultGraph('annotations')."> 
                 { 
                     <".$body."> <".$property."> ".$object.".
                 }
@@ -80,10 +78,10 @@ class Annotation
         }
         else
         {
-            $query2 = "$this->prefix
-            INSERT        
+            $query2 = $this->prefix.
+            "INSERT        
             { 
-                GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/annotations/> 
+                GRAPH <".$this->driver->getDefaultGraph('annotations')."> 
                 { 
                     _:annotation a oa:Annotation ;
                     oa:hasTarget <".$subject.">;
@@ -94,18 +92,16 @@ class Annotation
                 }
             }";
         }
-        
-        
-        //oa:annotatedBy ex:Person1 ;
-        $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query2 . '\', NULL, 0)'); 
+                
+        return $this->driver->getResults($query2);
     }
     
     public function listAnnotations($subject)
     {                
-        $query = "$this->prefix
-        SELECT * WHERE        
+        $query = $this->prefix.
+        "SELECT * WHERE        
         { 
-            GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/annotations/> 
+            GRAPH <".$this->driver->getDefaultGraph('annotations')."> 
             { 
                 _:annotation a oa:Annotation ;
                 oa:hasTarget <".$subject.">;
@@ -115,13 +111,12 @@ class Annotation
                 OPTIONAL { <".$subject."> oa:annotatedBy ?person }
             } 
         }";
-        $query = $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query . '\', NULL, 0)'); 
-        return $query->_odbc_fetch_array2();
+        return $this->driver->getResults($query);
     }
     
     public function clearGraph()
     {
-        $query1 = "CLEAR GRAPH <http://www.lis.ic.unicamp.br/~lucascarvalho/annotations/>";        
-        $this->driver->_execute('CALL DB.DBA.SPARQL_EVAL(\'' . $query1 . '\', NULL, 0)');                  
+        $query = "CLEAR GRAPH <".$this->driver->getDefaultGraph('annotations').">";        
+        return $this->driver->getResults($query);                  
     }
 }
