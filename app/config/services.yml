@@ -18,7 +18,8 @@ services:
             
     app.rest_api:
         class: AppBundle\Utils\RestAPI
-            
+        arguments: ["@service_container"]
+        
     model.provenance:
         class: AppBundle\Model\Provenance
         arguments: ["@app.rest_api"]

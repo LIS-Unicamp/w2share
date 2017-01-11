@@ -4,13 +4,32 @@ class RestAPI
 {       
     private $default_graph = "http://www.lis.ic.unicamp.br/~lucascarvalho/";
    
+    private $env;
     
-    public function getDomain($env = "prod")
+    public function __construct(\Symfony\Component\DependencyInjection\ContainerInterface $container)
     {
-        $prod_domain = "virtuoso.lis.ic.unicamp.br";
-        $dev_domain = "localhost:8890";
+        $this->env = $container->get('kernel')->getEnvironment();
+    }
     
-        if ($env == "prod")
+    public function getDomainSPAQL()
+    {
+        $prod_domain = "10.1.1.32:8890/sparql";
+        $dev_domain = "localhost:8890/sparql";
+    
+        if ($this->env == "prod")
+        {
+            return $prod_domain;
+        }
+        
+        return $dev_domain;
+    }
+    
+    public function getDomain()
+    {
+        $prod_domain = "10.1.1.32";
+        $dev_domain = "localhost";
+    
+        if ($this->env == "prod")
         {
             return $prod_domain;
         }
@@ -30,11 +49,9 @@ class RestAPI
     private function getQuery($query)
     {
         $format = 'json';
-        $default_graph = self::getDefaultGraph();
-        $sparql_url2 = "http://localhost:8890/sparql";
-        $sparql_url = "http://sparql.lis.ic.unicamp.br";
+        //$default_graph = self::getDefaultGraph();
        
-        $searchUrl = $sparql_url.'?'
+        $searchUrl = $this->getDomainSPAQL().'?'
           //.'default-graph-uri='.urlencode($default_graph)
           .'query='.urlencode($query)
           .'&format='.$format;
@@ -127,25 +144,27 @@ class RestAPI
     
     public function printArray($array, $spaces = "")
     {
-       $retValue = "";
+        $retValue = "";
 
-       if(is_array($array))
-       {	
-          $spaces = $spaces
-             ."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-          $retValue = $retValue."<br/>";
-          foreach(array_keys($array) as $key)
-          {
-             $retValue = $retValue.$spaces
-                ."<strong>".$key."</strong>"
-                .self::printArray($array[$key], 
-                   $spaces);
-          }		
-          $spaces = substr($spaces, 0, -30);
-       }
-       else $retValue = 
-          $retValue." - ".$array."<br/>";
-
+        if(is_array($array))
+        {	
+           $spaces = $spaces
+              ."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+           $retValue = $retValue."<br/>";
+           foreach(array_keys($array) as $key)
+           {
+              $retValue = $retValue.$spaces
+                 ."<strong>".$key."</strong>"
+                 .self::printArray($array[$key], 
+                    $spaces);
+           }		
+           $spaces = substr($spaces, 0, -30);
+        }
+        else 
+        {
+            $retValue = $retValue." - ".$array."<br/>";
+        }
+           
        return $retValue;
     }
 }

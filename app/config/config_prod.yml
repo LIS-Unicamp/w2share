@@ -25,3 +25,8 @@ monolog:
             level: debug
         console:
             type:  console
+            
+framework:
+    templating:
+          assets_base_urls:
+              http:   [http://w2share.lis.ic.unicamp.br]
