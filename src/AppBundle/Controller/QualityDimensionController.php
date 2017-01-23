@@ -19,8 +19,7 @@ class QualityDimensionController extends Controller{
     public function addAction(Request $request) {
         $em = $this->get('doctrine')->getManager();
         $qualitydimension = new \AppBundle\Entity\QualityDimension();
-        //TODO: QualityDimensionUploadType
-        $form = $this->createForm(new \AppBundle\Form\QualityDimensionUploadType($em), 
+        $form = $this->createForm(new \AppBundle\Form\QualityDimensionAddType($em),
                                   $qualitydimension, 
                                   array(
                                   'action' => $this->generateUrl('qualitydimension-add'),
@@ -48,10 +47,38 @@ class QualityDimensionController extends Controller{
                                     array('qualitydimension_id' => $qualitydimension->getId())));
         }
         
-        return $this->render('qualitydimension/form.html.twig', array(
+        return $this->render('qualityflow/form.html.twig', array(
             'form' => $form->createView(),
             'qualitydimension' => $qualitydimension
         ));
         
     }
+    
+    /**
+     * @Route("/qualitydimension/delete/{qualitydimension_id}", name="qualitydimension-delete")
+     */
+    
+    public function removeAction(Request $request, $qualitydimension_id)
+    {        
+        $em = $this->get('doctrine')->getManager();                
+        $qualitydimension = $em->getRepository('AppBundle:QualityDimension')
+                ->find($qualitydimension_id);
+                                
+        if ($qualitydimension)  
+        {                          
+            $model = $this->get('model.qualitydimension'); 
+            $model->deleteQualityDimension($qualitydimension->getId());
+                        
+            $em->remove($qualitydimension);
+            $em->flush();
+
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Quality dimension deleted!')
+            ;
+        }
+        
+        return $this->redirect($this->generateUrl('workflows'));
+    }
+    
 }
