@@ -1,7 +1,30 @@
 {% extends 'base.html.twig' %}
-{% block title %}Upload Workflow{% endblock %}
+{% block title %}Add Quality Dimension{% endblock %}
 {% block body %}
-<h1>Add <small>quality dimension</small></h1>
+<h2>Workflows</h2>    
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <!--<th style="width:100px">Action</th>-->
+                <th>Title</th>
+                <th>Author</th>
+                <th>Description</th> 
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Recuperar qualitydimension -->
+            <tr>
+                <td>dummy title</td>
+                <td>dummy author</a></td>
+                <td>dummy description</td> 
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<h2>Add <small>quality dimension</small></h2>
 {{ form_start(form) }}
     <div class="form-body">
         {% for flashMessage in app.session.flashbag.get('success') %}
