@@ -29,7 +29,7 @@ class QualityDimension {
  /**
   * @var string
   */
-  private $value_type;
+  private $valueType;
   
 /**
  * Get id
@@ -94,13 +94,13 @@ class QualityDimension {
 /**
   * Set value_type
   *
-  * @param string $value_type
+  * @param string $valueType
   *
-  * @return Value_Type
+  * @return string
   */
-public function setValue_Type($value_type)
+public function setValueType($valueType)
  {
-    $this->value_type = $value_type;
+    $this->valueType = $valueType;
 
        return $this;
  }
@@ -110,7 +110,7 @@ public function setValue_Type($value_type)
   *
   * @return string
   */
- public function geValue_Type()
+ public function getValueType()
  {
     return $this->description;
  }
