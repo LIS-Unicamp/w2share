@@ -6,8 +6,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-namespace AppBundle\Form;
-
 /**
  * Description of QualityDimensionAddType
  *
@@ -19,7 +17,7 @@ class QualityDimensionAddType extends AbstractType
         $builder
             ->add('name', 'text', array('label' => 'Name'))
             ->add('description', 'textarea', array('label' => 'Description'))
-            ->add('type', 'text', array('label' => 'Type'))
+            ->add('valueType', 'text', array('label' => 'Type'))
             ->add('save', 'submit', array(
                     'label' => 'Salvar',
                     'attr' => array('class' => 'btn blue')
