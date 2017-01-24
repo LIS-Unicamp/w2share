@@ -17,6 +17,10 @@ class QualityDimensionController extends Controller{
      * @Route("/qualitydimension/add", name="qualitydimension-add")
      */
     public function addAction(Request $request) {
+        // Load all the workflows
+        $workflows = $this->get('doctrine')
+            ->getRepository('AppBundle:Workflow')->findAll();
+        
         $em = $this->get('doctrine')->getManager();
         $qualitydimension = new \AppBundle\Entity\QualityDimension();
         $form = $this->createForm(new \AppBundle\Form\QualityDimensionAddType($em),
@@ -49,9 +53,9 @@ class QualityDimensionController extends Controller{
         
         return $this->render('qualityflow/form.html.twig', array(
             'form' => $form->createView(),
-            'qualitydimension' => $qualitydimension
+            'qualitydimension' => $qualitydimension,
+            'workflows' => $workflows
         ));
-        
     }
     
     /**
