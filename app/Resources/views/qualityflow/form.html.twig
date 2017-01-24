@@ -1,7 +1,14 @@
 {% extends 'base.html.twig' %}
 {% block title %}Add Quality Dimension{% endblock %}
-{% block body %}
-<h2>Workflows</h2>    
+{% block body %}    
+<div class="dropdown">
+  <button class="btn btn-primary dropdown-toggle"
+          type="button" data-toggle="dropdown">Select workflow <span class="caret"></span></button>
+  
+    <ul class="dropdown-menu">
+      <li>{% for wf in workflows %} <a href="#">{{ wf.title }}</a>  {% endfor %}</li>
+    </ul>
+</div>
 
 <div class="table-responsive">
     <table class="table table-striped">
