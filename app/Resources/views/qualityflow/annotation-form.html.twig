@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+{% block title %}Quality Annotation{% endblock %}
+{% block body %}
+
+<div class="form-group">
+    <label>Select workflow</label>
+    <select name="workflow" class="form-control">
+        {% for wf in workflows %}
+            <option value="">{{ wf.title }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="form-group">
+  <label>Select quality dimension <span class="caret"></span></label>
+  <select name="qualitydimension" class="form-control">
+      {% for qd in  ['dim1', 'dim2', 'dim3'] %} <!--TODO: depois trocar por qualitydimension -->
+        <option value="{{ qd }}">{{ qd }}</option> <!--TODO: depois trocar por qd.name  -->
+      {% endfor %}
+  </select>
+</div>
+
+<h2>Add <small>quality annotation</small></h2>
+{{ form_start(form) }}
+    <div class="form-body">
+        {% for flashMessage in app.session.flashbag.get('success') %}
+            <div class="alert alert-success">
+                    <button class="close" data-dismiss="alert"></button>
+                    {{ flashMessage }}
+            </div>
+        {% endfor %}
+        {% for flashMessage in app.session.flashbag.get('error') %}
+            <div class="alert alert-danger">
+                    <button class="close" data-dismiss="alert"></button>
+                    {{ flashMessage }}
+            </div>            
+        {% endfor %}
+        {{ form_errors(form) }}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="form-group">
+                        {{ form_label(form.value) }}
+                        {{ form_widget(form.value, { 'attr': { 'class':'form-control' } }) }}
+                        {{ form_errors(form.value) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-actions">
+            {{ form_widget(form.save) }}
+    </div>
+{{ form_end(form) }}
+</form>
+                
+
+{% endblock %}  
+{% block javascripts %}
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 
