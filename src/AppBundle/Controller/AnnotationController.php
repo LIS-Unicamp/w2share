@@ -75,6 +75,57 @@ class AnnotationController extends Controller
         
         return $this->redirect($this->generateUrl('homepage'));
     }  
+    
+    /**
+     * @Route("/annotation/qualitydimension", name="annotatation-qualitydimension")
+     */
+    public function annotatationQualityDimensionAction(Request $request)
+    {                
+        $qualityannotation = new \AppBundle\Entity\QualityAnnotation();
+        $model = $this->get('model.annotation');
+        
+        $value = $request->get('value');
+        $name = $request->get('name');
+        
+        $em = $this->get('doctrine')->getManager();
+        //$qualitydimension = $em->getRepository('AppBundle:QualityDimension')
+          //                          ->findOneBy(array( 'name'=> $name ) );
+      
+       
+        //Just for test - remover depois
+        $qualitydimension = new \AppBundle\Entity\QualityDimension();
+        $qualitydimension->setName('teste');
+        $qualitydimension->setDescription('description');
+        $qualitydimension->setValueType('type');
+        
+        // Load all the workflows
+        $workflows = $this->get('doctrine')
+            ->getRepository('AppBundle:Workflow')->findAll();
+        
+        $form = $this->createForm(new \AppBundle\Form\QualityAnnotationAddType($em), $qualityannotation,
+                                  array(
+                                  'action' => $this->generateUrl('annotatation-qualitydimension'),
+                                  'method' => 'POST'
+                                  ));
+        
+        $form->handleRequest($request);
+        
+        if ($form->isValid())
+        {
+            $model->insertQualityAnnotation($qualitydimension, $value);
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Quality Annotation created!'); 
+        }
+        
+        //TO-DO verificar onde irá redirecionar
+        return $this->render('qualityflow/annotation-form.html.twig', array(
+            'form' => $form->createView(),
+            'name' => $name,
+            'value' => $value,
+            'qualitydimension' => $qualitydimension,
+            'workflows' => $workflows
+        ));
+    }
+    
 }
-
-
