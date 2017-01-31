@@ -44,11 +44,12 @@ class QualityDimension {
     }
     
     public function updateQualityDimension(QualityDimension $qd) {
+        $em = \Doctrine\ORM\EntityManager ;
         $query = "UPDATE AppBundle:QualityDimension tqd"
                 . "SET tqd->name = ?, tqd->description = ?, tqd->type = ?"
                 . "WHERE tqd->name = $qd->name";
         $query->setParameter(3, $qd->name, $qd->description, $qd->type);
-        return $this->driver->getResults($query);
+        return $this->driver->getResults($query);  
         
     }
     
