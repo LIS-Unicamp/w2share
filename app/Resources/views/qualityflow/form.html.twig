@@ -6,7 +6,9 @@
           type="button" data-toggle="dropdown">Select workflow <span class="caret"></span></button>
   
     <ul class="dropdown-menu">
-      <li>{% for wf in workflows %} <a href="#">{{ wf.title }}</a>  {% endfor %}</li>
+      {% for wf in workflows %} 
+        <li value=""><a href="#">{{ wf.title }}</a>  </li>
+      {% endfor %}
     </ul>
 </div>
 
@@ -17,15 +19,15 @@
                 <!--<th style="width:100px">Action</th>-->
                 <th>Title</th>
                 <th>Author</th>
-                <th>Description</th> 
+                <th>Description</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Recuperar qualitydimension -->
+            <!-- TO-DO: Recuperar só as informacoes do workflow selecionado -->
             <tr>
-                <td>dummy title</td>
-                <td>dummy author</a></td>
-                <td>dummy description</td> 
+                <td>Dummy</td>
+                <td>Dummy</td>
+                <td>Dummy</td>
             </tr>
         </tbody>
     </table>
@@ -82,7 +84,7 @@
                 
 
 {% endblock %}  
-{% block javascripts %}            
+{% block javascripts %}
 {% endblock %}
 {% block stylesheets %}
 {% endblock %} 
