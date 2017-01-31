@@ -18,6 +18,18 @@ class QualityAnnotation {
     * @var Object
     */
     private $qualityDimension;
+ 
+  /**
+   * @var integer
+   */
+    private $id;   
+    
+  /**
+   * @var integer
+   * Id da qualitydimension
+   */
+    private $id_qd;   
+    
    
    /**
     * @var string
@@ -39,8 +51,16 @@ class QualityAnnotation {
       return $this;
   }
   
+  public function setId_Qd($id_qd) {
+      $this->id_qd = $id_qd;
+      return $this;
+  }
+  
+  public function getId_Qd() {
+      return $this->id_qd;
+  }
+  
   /**
-   * 
    * @param $value
    * @return value
    * 
