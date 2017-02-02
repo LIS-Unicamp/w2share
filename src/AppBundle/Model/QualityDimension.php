@@ -82,7 +82,7 @@ class QualityDimension {
                 <".$uri."> <w2share:valuetype> ?valueType.
                 <".$uri."> <rdfs:description> ?description.
             }
-        }";     
+        }";   
         
         $quality_dimension = $this->driver->getResults($query);
         
@@ -98,6 +98,16 @@ class QualityDimension {
     public function findAllQualityDimension() {
         $query = "SELECT * FROM AppBundle:QualityDimension";
         return $this->driver->getResults($query);
+    }
+    
+    public function deleteQualityDimension($uri)
+    {
+        $query = $this->prefix.
+        "DELETE data FROM <".$this->driver->getDefaultGraph()."> {
+                <".$uri."> a w2share:QualityDimension.      
+        }";
+        return $this->driver->getResults($query);
+        
     }
     
     public function updateQualityDimension(\AppBundle\Entity\QualityDimension $qd) {

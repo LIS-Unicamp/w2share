@@ -62,11 +62,11 @@
             </tr>
         </thead>
         <tbody>
-            {% for qd in app.session.get('qualityDimensions')%}
+            {% for index,qd in app.session.get('qualityDimensions')%}
             <tr>
                 <td>
-                    <a href="{{ path('qualitydimension-edit', { 'qualitydimension_uri':qd.uri|url_encode }) }}"><i class="glyphicon glyphicon-edit"></i></a>
-                    <a href="{{ path('qualitydimension-delete', { 'qualitydimension_uri':qd.uri|url_encode }) }}"><i class="glyphicon glyphicon-trash"></i></a>
+                    <a href="{{ path('qualitydimension-edit', { 'qualitydimension_uri':qd.uri|url_encode, 'session_index':index }) }}"><i class="glyphicon glyphicon-edit"></i></a>
+                    <a href="{{ path('qualitydimension-delete', { 'qualitydimension_uri':qd.uri|url_encode, 'session_index':index }) }}"><i class="glyphicon glyphicon-trash"></i></a>
                 </td>
                 <td>{{ qd.name }}</td>
                 <td> {{qd.description}} </td>
