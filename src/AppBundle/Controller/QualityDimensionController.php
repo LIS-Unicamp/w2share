@@ -12,19 +12,34 @@ use Symfony\Component\HttpFoundation\Request;
  * @author joana
  */
 class QualityDimensionController extends Controller{
+    
+    /**
+     * @Route("/qualitydimension", name="qualitydimensions")
+     */
+    public function indexAction(Request $request)
+    {         
+        $result = $this->get('doctrine')
+            ->getRepository('AppBundle:QualityDimension')->findAll();
+        
+        /*return $this->render('qualitydimension/index.html.twig', array(
+            'result' => $result
+        )); */
+       
+        return array(
+            'result' => $result
+        );
+    }
 
     /**
      * @Route("/qualitydimension/add", name="qualitydimension-add")
      */
     public function addAction(Request $request) {
-        // Load all the workflows
-        $workflows = $this->get('doctrine')
-            ->getRepository('AppBundle:Workflow')->findAll();
         
-        $em = $this->get('doctrine')->getManager();
-        $qualitydimension = new \AppBundle\Entity\QualityDimension();
-        $form = $this->createForm(new \AppBundle\Form\QualityDimensionAddType($em),
-                                  $qualitydimension, 
+        $model = $this->get('model.qualitydimension'); 
+        
+        $qualityDimension = new \AppBundle\Entity\QualityDimension();
+        $form = $this->createForm(new \AppBundle\Form\QualityDimensionAddType(),
+                                  $qualityDimension, 
                                   array(
                                   'action' => $this->generateUrl('qualitydimension-add'),
                                   'method' => 'POST'
@@ -34,39 +49,65 @@ class QualityDimensionController extends Controller{
                 
         if ($form->isValid()) 
         {  
-            $em->persist($qualitydimension);
-            $em->flush();
-
+            $model->insertQualityDimension($qualityDimension);
             $this->get('session')
                 ->getFlashBag()
                 ->add('success', 'Quality Dimension added!')
             ; 
-            
-            $root_path = $this->get('kernel')->getRootDir();
-
-            $model = $this->get('model.qualitydimension'); 
-            $model->storeQualityDimension($qualitydimension);
-            
-            return $this->redirect($this->generateUrl('qualitydimension-edit',
-                                    array('qualitydimension_id' => $qualitydimension->getId())));
+            $qualityDimensions = $this->get('session')->get('qualityDimensions',null);
+            if ($qualityDimensions)
+            {
+                $qualityDimensions[] = $qualityDimension;
+            }
+            else {
+                $qualityDimensions = array($qualityDimension);
+            }
+            $this->get('session')->set('qualityDimensions',$qualityDimensions);
+            return $this->redirect($this->generateUrl('qualitydimension-add'));
         }
         
         return $this->render('qualityflow/form.html.twig', array(
             'form' => $form->createView(),
-            'qualitydimension' => $qualitydimension,
-            'workflows' => $workflows
+            'qualityDimension' => $qualityDimension
         ));
     }
     
     /**
-     * @Route("/qualitydimension/delete/{qualitydimension_id}", name="qualitydimension-delete")
+     * @Route("/qualitydimension/edit/{qualitydimension_uri}", name="qualitydimension-edit")
+     */
+    public function editAction(Request $request, $qualitydimension_uri)
+    {        
+        $model = $this->get('model.qualitydimension'); 
+        $uri = urldecode($qualitydimension_uri);
+        $qualityDimension = $model->findOneQualityDimension($uri);
+        
+        $form = $this->createForm(new \AppBundle\Form\QualityDimensionAddType(), $qualityDimension);
+        
+        $form->handleRequest($request);
+                
+        if ($form->isValid()) 
+        {              
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Quality dimension edited!')
+            ;            
+        }
+        
+        return $this->render('qualityflow/form.html.twig', array(
+            'form' => $form->createView(),
+            'qualityDimension' => $qualityDimension
+        ));
+    }
+    
+    /**
+     * @Route("/qualitydimension/delete/{qualitydimension_uri}", name="qualitydimension-delete")
      */
     
-    public function removeAction(Request $request, $qualitydimension_id)
+    public function removeAction(Request $request, $qualitydimension_uri)
     {        
         $em = $this->get('doctrine')->getManager();                
         $qualitydimension = $em->getRepository('AppBundle:QualityDimension')
-                ->find($qualitydimension_id);
+                ->find($qualitydimension_uri);
                                 
         if ($qualitydimension)  
         {                          
@@ -81,8 +122,8 @@ class QualityDimensionController extends Controller{
                 ->add('success', 'Quality dimension deleted!')
             ;
         }
-        
-        return $this->redirect($this->generateUrl('workflows'));
+        //TO-DO verificar
+        return $this->redirect($this->generateUrl('qualitydimension'));
     }
     
 }

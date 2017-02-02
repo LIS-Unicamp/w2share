@@ -20,7 +20,7 @@ class QualityDimensionAddType extends AbstractType
             ->add('valueType', 'text', array('label' => 'Type'))
             ->add('save', 'submit', array(
                     'label' => 'Add',
-                    'attr' => array('class' => 'btn blue')
+                    'attr' => array('class' => 'btn btn-primary')
                 ))
         ;
         

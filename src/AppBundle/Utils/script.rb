@@ -8,4 +8,4 @@ workflow_object = T2Flow::Parser.new.parse(file_workflow)
 
 file_image = File.new(file_image_path, "w+")
 T2Flow::Dot.new.write_dot(file_image, workflow_object)
-`dot -Tpng -o #{file_image_path} #{file_image.path}`
+`/usr/local/bin/dot -Tpng -o #{file_image_path} #{file_image.path}`
