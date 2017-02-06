@@ -14,20 +14,18 @@ use Symfony\Component\HttpFoundation\Request;
 class QualityDimensionController extends Controller{
     
     /**
-     * @Route("/qualitydimension", name="qualitydimensions")
+     * @Route("/qualitydimensions", name="qualitydimensions")
      */
     public function indexAction(Request $request)
     {         
-        $result = $this->get('doctrine')
-            ->getRepository('AppBundle:QualityDimension')->findAll();
+        $model = $this->get('model.qualitydimension');
+        $qualityDimensions = $model->findAllQualityDimensions();
         
-        /*return $this->render('qualitydimension/index.html.twig', array(
-            'result' => $result
-        )); */
+        
+       return $this->render('qualityflow/list-qualitydimension.html.twig', array(
+            'qualityDimensions' => $qualityDimensions
+        ));
        
-        return array(
-            'result' => $result
-        );
     }
 
     /**
@@ -80,6 +78,7 @@ class QualityDimensionController extends Controller{
         $model = $this->get('model.qualitydimension'); 
         $uri = urldecode($qualitydimension_uri);
         $qualityDimension = $model->findOneQualityDimension($uri);
+        $qualityDimension_temp = clone $qualityDimension;
         
         //Remove qualityDimension from the session variable
         $qualityDimensions = $this->get('session')->get('qualityDimensions');
@@ -90,8 +89,8 @@ class QualityDimensionController extends Controller{
                 
         if ($form->isValid()) 
         {           
-            $model->deleteQualityDimension($qualityDimension);
-            $model->insertQualityDimension($form->getData());
+            $model->deleteQualityDimension($qualityDimension_temp);
+            $model->insertQualityDimension($qualityDimension);
             
             $session_index = \AppBundle\Utils\Utils::findIndexSession($uri, $qualityDimensions);
             $qualityDimensions[$session_index] = $qualityDimension;

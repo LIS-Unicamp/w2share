@@ -100,9 +100,37 @@ class QualityDimension {
         
     }
     
-    public function findAllQualityDimension() {
-        $query = "SELECT * FROM AppBundle:QualityDimension";
-        return $this->driver->getResults($query);
+    public function findAllQualityDimensions() 
+    {
+        $query = $this->prefix.
+        "SELECT * WHERE 
+        {
+            GRAPH <".$this->driver->getDefaultGraph('qualitydimension')."> 
+             {
+                ?uri a <w2share:QualityDimension>;
+                <w2share:qdName> ?name;
+                <w2share:valueType> ?valueType;
+                <rdfs:description> ?description.
+            }
+        }";
+        
+        $quality_dimension_array = array();
+        $quality_dimensions = $this->driver->getResults($query);
+        
+        
+        
+        for ($i = 0; $i < count($quality_dimensions); $i++)
+        {
+            $qualityDimension = new \AppBundle\Entity\QualityDimension();
+            $qualityDimension->setUri($quality_dimensions[$i]['uri']['value']);
+            $qualityDimension->setName($quality_dimensions[$i]['name']['value']);
+            $qualityDimension->setDescription($quality_dimensions[$i]['description']['value']);
+            $qualityDimension->setValueType($quality_dimensions[$i]['valueType']['value']);
+            
+            $quality_dimension_array[] = $qualityDimension;  
+        }
+        
+        return $quality_dimension_array;
     }
     
     public function deleteQualityDimension(\AppBundle\Entity\QualityDimension $qd)

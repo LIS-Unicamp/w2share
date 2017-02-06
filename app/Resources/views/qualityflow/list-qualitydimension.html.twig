@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+{% block title %}Quality dimensions{% endblock %}
+{% block body %}
+<h1>Quality dimensions</h1>
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+<a class="btn btn-primary" href="{{ path('qualitydimension-add') }}">Add</a>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width:100px">Action</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Type</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+    {% for qd in qualityDimensions %}
+        <tr>
+            <td>
+                <a href="{{ path('qualitydimension-edit', { 'qualitydimension_uri':qd.uri|url_encode }) }}"><i class="glyphicon glyphicon-edit"></i></a>
+                <a href="{{ path('qualitydimension-delete', { 'qualitydimension_uri':qd.uri|url_encode }) }}"><i class="glyphicon glyphicon-trash"></i></a>
+            </td>
+            <td>{{ qd.name }}</td>
+            <td>{{ qd.description }}</a></td>
+            <td>{{ qd.valueType }}</td> 
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}  
+{% block javascripts %}            
+{% endblock %}
+{% block stylesheets %}
+{% endblock %}
