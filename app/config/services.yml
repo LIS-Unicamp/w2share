@@ -34,3 +34,11 @@ services:
         
     model.yesworkflow:
         class: AppBundle\Model\YesWorkflow
+                    
+    app.user_provider:
+        class: AppBundle\Security\UserProvider
+        
+    authentication_handler:
+        class: AppBundle\Security\AuthenticationHandler
+        calls:
+            - [ setContainer, [ @service_container ] ]        

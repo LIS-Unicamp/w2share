@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login - W2SHARE</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="W2SHARE - Workflow Repository" name="description"/>
+    <meta content="Lucas Augusto Carvalho" name="author"/>
+    <meta name="MobileOptimized" content="320">
+    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+    <div class="container">
+
+      <form class="form-signin" action="{{ path('login_check') }}" method="post">
+        <h2 class="form-signin-heading">Please log in</h2>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" name="_username" value="{{last_username}}" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" name="_password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me" name="_remember_me"> Remember me
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        <input type="hidden" name="referer" value="{{ app.request.headers.get('referer') }}">
+      </form>
+
+    </div>	
+        {% if error %}
+            <div class="alert alert-danger ">{{ error.message }}</div>
+        {% endif %}
+</body>
+</html>
