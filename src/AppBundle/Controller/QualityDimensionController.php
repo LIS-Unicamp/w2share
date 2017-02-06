@@ -38,7 +38,7 @@ class QualityDimensionController extends Controller{
         $model = $this->get('model.qualitydimension'); 
         
         $qualityDimension = new \AppBundle\Entity\QualityDimension();
-        $form = $this->createForm(new \AppBundle\Form\QualityDimensionAddType(),
+        $form = $this->createForm(new \AppBundle\Form\QualityDimensionType(),
                                   $qualityDimension, 
                                   array(
                                   'action' => $this->generateUrl('qualitydimension-add'),
@@ -81,16 +81,26 @@ class QualityDimensionController extends Controller{
         $uri = urldecode($qualitydimension_uri);
         $qualityDimension = $model->findOneQualityDimension($uri);
         
-        $form = $this->createForm(new \AppBundle\Form\QualityDimensionAddType(), $qualityDimension);
+        //Remove qualityDimension from the session variable
+        $qualityDimensions = $this->get('session')->get('qualityDimensions');
+        
+        $form = $this->createForm(new \AppBundle\Form\QualityDimensionType(), $qualityDimension);
         
         $form->handleRequest($request);
                 
         if ($form->isValid()) 
-        {              
+        {           
+            $model->deleteQualityDimension($qualityDimension);
+            $model->insertQualityDimension($form->getData());
+            
+            $session_index = \AppBundle\Utils\Utils::findIndexSession($uri, $qualityDimensions);
+            $qualityDimensions[$session_index] = $qualityDimension;
+            
+            $this->get('session')->set('qualityDimensions',$qualityDimensions);
             $this->get('session')
                 ->getFlashBag()
                 ->add('success', 'Quality dimension edited!')
-            ;            
+            ;
         }
         
         return $this->render('qualityflow/form.html.twig', array(
@@ -112,7 +122,7 @@ class QualityDimensionController extends Controller{
         
         if ($qualityDimension)
         {                          
-            $model->deleteQualityDimension($qualityDimension->getUri());
+            $model->deleteQualityDimension($qualityDimension);
             
             $qualityDimensions = $this->get('session')->get('qualityDimensions',null);
             if ($qualityDimensions)

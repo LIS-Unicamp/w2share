@@ -61,7 +61,7 @@ class QualityDimension {
             { 
                 <".$qd->getUri()."> a <w2share:QualityDimension>.
                 <".$qd->getUri()."> <w2share:qdName> '".$qd->getName()."'.
-                <".$qd->getUri()."> <w2share:valuetype> '".$qd->getValueType()."'.
+                <".$qd->getUri()."> <w2share:valueType> '".$qd->getValueType()."'.
                 <".$qd->getUri()."> <rdfs:description> '".$qd->getDescription()."'.
             }
         }";  
@@ -79,7 +79,7 @@ class QualityDimension {
             { 
                 <".$uri."> a <w2share:QualityDimension>.
                 <".$uri."> <w2share:qdName> ?name.
-                <".$uri."> <w2share:valuetype> ?valueType.
+                <".$uri."> <w2share:valueType> ?valueType.
                 <".$uri."> <rdfs:description> ?description.
             }
         }";   
@@ -87,10 +87,15 @@ class QualityDimension {
         $quality_dimension = $this->driver->getResults($query);
         
         $qualityDimension = new \AppBundle\Entity\QualityDimension();
-        $qualityDimension->setUri($uri);
-        $qualityDimension->setName($quality_dimension[0]['name']['value']);
-        $qualityDimension->setDescription($quality_dimension[0]['description']['value']);
-        $qualityDimension->setValueType($quality_dimension[0]['valueType']['value']);
+        try {
+            $qualityDimension->setUri($uri);
+            $qualityDimension->setName($quality_dimension[0]['name']['value']);
+            $qualityDimension->setDescription($quality_dimension[0]['description']['value']);
+            $qualityDimension->setValueType($quality_dimension[0]['valueType']['value']);
+        } catch (\Symfony\Component\Debug\Exception\ContextErrorException $ex) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Dimension not found!");
+        }
+        
         return $qualityDimension;
         
     }
@@ -100,11 +105,14 @@ class QualityDimension {
         return $this->driver->getResults($query);
     }
     
-    public function deleteQualityDimension($uri)
+    public function deleteQualityDimension(\AppBundle\Entity\QualityDimension $qd)
     {
         $query = $this->prefix.
-        "DELETE data FROM <".$this->driver->getDefaultGraph()."> {
-                <".$uri."> a w2share:QualityDimension.      
+        "DELETE data FROM <".$this->driver->getDefaultGraph('qualitydimension')."> {
+                <".$qd->getUri()."> a w2share:QualityDimension
+                <".$qd->getUri()."> <w2share:qdName> '".$qd->getName()."'.
+                <".$qd->getUri()."> <w2share:valueType> '".$qd->getValueType()."'.
+                <".$qd->getUri()."> <rdfs:description> '".$qd->getDescription()."'.
         }";
         return $this->driver->getResults($query);
         

@@ -26,5 +26,16 @@ class Utils {
 
          return 'http://www.lis.ic.unicamp.br/w2share/qualityflow/'.$str;
     }
+    
+    public static function findIndexSession($uri, $qualityDimensions) 
+    {
+        foreach ($qualityDimensions as $index=>$value) 
+        {
+            if ($value == $uri)
+            {
+                return $index;
+            }
+        }
+    }
 
 }

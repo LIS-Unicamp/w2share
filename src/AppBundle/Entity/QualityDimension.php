@@ -62,8 +62,6 @@ class QualityDimension {
   public function setName($name)
   {
     $this->name = $name;
-
-      return $this;
   }
 
  /**
@@ -86,8 +84,6 @@ class QualityDimension {
  public function setDescription($description)
  {
     $this->description = $description;
-
-       return $this;
  }
 
  /**
@@ -111,8 +107,6 @@ class QualityDimension {
 public function setValueType($valueType)
  {
     $this->valueType = $valueType;
-
-       return $this;
  }
 
  /**
@@ -122,7 +116,7 @@ public function setValueType($valueType)
   */
  public function getValueType()
  {
-    return $this->description;
+    return $this->valueType;
  }
 
  

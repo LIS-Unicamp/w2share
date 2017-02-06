@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * @author joana
  */
-class QualityDimensionAddType extends AbstractType
+class QualityDimensionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
