@@ -15,7 +15,18 @@
 
   <link href="{{ app.request.basepath }}/css/bootstrap.css" rel="stylesheet">
   <link href="{{ app.request.basepath }}/css/bootstrap-theme.css" rel="stylesheet">  
-  {% block stylesheets %}{% endblock %}    
+  {% block stylesheets %}{% endblock %} 
+  <style>
+    .dropdown-submenu {
+        position: relative;
+    }
+
+    .dropdown-submenu .dropdown-menu {
+        top: 0;
+        left: 100%;
+        margin-top: -1px;
+    }
+    </style>
 </head>
 <!-- Head END -->
 
@@ -35,9 +46,9 @@
                   Workflows <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
-                <li><a href="{{ path('workflow-upload') }}">Upload</a></li>
-                <li><a href="{{ path('workflows') }}">List</a></li>
-                <li><a href="{{ path('provenance-workflows') }}">Provenance</a></li>                
+                <li><a href="{{ path('workflow-upload') }}"><i class="glyphicon glyphicon-upload"></i> Upload</a></li>
+                <li><a href="{{ path('workflows') }}"><i class="glyphicon glyphicon-list"></i> List</a></li>
+                <li><a href="{{ path('provenance-workflows') }}"><i class="glyphicon glyphicon-backward"></i> Provenance</a></li>                
               </ul>
             </li>
             <li><a href="{{ path('provenance-workflows-run') }}">Provenance</a></li>
@@ -47,36 +58,68 @@
                   Quality Flow <span class="caret"></span>
               </a>
                <ul class="dropdown-menu">
-                <li><a href="{{ path('qualitydimension-add') }}">Manage Quality Dimensions</a></li>
-                <li><a href="{{ path('qualitydimensions') }}">List</a></li>
-                <li><a href="{{ path('annotatation-qualitydimension') }}"> Workflow Quality Annotation</a></li>      
-              </ul>
-            </li>
-            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        Admin <span class="caret"></span>
-                    </a>
-                     <ul class="dropdown-menu">
-                        <li><a href="{{ path('reset') }}" class="reset"><i class="glyphicon glyphicon-alert"></i> Reset Workflows & Provenance</a>
-                        <li><a href="{{ path('annotation-reset') }}" class="reset"><i class="glyphicon glyphicon-alert"></i> Reset Annotations</a></li>
+                <li class="dropdown-submenu">
+                    <a href="#"><i class="glyphicon glyphicon-cog"></i> Quality Dimension <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ path('qualitydimension-add') }}"><i class="glyphicon glyphicon-plus-sign"></i> Add</a></li>
+                        <li><a href="{{ path('qualitydimensions') }}"><i class="glyphicon glyphicon-list"></i> List</a></li>
                     </ul>
-                  </li>
-            {% endif %}
-            
+                </li>
+                <li><a href="{{ path('annotatation-qualitydimension') }}"><i class="glyphicon glyphicon-edit"></i> Workflow Quality Annotation</a></li>      
+              </ul>
+            </li>                        
           </ul>
           <ul class="nav navbar-nav navbar-right">
               <li>
                   {{ render(controller('AppBundle:Provenance:concepts', { 'query':app.request.get('query'), 'concept':app.request.get('concept') } )) }}
               </li>
           </ul>
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+          <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-user"></span>
+                        <strong>{{ app.user.name|split(' ')[0] }}</strong>
+                        <span class="glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul class="dropdown-menu" style="width:300px">
+                        <li>
+                            <div class="navbar-login">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <p class="text-center">
+                                            <span class="glyphicon glyphicon-user icon-size"></span>
+                                        </p>
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <p class="text-left"><strong>{{ app.user.name }}</strong></p>
+                                        <p class="text-left small">{{ app.user.email }}</p>
+                                        <p class="text-left">
+                                            <a href="#" class="btn btn-primary btn-block btn-sm">Profile</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="divider navbar-login-session-bg"></li>
+                        <li><a href="#">Account Settings <span class="glyphicon glyphicon-cog pull-right"></span></a></li>
+                        <li class="divider"></li>
+                        <li>Reset</li>
+                        <li><a href="{{ path('reset') }}" class="reset">Workflows & Provenance <span><i class="glyphicon glyphicon-alert pull-right"></i></span></a>
+                        <li><a href="{{ path('annotation-reset') }}" class="reset">Annotations <span><i class="glyphicon glyphicon-alert pull-right"></i></span></a></li>
+                        <li class="divider"></li>
+                        <li><a href="{{ path('logout') }}">Log Out <span class="glyphicon glyphicon-log-out pull-right"></span></a></li>
+                    </ul>
+                </li>
+            </ul>
+          {% endif %}
         </div><!--/.nav-collapse -->
       </div>
     </nav>
     <div class="container">
         {% block body %}{% endblock %}
         <footer class="margin">
-            <p>&copy; Laboratory of Information Systems (LIS) - UNICAMP 2016                         
+            <p>&copy; 2017 <a href="http://www.lis.ic.unicamp.br">Laboratory of Information Systems (LIS)</a> - <a href="http://www.unicamp.br">UNICAMP</a>
             </p>
         </footer>
     </div>
@@ -93,6 +136,12 @@ $(document).ready(function(){
         if (confirm("Are you sure you want to delete permanently all data?")) {
             location.href=$(this).attr('href');
         }
+    });
+    
+    $('.dropdown-submenu > a').on("click", function(e){
+        $(this).next('ul').toggle();
+        e.stopPropagation();
+        e.preventDefault();
     });
 });
 </script>

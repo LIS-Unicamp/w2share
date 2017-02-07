@@ -23,7 +23,8 @@ class UserProvider implements UserProviderInterface
     
     public function loadUserByUsername($username)
     {
-        $user = new \AppBundle\Entity\Person();        
+        $user = new \AppBundle\Entity\Person();   
+        $user->setName("Lucas Carvalho");
         $user->setEmail('lucas.carvalho@ic.unicamp.br');
         
         $factory = $this->container->get('security.encoder_factory');
