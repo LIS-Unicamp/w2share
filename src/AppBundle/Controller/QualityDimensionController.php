@@ -89,7 +89,8 @@ class QualityDimensionController extends Controller{
                 
         if ($form->isValid()) 
         {           
-            $model->deleteQualityDimension($qualityDimension_temp);
+            //$model->deleteQualityDimension($qualityDimension_temp);
+            //$model->insertQualityDimension($qualityDimension);
             $model->insertQualityDimension($qualityDimension);
             
             $session_index = \AppBundle\Utils\Utils::findIndexSession($uri, $qualityDimensions);

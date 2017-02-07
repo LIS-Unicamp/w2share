@@ -121,10 +121,28 @@ class QualityDimension
 
     public function updateQualityDimension(\AppBundle\Entity\QualityDimension $qd) 
     {        
-        $query = "UPDATE AppBundle:QualityDimension tqd"
-                . "SET tqd->name = ?, tqd->description = ?, tqd->type = ?"
-                . "WHERE tqd->name = $qd->name";
-        $query->setParameter(3, $qd->name, $qd->description, $qd->type);
+        $this->deleteQualityDimension($qd);
+        
+        $uri = Utils::convertNameToUri("Quality Dimension", $qd->getName());
+        $qd->setUri($uri);
+        $query = 
+        "INSERT        
+        { 
+            GRAPH <".$this->driver->getDefaultGraph('qualitydimension')."> 
+            { 
+                <".$qd->getUri()."> a <w2share:QualityDimension>.
+                <".$qd->getUri()."> <w2share:qdName> '".$qd->getName()."'.
+                <".$qd->getUri()."> <w2share:valueType> '".$qd->getValueType()."'.
+                <".$qd->getUri()."> <rdfs:description> '".$qd->getDescription()."'.
+            }
+            WHERE 
+            { 
+                <".$qd->getUri()."> a <w2share:QualityDimension>.
+                <".$qd->getUri()."> <w2share:qdName> ?name.
+                <".$qd->getUri()."> <w2share:valueType> ?valueType.
+                <".$qd->getUri()."> <rdfs:description> ?description.
+            }
+        }";
         return $this->driver->getResults($query);
         
     }
