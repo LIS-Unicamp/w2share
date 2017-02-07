@@ -26,7 +26,7 @@ class Security
         $password = $encoder->encodePassword($user->getPassword(), $user->getSalt());
         $user->setPassword($password);
         
-        $uri = Utils::convertNameToUri("Quality Dimension", $user->getName());
+        $uri = Utils::convertNameToUri("Security", $user->getName());
         $user->setUri($uri);
         
         $query = 

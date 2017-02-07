@@ -8,5 +8,6 @@
 /composer.phar
 /vendor/*
 /web/bundles/
+/app/sessions/*
 /web/uploads/
 /nbproject/private/
