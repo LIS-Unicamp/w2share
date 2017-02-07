@@ -10,6 +10,12 @@ services:
         tags:
             - { name: twig.extension }
             
+    app.twig.extension:
+        class: AppBundle\Twig\Extension\PaginationExtension
+        arguments: [@knp_paginator.helper.processor]
+        tags:
+        - { name: twig.extension }
+            
     app.odbc_driver:
         class: AppBundle\Utils\Driver
         arguments: ["VOS", "dba", "lucas"]

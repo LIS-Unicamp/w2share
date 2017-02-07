@@ -1,0 +1,1 @@
+<th class="sorting{% if app.request.get('sort') == coluna and app.request.get('direction') %}_{{ app.request.get('direction') }}{% endif %}" {{ classe }} style="{{ style }}"> {{ knp_pagination_sortable(pagination, nome, coluna) }}</th>

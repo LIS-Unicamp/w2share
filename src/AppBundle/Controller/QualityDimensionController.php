@@ -19,13 +19,18 @@ class QualityDimensionController extends Controller{
     public function indexAction(Request $request)
     {         
         $model = $this->get('model.qualitydimension');
-        $qualityDimensions = $model->findAllQualityDimensions();
+        $query = $model->findAllQualityDimensions();
         
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1)/*page number*/,
+            2/*limit per page*/
+        );
         
-       return $this->render('qualityflow/list-qualitydimension.html.twig', array(
-            'qualityDimensions' => $qualityDimensions
-        ));
-       
+        return $this->render('qualityflow/list-qualitydimension.html.twig', array(
+            'pagination' => $pagination
+        ));       
     }
 
     /**
