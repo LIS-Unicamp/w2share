@@ -7,8 +7,8 @@ namespace AppBundle\Utils;
  * and open the template in the editor.
  */
 
-class Utils {
-
+class Utils 
+{    
     private static function friendlyURL($str, $delimiter='-') 
     {
        setlocale(LC_ALL, 'en_US.UTF8');
@@ -24,7 +24,7 @@ class Utils {
     {
          $str = self::friendlyURL($module).'/'.self::friendlyURL($name);
 
-         return 'http://www.lis.ic.unicamp.br/w2share/qualityflow/'.$str;
+         return 'http://www.lis.ic.unicamp.br/w2share/'.$str;
     }
     
     public static function findIndexSession($uri, $qualityDimensions) 

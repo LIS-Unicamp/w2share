@@ -24,6 +24,11 @@ class Person implements AdvancedUserInterface, EquatableInterface, \Serializable
      * @var string
      */
     private $password;
+    
+    /**
+     * @var string
+     */
+    private $homepage;
 
     /**
      * @var string
@@ -76,6 +81,18 @@ class Person implements AdvancedUserInterface, EquatableInterface, \Serializable
         return $this->email;
     }
     
+    public function setHomepage($homepage)
+    {
+        $this->homepage = $homepage;
+        
+        return $this;
+    }
+    
+    public function getHomepage()
+    {
+        return $this->homepage;
+    }
+    
 
     /**
      * Set salt
@@ -125,6 +142,7 @@ class Person implements AdvancedUserInterface, EquatableInterface, \Serializable
             $this->email,
             $this->salt,
             $this->name,
+            $this->homepage,
         ));
     }
 
@@ -138,6 +156,7 @@ class Person implements AdvancedUserInterface, EquatableInterface, \Serializable
             $this->email,
             $this->salt,
             $this->name,
+            $this->homepage,
         ) = unserialize($serialized);
     }
     

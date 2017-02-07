@@ -13,33 +13,10 @@ use AppBundle\Utils\Utils;
  *
  * @author joana
  */
-class QualityDimension {
+class QualityDimension 
+{
     private $driver;
-    
-    private $prefix = "
-    prefix dc:  <http://purl.org/dc/elements/1.1/>
-    prefix prov:  <http://www.w3.org/ns/prov#>
-    prefix cnt:  <http://www.w3.org/2011/content#>
-    prefix foaf:  <http://xmlns.com/foaf/0.1/>
-    prefix dcmitype:  <http://purl.org/dc/dcmitype/>
-    prefix wfprov:  <http://purl.org/wf4ever/wfprov#>
-    prefix dcam:  <http://purl.org/dc/dcam/>
-    prefix xml:  <http://www.w3.org/XML/1998/namespace>
-    prefix vs:  <http://www.w3.org/2003/06/sw-vocab-status/ns#>
-    prefix dcterms:  <http://purl.org/dc/terms/>
-    prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
-    prefix wot:  <http://xmlns.com/wot/0.1/>
-    prefix wfdesc:  <http://purl.org/wf4ever/wfdesc#>
-    prefix dct:  <http://purl.org/dc/terms/>
-    prefix tavernaprov:  <http://ns.taverna.org.uk/2012/tavernaprov/>
-    prefix owl:  <http://www.w3.org/2002/07/owl#>
-    prefix xsd:  <http://www.w3.org/2001/XMLSchema#>
-    prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    prefix skos:  <http://www.w3.org/2004/02/skos/core#>
-    prefix scufl2:  <http://ns.taverna.org.uk/2010/scufl2#>
-    prefix oa:      <http://www.w3.org/ns/oa#>
-    prefix w2share: <http://www.lis.ic.unicamp.br/w2share/qualityflow#>";
-    
+        
     public function __construct($driver)
     {
         $this->driver = $driver;
@@ -54,7 +31,7 @@ class QualityDimension {
     { 
         $uri = Utils::convertNameToUri("Quality Dimension", $qd->getName());
         $qd->setUri($uri);
-        $query = $this->prefix.
+        $query = 
         "INSERT        
         { 
             GRAPH <".$this->driver->getDefaultGraph('qualitydimension')."> 
@@ -66,13 +43,12 @@ class QualityDimension {
             }
         }";  
 
-        return $this->driver->getResults($query);
-        
+        return $this->driver->getResults($query);        
     }
     
     public function findOneQualityDimension($uri) 
     { 
-        $query = $this->prefix.
+        $query = 
         "SELECT * WHERE        
         { 
             GRAPH <".$this->driver->getDefaultGraph('qualitydimension')."> 
@@ -96,13 +72,12 @@ class QualityDimension {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Dimension not found!");
         }
         
-        return $qualityDimension;
-        
+        return $qualityDimension;        
     }
     
     public function findAllQualityDimensions() 
     {
-        $query = $this->prefix.
+        $query = 
         "SELECT * WHERE 
         {
             GRAPH <".$this->driver->getDefaultGraph('qualitydimension')."> 
@@ -115,9 +90,7 @@ class QualityDimension {
         }";
         
         $quality_dimension_array = array();
-        $quality_dimensions = $this->driver->getResults($query);
-        
-        
+        $quality_dimensions = $this->driver->getResults($query);                
         
         for ($i = 0; $i < count($quality_dimensions); $i++)
         {
@@ -135,7 +108,7 @@ class QualityDimension {
     
     public function deleteQualityDimension(\AppBundle\Entity\QualityDimension $qd)
     {
-        $query = $this->prefix.
+        $query = 
         "DELETE data FROM <".$this->driver->getDefaultGraph('qualitydimension')."> {
                 <".$qd->getUri()."> a w2share:QualityDimension
                 <".$qd->getUri()."> <w2share:qdName> '".$qd->getName()."'.

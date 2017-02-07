@@ -9,29 +9,7 @@ namespace AppBundle\Model;
 class Provenance 
 {
     private $driver;
-    
-    private $prefix = "
-    prefix dc:  <http://purl.org/dc/elements/1.1/>
-    prefix prov:  <http://www.w3.org/ns/prov#>
-    prefix cnt:  <http://www.w3.org/2011/content#>
-    prefix foaf:  <http://xmlns.com/foaf/0.1/>
-    prefix dcmitype:  <http://purl.org/dc/dcmitype/>
-    prefix wfprov:  <http://purl.org/wf4ever/wfprov#>
-    prefix dcam:  <http://purl.org/dc/dcam/>
-    prefix xml:  <http://www.w3.org/XML/1998/namespace>
-    prefix vs:  <http://www.w3.org/2003/06/sw-vocab-status/ns#>
-    prefix dcterms:  <http://purl.org/dc/terms/>
-    prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
-    prefix wot:  <http://xmlns.com/wot/0.1/>
-    prefix wfdesc:  <http://purl.org/wf4ever/wfdesc#>
-    prefix dct:  <http://purl.org/dc/terms/>
-    prefix tavernaprov:  <http://ns.taverna.org.uk/2012/tavernaprov/>
-    prefix owl:  <http://www.w3.org/2002/07/owl#>
-    prefix xsd:  <http://www.w3.org/2001/XMLSchema#>
-    prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    prefix skos:  <http://www.w3.org/2004/02/skos/core#>
-    prefix scufl2:  <http://ns.taverna.org.uk/2010/scufl2#>";
-    
+        
     public function __construct($driver)
     {
         $this->driver = $driver;
@@ -65,7 +43,6 @@ class Provenance
     public function deleteWorkflow($workflow_uri)
     {
         $query = "
-            $this->prefix  
             DELETE data FROM <".$this->driver->getDefaultGraph()."> {
                 <".$workflow_uri."> rdf:type wfdesc:Workflow.                
             }
@@ -76,7 +53,6 @@ class Provenance
     public function workflows()
     {
         $query = "
-            $this->prefix
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 ?workflow rdf:type wfdesc:Workflow.
                 OPTIONAL { ?workflow dcterms:description ?description. }
@@ -90,7 +66,6 @@ class Provenance
     public function concepts()
     {
         $query = "
-            $this->prefix
             select distinct ?concept ?label where { GRAPH <".$this->driver->getDefaultGraph()."> {
             {
                 [] a ?concept.
@@ -108,7 +83,6 @@ class Provenance
     public function query($query, $concept)
     {
         $query2 = "
-            $this->prefix
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 {
                     ?title a <".$concept.">
@@ -126,7 +100,6 @@ class Provenance
     public function workflowsRun()
     {
         $query = "
-        $this->prefix 
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 ?workflowRun rdf:type wfprov:WorkflowRun.
                 ?workflowRun rdfs:label ?label.
@@ -148,7 +121,6 @@ class Provenance
     public function workflowRun($workflow_run)
     {
         $query = "
-            $this->prefix 
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 ?processRun wfprov:describedByProcess ?process.
                 ?processRun a wfprov:ProcessRun.
@@ -166,7 +138,6 @@ class Provenance
     public function workflowRuns($workflow)
     {
         $query = "
-            $this->prefix  
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 ?workflowRun wfprov:describedByWorkflow <$workflow>.
                 ?workflowRun prov:endedAtTime ?endedAtTime.
@@ -181,7 +152,6 @@ class Provenance
     {
         // process information
         $query = "
-            $this->prefix  
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <$workflow> dct:hasPart ?process.
                 ?process a wfdesc:Process.
@@ -198,7 +168,6 @@ class Provenance
     {
         // inputs information
         $query = "
-            $this->prefix 
             SELECT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <".$workflow."> a wfdesc:Workflow;
                 wfdesc:hasInput ?input.
@@ -214,7 +183,6 @@ class Provenance
     {
         // outputs information
         $query = "
-            $this->prefix 
             SELECT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <".$workflow."> a wfdesc:Workflow;
                 wfdesc:hasOutput ?output.
@@ -230,7 +198,6 @@ class Provenance
     {
         // Process information
         $query = "
-            $this->prefix 
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 ?processRun wfprov:describedByProcess <".$process.">.
                 ?processRun a wfprov:ProcessRun.
@@ -248,7 +215,6 @@ class Provenance
     {
         // inputs information
         $query = "
-            $this->prefix 
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 ?processRun wfprov:describedByProcess <".$process.">.
                 ?processRun a wfprov:ProcessRun.
@@ -266,7 +232,6 @@ class Provenance
     {
         // outputs information
         $query = "
-            $this->prefix 
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 ?processRun wfprov:describedByProcess <".$process.">.
                 ?processRun a wfprov:ProcessRun.
@@ -284,7 +249,6 @@ class Provenance
     {
         // outputs information
         $query = "
-            $this->prefix 
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <".$process."> a wfdesc:Process;
                 wfdesc:hasOutput ?output.
@@ -299,7 +263,6 @@ class Provenance
     public function processInputs($process)
     {
         $query = "
-            $this->prefix 
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <".$process."> a wfdesc:Process;
                 wfdesc:hasInput ?input.
@@ -314,7 +277,6 @@ class Provenance
     public function process($process)
     {
         $query = "
-            $this->prefix 
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <".$process."> a wfdesc:Process.
                 ?workflow wfdesc:hasSubProcess <".$process.">.

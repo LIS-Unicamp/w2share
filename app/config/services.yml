@@ -36,6 +36,10 @@ services:
         class: AppBundle\Model\QualityDimension
         arguments: ["@app.rest_api"] 
         
+    model.security:
+        class: AppBundle\Model\Security
+        arguments: [@app.rest_api, @service_container] 
+        
     model.yesworkflow:
         class: AppBundle\Model\YesWorkflow
                     
