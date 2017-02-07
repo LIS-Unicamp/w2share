@@ -21,6 +21,20 @@ class WorkflowController extends Controller
         ));
     }
     
+     /**
+     * @Route("/workflow/reset", name="workflow-reset")
+     */
+    public function resetAction(Request $request)
+    {                                   
+        $root_path = $this->get('kernel')->getRootDir();
+
+        $model_workflow = $this->get('model.workflow'); 
+        $model_workflow->clearDB();
+        $model_workflow->clearUploads($root_path);
+                    
+        return $this->redirect($this->generateUrl('workflows'));
+    }     
+    
     /**
      * @Route("/workflow/upload", name="workflow-upload")
      */

@@ -140,4 +140,15 @@ class QualityDimensionController extends Controller{
         
     }
     
+    /**
+     * @Route("/qualitydimension/reset", name="qualitydimension-reset")
+     */
+    public function resetAction(Request $request)
+    {                   
+        $model_provenance = $this->get('model.qualitydimension');         
+        $model_provenance->clearGraph();                
+                    
+        return $this->redirect($this->generateUrl('qualitydimensions'));
+    }  
+    
 }

@@ -94,4 +94,10 @@ class Security
         
         return $user;
     }
+    
+    public function clearGraph()
+    {
+        $query = "CLEAR GRAPH <".$this->driver->getDefaultGraph('security').">";        
+        return $this->driver->getResults($query);                  
+    }
 }

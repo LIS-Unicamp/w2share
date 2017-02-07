@@ -122,9 +122,11 @@
                         <li class="divider navbar-login-session-bg"></li>
                         <li><a href="#">Account Settings <span class="glyphicon glyphicon-cog pull-right"></span></a></li>
                         <li class="divider"></li>
-                        <li>Reset</li>
-                        <li><a href="{{ path('reset') }}" class="reset">Workflows & Provenance <span><i class="glyphicon glyphicon-alert pull-right"></i></span></a>
-                        <li><a href="{{ path('annotation-reset') }}" class="reset">Annotations <span><i class="glyphicon glyphicon-alert pull-right"></i></span></a></li>
+                        <li><a href="#">Reset <span><i class="glyphicon glyphicon-alert pull-right"></i></span></a></li>
+                        <li><a href="{{ path('workflow-reset') }}" class="reset">Workflows</a></li>
+                        <li><a href="{{ path('provenance-reset') }}" class="reset">Provenance </a></li>
+                        <li><a href="{{ path('annotation-reset') }}" class="reset">Annotations </a></li>
+                        <li><a href="{{ path('qualitydimension-reset') }}" class="reset">Quality Dimensions </a></li>
                         <li class="divider"></li>
                         <li><a href="{{ path('logout') }}">Log Out <span class="glyphicon glyphicon-log-out pull-right"></span></a></li>
                     </ul>

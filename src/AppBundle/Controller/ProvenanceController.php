@@ -27,6 +27,17 @@ class ProvenanceController extends Controller
     }
     
     /**
+     * @Route("/provenance/reset", name="provenance-reset")
+     */
+    public function resetAction(Request $request)
+    {                   
+        $model_provenance = $this->get('model.provenance');         
+        $model_provenance->clearGraph();                
+                    
+        return $this->redirect($this->generateUrl('provenance-workflows'));
+    }     
+    
+    /**
      * @Route("/provenance/query", name="provenance-query")
      */
     public function queryAction(Request $request)

@@ -100,12 +100,7 @@ class Annotation
     
     public function insertQualityAnnotation($qd, $value)
     {
-       $rsm = new ResultSetMapping();
-       //TODO: devem ser passados tanto o valor como o id da qualitydimension
-       $query = $this->em->createNativeQuery('INSERT INTO AppBundle:QualityAnnotation'
-                                               . ' VALUES (?)', $rsm);
-       $query->setParameter(1, 'foo');
-       #$result = $query->getResult();
+       $query = '';
         
        return $this->driver->getResults($query);
     }

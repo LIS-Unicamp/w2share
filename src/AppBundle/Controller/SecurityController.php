@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\SecurityContext;
 
@@ -28,5 +29,16 @@ class SecurityController extends Controller
                 'error'         => $error,
             )
         );
-    }        
+    } 
+    
+    /**
+     * @Route("/security/reset", name="security-reset")
+     */
+    public function resetAction(Request $request)
+    {                   
+        $model_provenance = $this->get('model.security');         
+        $model_provenance->clearGraph();                
+                    
+        return $this->redirect($this->generateUrl('logout'));
+    }   
 }

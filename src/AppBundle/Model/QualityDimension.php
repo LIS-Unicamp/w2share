@@ -129,4 +129,10 @@ class QualityDimension
         
     }
     
+    public function clearGraph()
+    {
+        $query = "CLEAR GRAPH <".$this->driver->getDefaultGraph('qualitydimension').">";        
+        return $this->driver->getResults($query);                  
+    }
+    
 }
