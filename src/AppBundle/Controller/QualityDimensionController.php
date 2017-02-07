@@ -47,7 +47,8 @@ class QualityDimensionController extends Controller{
                 
         if ($form->isValid()) 
         {  
-            $model->insertQualityDimension($qualityDimension);
+            $user = $this->getUser();
+            $model->insertQualityDimension($qualityDimension, $user);
             $this->get('session')
                 ->getFlashBag()
                 ->add('success', 'Quality Dimension added!')
@@ -78,21 +79,17 @@ class QualityDimensionController extends Controller{
         $model = $this->get('model.qualitydimension'); 
         $uri = urldecode($qualitydimension_uri);
         $qualityDimension = $model->findOneQualityDimension($uri);
-        $qualityDimension_temp = clone $qualityDimension;
-        
-        //Remove qualityDimension from the session variable
-        $qualityDimensions = $this->get('session')->get('qualityDimensions');
-        
+              
         $form = $this->createForm(new \AppBundle\Form\QualityDimensionType(), $qualityDimension);
         
         $form->handleRequest($request);
                 
         if ($form->isValid()) 
         {           
-            //$model->deleteQualityDimension($qualityDimension_temp);
-            //$model->insertQualityDimension($qualityDimension);
-            $model->insertQualityDimension($qualityDimension);
+            $model->updateQualityDimension($qualityDimension);
             
+            //Remove qualityDimension from the session variable
+            $qualityDimensions = $this->get('session')->get('qualityDimensions');
             $session_index = \AppBundle\Utils\Utils::findIndexSession($uri, $qualityDimensions);
             $qualityDimensions[$session_index] = $qualityDimension;
             

@@ -27,7 +27,7 @@ class QualityDimension
         $this->em->createQuery('DELETE FROM AppBundle:QualityDimension')->execute();
     }
     
-    public function insertQualityDimension(\AppBundle\Entity\QualityDimension $qd) 
+    public function insertQualityDimension(\AppBundle\Entity\QualityDimension $qd, $user) 
     { 
         $uri = Utils::convertNameToUri("Quality Dimension", $qd->getName());
         $qd->setUri($uri);
@@ -40,8 +40,9 @@ class QualityDimension
                 <".$qd->getUri()."> <w2share:qdName> '".$qd->getName()."'.
                 <".$qd->getUri()."> <w2share:valueType> '".$qd->getValueType()."'.
                 <".$qd->getUri()."> <rdfs:description> '".$qd->getDescription()."'.
+                <".$qd->getUri()."> <dc:creator> <".$user->getUri().">. 
             }
-        }";  
+        }"; 
 
         return $this->driver->getResults($query);        
     }
@@ -106,6 +107,67 @@ class QualityDimension
         return $quality_dimension_array;
     }
     
+    /*
+     * Find quality dimensions from an specific user
+     */
+    public function findQualityDimensionsByUser($user) 
+    {
+        $query = 
+        "SELECT * WHERE 
+        {
+            GRAPH <".$this->driver->getDefaultGraph('qualitydimension')."> 
+             {
+                ?uri a <w2share:QualityDimension>;
+                <w2share:qdName> ?name;
+                <w2share:valueType> ?valueType;
+                <rdfs:description> ?description;
+                <dc:creator> <".$user->getUri().">.   
+            }
+        }";
+        
+        $quality_dimension_array = array();
+        $quality_dimensions = $this->driver->getResults($query);                
+        
+        for ($i = 0; $i < count($quality_dimensions); $i++)
+        {
+            $qualityDimension = new \AppBundle\Entity\QualityDimension();
+            $qualityDimension->setUri($quality_dimensions[$i]['uri']['value']);
+            $qualityDimension->setName($quality_dimensions[$i]['name']['value']);
+            $qualityDimension->setDescription($quality_dimensions[$i]['description']['value']);
+            $qualityDimension->setValueType($quality_dimensions[$i]['valueType']['value']);
+            
+            $quality_dimension_array[] = $qualityDimension;  
+        }
+        
+        return $quality_dimension_array;
+    }
+    //TO-DO: Consulta com multiplos grafos
+    public function findUsersWithQualityDimensions()  
+    {
+        $query = 
+        "SELECT * WHERE 
+        {     
+           ?element a <w2share:QualityDimension>;
+           <dc:creator> ?creator.
+           ?creator <foaf:name> ?name.
+           
+        }";
+        
+        $user_array = array();
+        $user_quality_dimensions = $this->driver->getResults($query);                
+        
+        for ($i = 0; $i < count($user_quality_dimensions); $i++)
+        {
+            $person = new \AppBundle\Entity\Person();
+            $person->setUri($user_quality_dimensions[$i]['creator']['value']);
+            $person->setName($user_quality_dimensions[$i]['name']['value']);
+            $user_array[] = $person;
+        }
+        
+        return $user_array;
+        
+    }
+    
     public function deleteQualityDimension(\AppBundle\Entity\QualityDimension $qd)
     {
         $query = 
@@ -121,14 +183,20 @@ class QualityDimension
 
     public function updateQualityDimension(\AppBundle\Entity\QualityDimension $qd) 
     {        
-        $this->deleteQualityDimension($qd);
+        //$this->deleteQualityDimension($qd);
         
         $uri = Utils::convertNameToUri("Quality Dimension", $qd->getName());
         $qd->setUri($uri);
         $query = 
-        "INSERT        
-        { 
-            GRAPH <".$this->driver->getDefaultGraph('qualitydimension')."> 
+        "   MODIFY <".$this->driver->getDefaultGraph('qualitydimension')."> 
+            DELETE 
+            { 
+                <".$qd->getUri()."> a <w2share:QualityDimension>.
+                <".$qd->getUri()."> <w2share:qdName> ?name.
+                <".$qd->getUri()."> <w2share:valueType> ?valueType.
+                <".$qd->getUri()."> <rdfs:description> ?description.
+            }
+            INSERT        
             { 
                 <".$qd->getUri()."> a <w2share:QualityDimension>.
                 <".$qd->getUri()."> <w2share:qdName> '".$qd->getName()."'.
@@ -141,8 +209,8 @@ class QualityDimension
                 <".$qd->getUri()."> <w2share:qdName> ?name.
                 <".$qd->getUri()."> <w2share:valueType> ?valueType.
                 <".$qd->getUri()."> <rdfs:description> ?description.
-            }
-        }";
+            }";
+        
         return $this->driver->getResults($query);
         
     }

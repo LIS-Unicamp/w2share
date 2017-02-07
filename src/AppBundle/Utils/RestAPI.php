@@ -77,7 +77,7 @@ class RestAPI
        
         $searchUrl = $this->getDomainSPAQL().'?'
           //.'default-graph-uri='.urlencode($default_graph)
-          .'query='.urlencode($this->prefix.' '.$query)
+          .'query='.urlencode($query)
           .'&format='.$format;
         
         $results = json_decode(self::request($searchUrl),true); 
@@ -86,10 +86,11 @@ class RestAPI
     
     public function getResults($query, $print = false)
     {       
-       $results = self::getQuery($query);
+       $results = self::getQuery($this->prefix.' '.$query);
        
        if ($print == true)
        {
+           echo $this->prefix."\n".$query."\n";
            echo self::printArray($results);
        }
 
