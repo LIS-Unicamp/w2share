@@ -39,6 +39,7 @@ class Security
                 <".$user->getUri()."> <foaf:name> '".$user->getName()."'.
                 <".$user->getUri()."> <foaf:homepage> '".$user->getHomepage()."'.
                 <".$user->getUri()."> <w2share:hasPassword> '".$user->getPassword()."'.
+                <".$user->getUri()."> <w2share:hasSalt> '".$user->getSalt()."'.
             }
         }";  
 
@@ -58,7 +59,8 @@ class Security
                 <foaf:name> ?name;
                 <foaf:mbox> '".$username."';
                 <foaf:homepage> ?homepage;
-                <w2share:hasPassword> ?password.
+                <w2share:hasPassword> ?password;
+                <w2share:hasSalt> ?salt.
             }
         }";   
         
@@ -71,6 +73,7 @@ class Security
             $user->setEmail($username);
             $user->setPassword($user_array[0]['password']['value']);
             $user->setHomepage($user_array[0]['homepage']['value']);
+            $user->setSalt($user_array[0]['salt']['value']);
         } 
         catch (\Symfony\Component\Debug\Exception\ContextErrorException $ex) 
         {
@@ -78,7 +81,7 @@ class Security
             {
                 $user->setName("Lucas Carvalho");
                 $user->setEmail('lucas.carvalho@ic.unicamp.br');
-                $user->setPassword('123123');
+                $user->setPassword('123123');                
                 $user->setHomepage('http://www.lis.ic.unicamp.br/~lucascarvalho/');
             }
             else

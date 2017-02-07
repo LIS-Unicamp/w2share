@@ -34,10 +34,10 @@ class SecurityController extends Controller
     /**
      * @Route("/security/reset", name="security-reset")
      */
-    public function resetAction(Request $request)
+    public function resetAction()
     {                   
-        $model_provenance = $this->get('model.security');         
-        $model_provenance->clearGraph();                
+        $model = $this->get('model.security');         
+        $model->clearGraph();                
                     
         return $this->redirect($this->generateUrl('logout'));
     }   
