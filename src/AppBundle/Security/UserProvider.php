@@ -14,19 +14,25 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
  */
 class UserProvider implements UserProviderInterface
 {    
+    private $container;
+    
+    public function __construct(\Symfony\Component\DependencyInjection\ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
     
     public function loadUserByUsername($username)
     {
         $user = new \AppBundle\Entity\Person();        
         $user->setEmail('lucas.carvalho@ic.unicamp.br');
-        $user->setPassword('123123');
         
-        $factory = $this->get('security.encoder_factory');
-            $encoder = $factory->getEncoder($pessoa);
-            $password = $encoder->encodePassword($senha, $pessoa->getSalt());
-            $pessoa->setSenha($password);
+        $factory = $this->container->get('security.encoder_factory');
+        $encoder = $factory->getEncoder($user);
+        $password = $encoder->encodePassword('123123', $user->getSalt());
+        $user->setPassword($password);
         
-        if (null === $user) {
+        if (null === $user) 
+        {
             $message = sprintf(
                 'Unable to find an active admin AppBundle:User object identified by "%s".',
                 $username
@@ -39,7 +45,7 @@ class UserProvider implements UserProviderInterface
     public function refreshUser(UserInterface $user)
     {
         $class = get_class($user);
-        if (!$this->supportsClass($class)) {
+        if ($class instanceof \AppBundle\Entity\Person) {
             throw new UnsupportedUserException(
                 sprintf(
                     'Instances of "%s" are not supported.',
@@ -49,11 +55,10 @@ class UserProvider implements UserProviderInterface
         }
 
         return $this->loadUserByUsername($user->getUsername());
-    }
-
+    }  
+    
     public function supportsClass($class)
     {
-        return $this->getEntityName() === $class
-            || is_subclass_of($class, $this->getEntityName());
+        return \AppBundle\Entity\Person === $class;
     }
 }

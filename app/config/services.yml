@@ -41,6 +41,7 @@ services:
                     
     app.user_provider:
         class: AppBundle\Security\UserProvider
+        arguments: [ @service_container ]
         
     authentication_handler:
         class: AppBundle\Security\AuthenticationHandler
