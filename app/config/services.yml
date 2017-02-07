@@ -30,7 +30,11 @@ services:
         
     model.annotation:
         class: AppBundle\Model\Annotation
-        arguments: ["@app.rest_api"]          
+        arguments: ["@app.rest_api"]   
+        
+    model.qualitydimension:
+        class: AppBundle\Model\QualityDimension
+        arguments: ["@app.rest_api"] 
         
     model.yesworkflow:
         class: AppBundle\Model\YesWorkflow

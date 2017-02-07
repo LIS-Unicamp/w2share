@@ -54,8 +54,7 @@ class Provenance
         //$load = "curl -T myfoaf.rdf http://demo.openlinksw.com/DAV/home/demo/rdf_sink/myfoaf.rdf -u demo:demo";
         
         //$this->driver->load($file_path);
-        $query = "LOAD <http://".$this->driver->getDomain()."/uploads/documents/".basename($file_path)."> INTO graph <".$this->driver->getDefaultGraph().">";
-
+        $query = "LOAD <http://".$this->driver->getDomain()."/phd-prototype/web/uploads/documents/".basename($file_path)."> INTO graph <".$this->driver->getDefaultGraph().">";
         $this->driver->getResults($query);
     }
     

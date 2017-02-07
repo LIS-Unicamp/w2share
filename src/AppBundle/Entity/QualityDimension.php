@@ -11,9 +11,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class QualityDimension {
 
   /**
-   * @var integer
+   * @var string
    */
-    private $id;   
+    private $uri;   
     
   /**
    * @var string
@@ -36,10 +36,20 @@ class QualityDimension {
  *
  * @return integer
  */
- public function getId()
+ public function getUri()
  {
-        return $this->id;
- }     
+        return $this->uri;
+ }    
+
+/**
+ * Get id
+ *
+ * @return integer
+ */
+ public function setUri($uri)
+ {
+        $this->uri = $uri;
+ }   
  
  
 /**
@@ -52,8 +62,6 @@ class QualityDimension {
   public function setName($name)
   {
     $this->name = $name;
-
-      return $this;
   }
 
  /**
@@ -76,8 +84,6 @@ class QualityDimension {
  public function setDescription($description)
  {
     $this->description = $description;
-
-       return $this;
  }
 
  /**
@@ -101,8 +107,6 @@ class QualityDimension {
 public function setValueType($valueType)
  {
     $this->valueType = $valueType;
-
-       return $this;
  }
 
  /**
@@ -112,7 +116,7 @@ public function setValueType($valueType)
   */
  public function getValueType()
  {
-    return $this->description;
+    return $this->valueType;
  }
 
  

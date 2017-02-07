@@ -13,7 +13,7 @@ class QualityAnnotationAddType extends AbstractType
             ->add('value', 'text', array('label' => 'Value'))
             ->add('save', 'submit', array(
                     'label' => 'Add',
-                    'attr' => array('class' => 'btn blue')
+                    'attr' => array('class' => 'btn btn-primary')
                 ))
         ;
     }

@@ -47,8 +47,9 @@
                   Quality Flow <span class="caret"></span>
               </a>
                <ul class="dropdown-menu">
-                <li><a href="{{ path('qualitydimension-add') }}">Quality Dimensions</a></li>
-                <li><a href="{{ path('annotatation-qualitydimension') }}">Annotations</a></li>      
+                <li><a href="{{ path('qualitydimension-add') }}">Manage Quality Dimensions</a></li>
+                <li><a href="{{ path('qualitydimensions') }}">List</a></li>
+                <li><a href="{{ path('annotatation-qualitydimension') }}"> Workflow Quality Annotation</a></li>      
               </ul>
             </li>
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}

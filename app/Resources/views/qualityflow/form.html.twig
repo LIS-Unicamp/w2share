@@ -1,39 +1,9 @@
 {% extends 'base.html.twig' %}
 {% block title %}Add Quality Dimension{% endblock %}
-{% block body %}    
-<div class="dropdown">
-  <button class="btn btn-primary dropdown-toggle"
-          type="button" data-toggle="dropdown">Select workflow <span class="caret"></span></button>
-  
-    <ul class="dropdown-menu">
-      {% for wf in workflows %} 
-        <li value=""><a href="#">{{ wf.title }}</a>  </li>
-      {% endfor %}
-    </ul>
-</div>
+{% block body %}
 
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <!--<th style="width:100px">Action</th>-->
-                <th>Title</th>
-                <th>Author</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- TO-DO: Recuperar só as informacoes do workflow selecionado -->
-            <tr>
-                <td>Dummy</td>
-                <td>Dummy</td>
-                <td>Dummy</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-<h2>Add <small>quality dimension</small></h2>
+<div>
+<h2>{% if qualityDimension.uri %}Edit{% else %}Add{% endif %} <small>quality dimension</small></h2>
 {{ form_start(form) }}
     <div class="form-body">
         {% for flashMessage in app.session.flashbag.get('success') %}
@@ -51,38 +21,69 @@
         {{ form_errors(form) }}
         <div class="row">
             <div class="col-md-12">
-                <div class="row">
-                    <div class="form-group">
-                        {{ form_label(form.name) }}
-                        {{ form_widget(form.name, { 'attr': { 'class':'form-control' } }) }}
-                        {{ form_errors(form.name) }}
-                    </div>
+                <div class="form-group">
+                    {{ form_label(form.name) }}
+                    {{ form_widget(form.name, { 'attr': { 'class':'form-control' } }) }}
+                    {{ form_errors(form.name) }}
                 </div>
-                <div class="row">
-                    <div class="form-group">
-                        {{ form_label(form.description) }}
-                        {{ form_widget(form.description, { 'attr': { 'class':'form-control' } }) }}
-                        {{ form_errors(form.description) }}
-                    </div>
+             </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description, { 'attr': { 'class':'form-control' } }) }}
+                    {{ form_errors(form.description) }}
                 </div>
-                <div class="row">
-                    <div class="form-group">
-                        {{ form_label(form.valueType) }}
-                        {{ form_widget(form.valueType, { 'attr': { 'class':'form-control' } }) }}
-                        {{ form_errors(form.valueType) }}
-                    </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    {{ form_label(form.valueType) }}
+                    {{ form_widget(form.valueType, { 'attr': { 'class':'form-control' } }) }}
+                    {{ form_errors(form.valueType) }}
                 </div>
-                
             </div>
         </div>
     </div>
     <div class="form-actions">
-            {{ form_widget(form.save) }}
+        
+            
+            {% if qualityDimension.uri %} 
+                {{ form_widget(form.save, { 'label':'Edit' }) }} 
+                <a class="btn btn-primary" href="{{ path('qualitydimension-add') }}">Add</a> 
+            {% else %}
+                {{ form_widget(form.save, { 'label':'Add' }) }}
+            {% endif %}
     </div>
     {{ form_end(form) }}
 </form>
-                
+</div>
 
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <!--<th style="width:100px">Action</th>-->
+                <th>Action</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for index,qd in app.session.get('qualityDimensions')%}
+            <tr>
+                <td>
+                    <a href="{{ path('qualitydimension-edit', { 'qualitydimension_uri':qd.uri|url_encode }) }}"><i class="glyphicon glyphicon-edit"></i></a>
+                    <a href="{{ path('qualitydimension-delete', { 'qualitydimension_uri':qd.uri|url_encode }) }}"><i class="glyphicon glyphicon-trash"></i></a>
+                </td>
+                <td>{{ qd.name }}</td>
+                <td> {{qd.description}} </td>
+                <td> {{qd.valueType}} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+            
 {% endblock %}  
 {% block javascripts %}
 {% endblock %}
