@@ -80,7 +80,18 @@ class AnnotationController extends Controller
      * @Route("/annotation/qualitydimension", name="annotatation-qualitydimension")
      */
     public function annotatationQualityDimensionAction(Request $request)
-    {                
+    {   
+        //Retrieve all workflows
+        $workflow_run = urldecode($request->get('workflow_run'));
+        
+        $model_workflow_run = $this->get('model.provenance'); 
+        $workflows = $model_workflow_run->workflowRun($workflow_run);
+                
+        /*Possibilidades:
+         * 1. Workflow anotado com uma ou mais dimenssões de qualidade.
+         * 2. Idem com os processos.
+         * 3. Idem com os resultados  
+        */
         $qualityannotation = new \AppBundle\Entity\QualityAnnotation();
         $model = $this->get('model.annotation');
         

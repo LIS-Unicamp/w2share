@@ -6,7 +6,7 @@
     <label>Select workflow</label>
     <select class="form-control" name="workflow">
         {% for wf in workflows %}
-            <option value="">{{ wf.title }}</option>
+            <option value="">{{ wf.label.value }}</option>
         {% endfor %}
     </select>
 </div>
