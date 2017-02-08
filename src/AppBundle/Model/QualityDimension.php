@@ -20,12 +20,7 @@ class QualityDimension
     public function __construct($driver)
     {
         $this->driver = $driver;
-    }
-    
-    public function clearDB ()
-    {
-        $this->em->createQuery('DELETE FROM AppBundle:QualityDimension')->execute();
-    }
+    }    
     
     public function insertQualityDimension(\AppBundle\Entity\QualityDimension $qd, $user) 
     { 
@@ -81,13 +76,12 @@ class QualityDimension
         $query = 
         "SELECT * WHERE 
         {
-            GRAPH <".$this->driver->getDefaultGraph('qualitydimension')."> 
-             {
-                ?uri a <w2share:QualityDimension>;
-                <w2share:qdName> ?name;
-                <w2share:valueType> ?valueType;
-                <rdfs:description> ?description.
-            }
+            ?uri a <w2share:QualityDimension>;
+            <w2share:qdName> ?name;
+            <w2share:valueType> ?valueType;
+            <rdfs:description> ?description;
+            <dc:creator> ?creator.
+            ?creator <foaf:name> ?creator_name.
         }";
         
         $quality_dimension_array = array();
@@ -100,6 +94,12 @@ class QualityDimension
             $qualityDimension->setName($quality_dimensions[$i]['name']['value']);
             $qualityDimension->setDescription($quality_dimensions[$i]['description']['value']);
             $qualityDimension->setValueType($quality_dimensions[$i]['valueType']['value']);
+            
+            $creator = new \AppBundle\Entity\Person();
+            $creator->setName($quality_dimensions[$i]['creator_name']['value']);
+            $creator->setUri($quality_dimensions[$i]['creator']['value']);
+
+            $qualityDimension->setCreator($creator);
             
             $quality_dimension_array[] = $qualityDimension;  
         }
@@ -114,15 +114,13 @@ class QualityDimension
     {
         $query = 
         "SELECT * WHERE 
-        {
-            GRAPH <".$this->driver->getDefaultGraph('qualitydimension')."> 
-             {
-                ?uri a <w2share:QualityDimension>;
-                <w2share:qdName> ?name;
-                <w2share:valueType> ?valueType;
-                <rdfs:description> ?description;
-                <dc:creator> <".$user->getUri().">.   
-            }
+        {            
+            ?uri a <w2share:QualityDimension>;
+            <w2share:qdName> ?name;
+            <w2share:valueType> ?valueType;
+            <rdfs:description> ?description;
+            <dc:creator> <".$user->getUri().">. 
+            <".$user->getUri()."> <foaf:name> ?creator_name.
         }";
         
         $quality_dimension_array = array();
@@ -135,6 +133,12 @@ class QualityDimension
             $qualityDimension->setName($quality_dimensions[$i]['name']['value']);
             $qualityDimension->setDescription($quality_dimensions[$i]['description']['value']);
             $qualityDimension->setValueType($quality_dimensions[$i]['valueType']['value']);
+            
+            $creator = new \AppBundle\Entity\Person();
+            $creator->setName($quality_dimensions[$i]['creator_name']['value']);
+            $creator->setUri($user->getUri());
+
+            $qualityDimension->setCreator($creator);
             
             $quality_dimension_array[] = $qualityDimension;  
         }
@@ -161,7 +165,7 @@ class QualityDimension
             $person = new \AppBundle\Entity\Person();
             $person->setUri($user_quality_dimensions[$i]['creator']['value']);
             $person->setName($user_quality_dimensions[$i]['name']['value']);
-            $user_array[] = $person;
+            $user_array[$person->getUri()] = $person;
         }
         
         return $user_array;

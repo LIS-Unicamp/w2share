@@ -223,8 +223,11 @@ class Person implements AdvancedUserInterface, EquatableInterface, \Serializable
     }
 
     public function isEqualTo(UserInterface $user) {
-        return true;
+        return $user->getUri() == $this->uri;
     }
 
+    public function __toString() {
+        return $this->name;
+    }
 }
 

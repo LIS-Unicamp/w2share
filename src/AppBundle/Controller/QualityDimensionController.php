@@ -19,17 +19,36 @@ class QualityDimensionController extends Controller{
     public function indexAction(Request $request)
     {         
         $model = $this->get('model.qualitydimension');
-        $query = $model->findAllQualityDimensions();
+        $users = $model->findUsersWithQualityDimensions();
+
+        $form = $this->createForm(new \AppBundle\Form\QualityDimensionFilterType($users), null, array(
+            'action' => $this->generateUrl('qualitydimensions'),
+            'method' => 'GET'
+        ));
+        $form->handleRequest($request);             
+        $user_uri = $form->get('user')->getViewData();
         
+        if ($form->isSubmitted() && $user_uri) 
+        {                                    
+            $user = new \AppBundle\Entity\Person();
+            $user->setUri($user_uri);
+            $query = $model->findQualityDimensionsByUser($user);
+        }
+        else
+        {
+            $query = $model->findAllQualityDimensions();
+        }
+                        
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
-            $request->query->getInt('page', 1)/*page number*/,
-            2/*limit per page*/
+            $request->query->getInt('page', 1), /*page number*/
+            5 /*limit per page*/
         );
         
         return $this->render('qualityflow/list-qualitydimension.html.twig', array(
-            'pagination' => $pagination
+            'pagination' => $pagination,
+            'form' => $form->createView()
         ));       
     }
 

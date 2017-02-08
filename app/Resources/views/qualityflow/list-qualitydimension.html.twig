@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
-{% block title %}Quality dimensions{% endblock %}
+{% block title %}Quality Dimensions{% endblock %}
 {% block body %}
-<h1>Quality dimensions</h1>
+<h1>Quality Dimensions</h1>
 {% for flashMessage in app.session.flashbag.get('success') %}
     <div class="alert alert-success">
             <button class="close" data-dismiss="alert"></button>
@@ -14,7 +14,47 @@
             {{ flashMessage }}
     </div>            
 {% endfor %}
-<a class="btn btn-primary" href="{{ path('qualitydimension-add') }}">Add</a>
+<div class="row">
+    <div class="col-md-1">
+        <a class="btn btn-primary" href="{{ path('qualitydimension-add') }}">Add</a>
+    </div>
+    <div class="col-md-5 pull-right" id="filtrar">
+        {{ form_start(form) }}
+            <div class="row">                                
+                <div class="pull-left">
+                    <button class="btn btn-info habilitar">
+                    Filter Options <i class="glyphicon glyphicon-collapse-down"></i>
+                    </button>
+                </div>
+            </div> 
+            <div class="panel panel-info collapse" id="filtrar-avancado">
+                <div class="panel-heading">
+                        <h3 class="panel-title">Search</h3>
+                </div>
+                <div class="panel-body">                                                                      
+                    <div class="row">                           
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                    {{ form_label(form.user)}}
+                                    {{ form_widget(form.user, { 'attr': { 'class':'form-control select' } }) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                                <button class="btn btn-info reset">
+                                    <i class="glyphicon glyphicon-erase"></i> Reset
+                                </button>
+                        </div>
+                        <div class="col-md-2">
+                            {{ form_widget(form.filter) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{ form_end(form) }}
+    </div> 
+</div>
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -23,7 +63,7 @@
                 <th>Name</th>
                 <th>Description</th>
                 <th>Type</th>
-                
+                <th>Creator</th>
             </tr>
         </thead>
         <tbody>
@@ -31,11 +71,12 @@
         <tr>
             <td>
                 <a href="{{ path('qualitydimension-edit', { 'qualitydimension_uri':qd.uri|url_encode }) }}"><i class="glyphicon glyphicon-edit"></i></a>
-                <a href="{{ path('qualitydimension-delete', { 'qualitydimension_uri':qd.uri|url_encode }) }}"><i class="glyphicon glyphicon-trash"></i></a>
+                <a href="{{ path('qualitydimension-delete', { 'qualitydimension_uri':qd.uri|url_encode }) }}" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
             </td>
             <td>{{ qd.name }}</td>
             <td>{{ qd.description }}</a></td>
             <td>{{ qd.valueType }}</td> 
+            <td>{{ qd.creator.name }}</td>
         </tr>
     {% endfor %}
         </tbody>
@@ -54,7 +95,44 @@
     </div>
 </div>
 {% endblock %}  
-{% block javascripts %}            
+{% block javascripts %}  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function()   
+        {
+            $('button.habilitar').click(function (e) {
+                e.preventDefault();
+                $('#filtrar-avancado').collapse('toggle');
+                if ($(this).children('i').hasClass('glyphicon-collapse-down'))
+                {
+                    $(this).children('i').removeClass('glyphicon-collapse-down');
+                    $(this).children('i').addClass('glyphicon-collapse-up');
+                }
+                else
+                {
+                    $(this).children('i').removeClass('glyphicon-collapse-up');
+                    $(this).children('i').addClass('glyphicon-collapse-down');
+                }
+            });
+            
+            $('.reset').click(function(e) {
+                e.preventDefault();
+                $(':input, :button, :hidden')
+                    .val('')
+                    .removeAttr('checked')
+                    .removeAttr('selected');                
+                $('.select').val([]).trigger('change');
+            });
+
+            $('.select').select2(
+            {
+                allowClear: true,
+                width: '100%',
+                placeholder: 'select...'
+            });
+        });
+    </script>
 {% endblock %}
 {% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" />  
 {% endblock %}

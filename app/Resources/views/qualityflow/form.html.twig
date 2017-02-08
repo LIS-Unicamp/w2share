@@ -52,6 +52,7 @@
             {% else %}
                 {{ form_widget(form.save, { 'label':'Add' }) }}
             {% endif %}
+            <a href="{{ path('qualitydimensions') }}" class="btn btn-info">List</a>
     </div>
     {{ form_end(form) }}
 </div>
@@ -72,7 +73,7 @@
             <tr>
                 <td>
                     <a href="{{ path('qualitydimension-edit', { 'qualitydimension_uri':qd.uri|url_encode }) }}"><i class="glyphicon glyphicon-edit"></i></a>
-                    <a href="{{ path('qualitydimension-delete', { 'qualitydimension_uri':qd.uri|url_encode }) }}"><i class="glyphicon glyphicon-trash"></i></a>
+                    <a href="{{ path('qualitydimension-delete', { 'qualitydimension_uri':qd.uri|url_encode }) }}" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
                 </td>
                 <td>{{ qd.name }}</td>
                 <td> {{qd.description}} </td>

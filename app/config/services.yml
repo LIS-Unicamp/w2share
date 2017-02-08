@@ -15,6 +15,11 @@ services:
         arguments: [@knp_paginator.helper.processor]
         tags:
         - { name: twig.extension }
+        
+    app.form.icon_button_extension:
+        class: AppBundle\Form\Extension\IconButtonExtension
+        tags:
+            - { name: form.type_extension, alias: button }    
             
     app.odbc_driver:
         class: AppBundle\Utils\Driver
