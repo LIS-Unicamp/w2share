@@ -137,20 +137,13 @@ class QualityDimensionController extends Controller{
     public function removeAction(Request $request, $qualitydimension_uri)
     {   
         $model = $this->get('model.qualitydimension');
-        $session_index = $request->get('session_index');
         $uri = urldecode($qualitydimension_uri);
+        
         $qualityDimension = $model->findOneQualityDimension($uri);
         
         if ($qualityDimension)
         {                          
             $model->deleteQualityDimension($qualityDimension);
-            
-            $qualityDimensions = $this->get('session')->get('qualityDimensions',null);
-            if ($qualityDimensions)
-            {
-                unset($qualityDimensions[$session_index]);
-                $this->get('session')->set('qualityDimensions',$qualityDimensions);
-            }
 
             $this->get('session')
                 ->getFlashBag()
@@ -158,8 +151,7 @@ class QualityDimensionController extends Controller{
             ;
         }
         //TO-DO verificar
-        return $this->redirect($this->generateUrl('qualitydimension-add'));
-        
+        return $this->redirect($this->generateUrl('qualitydimensions'));
     }
     
     /**

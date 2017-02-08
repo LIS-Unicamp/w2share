@@ -173,22 +173,22 @@ class QualityDimension
     }
     
     public function deleteQualityDimension(\AppBundle\Entity\QualityDimension $qd)
-    {
+    {  
         $query = 
-        "DELETE data FROM <".$this->driver->getDefaultGraph('qualitydimension')."> {
-                <".$qd->getUri()."> a w2share:QualityDimension
+        "DELETE data FROM <".$this->driver->getDefaultGraph('qualitydimension')."> 
+            {
+                <".$qd->getUri()."> a <w2share:QualityDimension>.
                 <".$qd->getUri()."> <w2share:qdName> '".$qd->getName()."'.
                 <".$qd->getUri()."> <w2share:valueType> '".$qd->getValueType()."'.
                 <".$qd->getUri()."> <rdfs:description> '".$qd->getDescription()."'.
-        }";
-        return $this->driver->getResults($query);        
+            }";
+        
+        return $this->driver->getResults($query);
     }
     
 
     public function updateQualityDimension(\AppBundle\Entity\QualityDimension $qd) 
     {        
-        //$this->deleteQualityDimension($qd);
-        
         $uri = Utils::convertNameToUri("Quality Dimension", $qd->getName());
         $qd->setUri($uri);
         $query = 

@@ -44,46 +44,17 @@
         </div>
     </div>
     <div class="form-actions">
-        
-            
-            {% if qualityDimension.uri %} 
-                {{ form_widget(form.save, { 'label':'Edit' }) }} 
-                <a class="btn btn-primary" href="{{ path('qualitydimension-add') }}">Add</a> 
-            {% else %}
-                {{ form_widget(form.save, { 'label':'Add' }) }}
-            {% endif %}
-            <a href="{{ path('qualitydimensions') }}" class="btn btn-info">List</a>
+        {% if qualityDimension.uri %} 
+            {{ form_widget(form.save, { 'label':'Edit' }) }} 
+            <a class="btn btn-primary" href="{{ path('qualitydimension-add') }}">Add</a> 
+        {% else %}
+            {{ form_widget(form.save, { 'label':'Add' }) }}
+        {% endif %}
+        <a href="{{ path('qualitydimensions') }}" class="btn btn-info">List</a>
     </div>
     {{ form_end(form) }}
 </div>
-
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <!--<th style="width:100px">Action</th>-->
-                <th>Action</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Type</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for index,qd in app.session.get('qualityDimensions')%}
-            <tr>
-                <td>
-                    <a href="{{ path('qualitydimension-edit', { 'qualitydimension_uri':qd.uri|url_encode }) }}"><i class="glyphicon glyphicon-edit"></i></a>
-                    <a href="{{ path('qualitydimension-delete', { 'qualitydimension_uri':qd.uri|url_encode }) }}" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
-                </td>
-                <td>{{ qd.name }}</td>
-                <td> {{qd.description}} </td>
-                <td> {{qd.valueType}} </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-            
+    
 {% endblock %}  
 {% block javascripts %}
 {% endblock %}
