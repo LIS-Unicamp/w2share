@@ -6,7 +6,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Workflow Run</th>
+                <th>Workflow Action</th>
                 <th>Workflow</th>
                 <th>Start Time</th>
                 <th>End Time</th>
@@ -19,7 +19,8 @@
                 <button class="btn btn-xs" data-clipboard-text="{{ row.workflowRun.value }}">
                     <i class="glyphicon glyphicon-copy"></i>
                 </button>
-                <a href="{{ path('provenance-workflow-run', { 'workflow_run': row.workflowRun.value|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a></td>
+                <a href="{{ path('provenance-workflow-run', { 'workflow_run': row.workflowRun.value|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>
+            </td>
             <td><a href="{{ path('provenance-workflow', { 'workflow': row.workflow.value|url_encode }) }}">{{ row.label.value }}</a></td>
             <td>{{ row.startedAtTime.value }}</a></td>
             <td>{{ row.endedAtTime.value }}</td>

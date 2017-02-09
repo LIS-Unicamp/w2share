@@ -21,7 +21,7 @@ class AppExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            'file_exists' => new \Twig_SimpleFunction('file_exists'),
+            'file_exists' => new \Twig_SimpleFunction('file_exists', array()),
         );
     }
 

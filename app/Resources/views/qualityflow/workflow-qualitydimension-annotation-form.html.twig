@@ -2,15 +2,7 @@
 {% block title %}Process Quality Annotation{% endblock %}
 {% block body %}
 <h2>Workflow quality annotations</h2>
-<div class="form-group">
-    <label>Select workflow</label>
-    <select class="form-control" name="workflow">
-        {% for wf in ['w1'] %}
-            <option value="">{{ wf }}</option>
-        {% endfor %}
-    </select>
-</div>
-    
+
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -24,9 +16,9 @@
         <tbody>
             <!-- TO-DO: Recuperar só as informacoes do workflow selecionado -->
             <tr>
-                <td>Dummy</td>
-                <td>Dummy</td>
-                <td>Dummy</td>
+                <td>{{workflow.title}}</td>
+                <td>{{workflow.author}}</td>
+                <td>{{workflow.description}}</td>
             </tr>
         </tbody>
     </table>
@@ -36,12 +28,12 @@
 <div class="form-group">
   <label>Select a quality dimension</label>
   <select class="form-control" name="qualitydimension" style="width:20%"> <!--style="width:120px" -->
-      {% for qd in ['q1', 'q2', 'q3'] %} <!--TODO: depois trocar por qualitydimension -->
-        <option value="{{ qd }}">{{ qd }}</option> <!--TODO: depois trocar por qd.name  -->
+      {% for qd in qualitydimension %} <!--TODO: depois trocar por qualitydimension -->
+        <option value="{{ qd.name }}">{{ qd.name }}</option> <!--TODO: depois trocar por qd.name  -->
       {% endfor %}
   </select>
 </div>
-
+  
 <div>
     {{ form_start(form) }}
         <div class="form-body">
@@ -101,7 +93,7 @@
         </tbody>
     </table>
 </div> 
-
+    
 {% endblock %}  
 {% block javascripts %}
 {% endblock %}
