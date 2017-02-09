@@ -1,0 +1,15 @@
+{# form_errors.html.twig #}
+{% block form_errors %}
+    {% spaceless %}
+        {% if errors|length > 0 %}
+        <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            <ul>
+                {% for error in errors %}
+                    <li>{{ error.message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_errors %}

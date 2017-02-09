@@ -77,22 +77,7 @@ class Security
         } 
         catch (\Symfony\Component\Debug\Exception\ContextErrorException $ex) 
         {
-            if ($username == "lucas.carvalho@ic.unicamp.br")
-            {
-                $user->setName("Lucas Carvalho");
-                $user->setEmail('lucas.carvalho@ic.unicamp.br');
-                $user->setPassword('123123');                
-                $user->setHomepage('http://www.lis.ic.unicamp.br/~lucascarvalho/');
-            }
-            else
-            {
-                $user->setName("Joana Malaverri");
-                $user->setEmail('joana@ic.unicamp.br');
-                $user->setPassword('joana');
-                $user->setHomepage('http://www.lis.ic.unicamp.br/~joana/');
-            }
-            
-            $this->saveUser($user);
+            return null;
         }                                
         
         return $user;

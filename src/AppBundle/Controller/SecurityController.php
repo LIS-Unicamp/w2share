@@ -10,6 +10,12 @@ class SecurityController extends Controller
 {
     public function loginAction()
     {
+        $person = new \AppBundle\Entity\Person();
+        $form = $this->createForm(new \AppBundle\Form\PersonRegistrationType(), $person, array(
+            'action' => $this->generateUrl('registration-form'),
+            'method' => 'POST'
+        ));
+        
         $request = $this->getRequest();
         $session = $request->getSession();
         // get the login error if there is one
@@ -27,6 +33,7 @@ class SecurityController extends Controller
                 // last username entered by the user
                 'last_username' => $session->get(SecurityContext::LAST_USERNAME),
                 'error'         => $error,
+                'form_registration' => $form->createView()
             )
         );
     } 
@@ -36,8 +43,8 @@ class SecurityController extends Controller
      */
     public function registrationAction(\Symfony\Component\HttpFoundation\Request $request)
     {
-        $person = new \AppBundle\Entity\Person();
-        $form = $this->createForm(new \AppBundle\Form\PersonRegistrationType(), $person, array(
+        $user = new \AppBundle\Entity\Person();
+        $form = $this->createForm(new \AppBundle\Form\PersonRegistrationType(), $user, array(
             'action' => $this->generateUrl('registration-form'),
             'method' => 'POST'
         ));
@@ -45,15 +52,32 @@ class SecurityController extends Controller
         $form->handleRequest($request);             
         
         if ($form->isValid()) 
-        {                                                
-            $query = $model->findQualityDimensionsByUser($user);
+        {                  
+            $model = $this->get('model.security');
+            
+            if ($model->loadUserByUsername($user->getUsername()))
+            {
+                $this->get('session')
+                    ->getFlashBag()
+                    ->add('error', 'User already exists on database.')
+                ;
+            }
+            else 
+            {
+                $model->saveUser($user);
+            
+                $this->get('session')
+                    ->getFlashBag()
+                    ->add('success', 'Registration complete! Please log in.')
+                ; 
+            }                        
         }
         return $this->render(
             'security/login.html.twig',
             array(
                 // last username entered by the user
-                'last_username' => $session->get(SecurityContext::LAST_USERNAME),
-                'error' => false,
+                'last_username' => null,
+                'error' => null,
                 'form_registration' => $form->createView()
             )
         );

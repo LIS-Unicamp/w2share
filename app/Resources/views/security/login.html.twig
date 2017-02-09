@@ -138,7 +138,7 @@
                     </div>
                 </div>
             </div>
-        {% endif %}
+        {% endif %}        
     	<div class="row">
                     <div class="col-md-5 col-md-offset-2">
                             <div class="panel panel-login">
@@ -156,6 +156,19 @@
                                     <div class="panel-body">
                                             <div class="row">
                                                     <div class="col-lg-12">
+                                                        {% for flashMessage in app.session.flashbag.get('success') %}
+                                                            <div class="alert alert-success">
+                                                                    <button class="close" data-dismiss="alert"></button>
+                                                                    {{ flashMessage }}
+                                                            </div>            
+                                                        {% endfor %}
+                                                        {% for flashMessage in app.session.flashbag.get('error') %}
+                                                            <div class="alert alert-danger">
+                                                                    <button class="close" data-dismiss="alert"></button>
+                                                                    {{ flashMessage }}
+                                                            </div>            
+                                                        {% endfor %}
+                                                        {{ form_errors(form_registration) }}
                                                             <form id="login-form" action="{{ path('login_check') }}" method="post" role="form" style="display: block;">
                                                                     <div class="form-group">
                                                                             <input type="email" name="_username" id="username" tabindex="1" class="form-control" placeholder="E-mail" required value="{{last_username}}">
@@ -179,28 +192,33 @@
                                                             </form>
                                                             <form id="register-form" action="{{ path('registration-form') }}" method="post" role="form" style="display: none;">
                                                                     <div class="form-group">
-                                                                            <input type="text" name="name" id="name" tabindex="1" class="form-control" placeholder="Name" value="" required>
+                                                                            {{ form_widget(form_registration.name, { 'attr': { 'class':'form-control','placeholder':'Name' } }) }}
+                                                                            {{ form_errors(form_registration.name) }}
                                                                     </div>
                                                                     <div class="form-group">
-                                                                            <input type="email" name="email" id="email" tabindex="2" class="form-control" placeholder="Email Address" value="" required>
+                                                                            {{ form_widget(form_registration.email, { 'attr': { 'class':'form-control','placeholder':'Email Address' } }) }}
+                                                                            {{ form_errors(form_registration.email) }}
                                                                     </div>
                                                                     <div class="form-group">
-                                                                            <input type="url" name="homepage" id="homepage" tabindex="3" class="form-control" placeholder="Homepage" value="" required>
+                                                                            {{ form_widget(form_registration.homepage, { 'attr': { 'class':'form-control','placeholder':'Homepage' } }) }}
+                                                                            {{ form_errors(form_registration.homepage) }}
                                                                     </div>
                                                                     <div class="form-group">
-                                                                            <input type="password" name="password" id="password" tabindex="4" class="form-control" placeholder="Password" required>
+                                                                            {{ form_widget(form_registration.password, { 'attr': { 'class':'form-control','placeholder':'Password' } }) }}
+                                                                            {{ form_errors(form_registration.password) }}
                                                                     </div>
                                                                     <div class="form-group">
-                                                                            <input type="password" name="confirm-password" id="confirm-password" tabindex="5" class="form-control" placeholder="Confirm Password" required>
+                                                                            {{ form_widget(form_registration.confirm_password, { 'attr': { 'class':'form-control','placeholder':'Confirm Password' } }) }}
+                                                                            {{ form_errors(form_registration.confirm_password) }}
                                                                     </div>
                                                                     <div class="form-group">
                                                                             <div class="row">
                                                                                     <div class="col-sm-6 col-sm-offset-3">
-                                                                                            <input type="submit" name="save" id="register-submit" tabindex="6" class="form-control btn btn-register" value="Register Now">
+                                                                                            {{ form_widget(form_registration.save) }}
                                                                                     </div>
                                                                             </div>
                                                                     </div>
-                                                            </form>
+                                                            {{ form_end(form_registration) }}
                                                     </div>
                                             </div>
                                     </div>
@@ -250,6 +268,12 @@
                     $('.register-form-link').addClass('active');
                     e.preventDefault();
                 });
+                
+                {% if app.request.get('_route') == 'registration-form' %}
+                    $( ".register-form-link" ).trigger( "click" );
+                {% else %}
+                    $( "#login-form-link" ).trigger( "click" );
+                {% endif %}
             });
         </script>
 </body>

@@ -35,7 +35,9 @@ class AuthenticationHandler extends ContainerAware implements AuthenticationSucc
             return new RedirectResponse($url);   
         }      
         
-        if ($referer_url && $referer_url != $this->container->get('router')->generate('login', array(), true))
+        if ($referer_url
+                && $referer_url != $this->container->get('router')->generate('login', array(), true)
+                && $referer_url != $this->container->get('router')->generate('registration-form', array(), true))
         {
             return new RedirectResponse($referer_url);   
         }

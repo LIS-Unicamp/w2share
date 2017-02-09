@@ -8,7 +8,6 @@ namespace AppBundle\Model;
  */
 class Workflow 
 {
-    private $prefix;    
     private $driver;
     protected $em;
     
@@ -16,7 +15,6 @@ class Workflow
     {
         $this->driver = $driver;
         $this->em = $em;
-        $this->prefix = \AppBundle\Utils\Utils::$prefix;
     }
     
     public function clearDB ()
@@ -36,7 +34,6 @@ class Workflow
     {
         // process information
         $query = "
-            $this->prefix  
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <$workflow> wfdesc:hasSubProcess ?process.
                 ?process a wfdesc:Process.
