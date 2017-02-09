@@ -69,7 +69,9 @@ class SecurityController extends Controller
                 $this->get('session')
                     ->getFlashBag()
                     ->add('success', 'Registration complete! Please log in.')
-                ; 
+                ;
+                
+                return $this->redirect($this->generateUrl('login'));
             }                        
         }
         return $this->render(
@@ -96,7 +98,7 @@ class SecurityController extends Controller
         $pagination = $paginator->paginate(
             $users, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
-            5 /*limit per page*/
+            10 /*limit per page*/
         );
         
         return $this->render(

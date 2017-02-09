@@ -93,6 +93,10 @@
                                                                             {{ form_errors(form_registration.confirm_password) }}
                                                                     </div>
                                                                     <div class="form-group">
+                                                                            {{ form_widget(form_registration.recaptcha, { 'attr': { 'class':'form-control' } }) }}
+                                                                            {{ form_errors(form_registration.recaptcha) }}
+                                                                    </div>
+                                                                    <div class="form-group">
                                                                             <div class="row">
                                                                                     <div class="col-sm-6 col-sm-offset-3">
                                                                                             {{ form_widget(form_registration.save) }}
@@ -127,10 +131,7 @@
 		</div>
 {% endblock %}
 {% block stylesheets %}
-    <style>
-        .body {
-            padding-top: 90px;
-        }
+    <style>        
         .panel-login {
                 border-color: #ccc;
                 -webkit-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.2);

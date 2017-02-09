@@ -124,6 +124,7 @@
                         <li class="divider navbar-login-session-bg"></li>
                         {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
                         <li><a href="#">Account Settings <span class="glyphicon glyphicon-cog pull-right"></span></a></li>
+                        <li><a href="{{ path('user-list') }}">User List <span><i class="glyphicon glyphicon-list pull-right"></i></span></a></li>
                         <li class="divider"></li>
                         <li><a href="#">Reset <span><i class="glyphicon glyphicon-alert pull-right"></i></span></a></li>
                         <li><a href="{{ path('workflow-reset') }}" class="reset">Workflows</a></li>
@@ -143,12 +144,14 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-    <div class="container">
+    <div class="container" {% if app.request.get('_route') in ['login','registration-form'] %}style="padding-top:90px"{% endif %}>
+        {% if app.request.get('_route') not in ['login','registration-form'] %} 
         <div class="row pull-right">
               <div class="col-lg-12">
                   {{ render(controller('AppBundle:Provenance:concepts', { 'query':app.request.get('query'), 'concept':app.request.get('concept') } )) }}
               </div>
         </div> 
+        {% endif %}
         {% block body %}{% endblock %}
         <footer class="margin">
             <p>&copy; 2017 <a href="http://www.lis.ic.unicamp.br">Laboratory of Information Systems (LIS)</a> - <a href="http://www.unicamp.br">UNICAMP</a>

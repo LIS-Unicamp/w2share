@@ -5,6 +5,8 @@ namespace AppBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrue;
+
 
 /**
  * Description of QualityDimensionAddType
@@ -23,6 +25,19 @@ class PersonRegistrationType extends AbstractType
             ->add('save', 'submit', array(
                     'label' => 'Register Now',
                     'attr' => array('class' => 'form-control btn btn-register')
+                ))
+            ->add('recaptcha', 'ewz_recaptcha', array(
+                    'attr'        => array(
+                        'options' => array(
+                            'theme' => 'light',
+                            'type'  => 'image',
+                            'size'  => 'normal'
+                        )
+                    ),
+                    'mapped'      => false,
+                    'constraints' => array(
+                        new IsTrue()
+                    )
                 ))
         ;
         

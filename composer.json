@@ -20,7 +20,8 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "symfony/filesystem": "^3.0",
         "knplabs/knp-paginator-bundle": "~2.3@dev",
-        "knplabs/knp-components": "~1.2@dev"
+        "knplabs/knp-components": "~1.2@dev",
+        "excelwebzone/recaptcha-bundle": "v1.4.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "2.3"
