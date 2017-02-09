@@ -20,9 +20,10 @@ security:
         login:
             pattern:  ^/login$
             security: false
-
+            
         secured_area:
             pattern:    ^/
+            anonymous: true
             switch_user: { role: ROLE_ADMIN, parameter: _switch_user }
             form_login:
                 check_path: login_check
@@ -32,8 +33,8 @@ security:
                 default_target_path: homepage
                 success_handler: authentication_handler
             logout: 
-                path: /logout
-                target: /login
+                path: logout
+                target: homepage
             remember_me:
                 key:      "%secret%"
                 lifetime: 31536000  #365 days in seconds
@@ -41,5 +42,6 @@ security:
                 domain:   ~  #Defaults to the current domain from $_SERVER                
 
     access_control:
+        - { path: ^/(.*)/(add|edit|reset|upload|delete), roles: IS_AUTHENTICATED_FULLY, requires_channel: http }
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }

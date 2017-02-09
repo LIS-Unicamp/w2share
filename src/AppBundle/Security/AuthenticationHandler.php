@@ -23,6 +23,18 @@ class AuthenticationHandler extends ContainerAware implements AuthenticationSucc
     {          
         $referer_url = $request->get('referer', $request->headers->get('referer')); 
         
+        $key = '_security.secured_area.target_path'; #where "main" is your firewall name
+
+        //check if the referrer session key has been set 
+        if ($this->container->get('session')->has($key)) {
+            //set the url based on the link they were trying to access before being authenticated
+            $url = $this->container->get('session')->get($key);
+
+            //remove the session key
+            $this->container->get('session')->remove($key);
+            return new RedirectResponse($url);   
+        }      
+        
         if ($referer_url && $referer_url != $this->container->get('router')->generate('login', array(), true))
         {
             return new RedirectResponse($referer_url);   

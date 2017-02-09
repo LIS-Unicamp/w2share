@@ -40,6 +40,11 @@ class Person implements AdvancedUserInterface, EquatableInterface, \Serializable
      */
     private $name;
     
+    /**
+     * @var string
+     */
+    private $email;
+    
     public function setName($name)
     {
         $this->name = $name;

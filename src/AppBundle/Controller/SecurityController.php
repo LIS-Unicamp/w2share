@@ -32,6 +32,34 @@ class SecurityController extends Controller
     } 
     
     /**
+     * @Route("/security/registration", name="registration-form")
+     */
+    public function registrationAction(\Symfony\Component\HttpFoundation\Request $request)
+    {
+        $person = new \AppBundle\Entity\Person();
+        $form = $this->createForm(new \AppBundle\Form\PersonRegistrationType(), $person, array(
+            'action' => $this->generateUrl('registration-form'),
+            'method' => 'POST'
+        ));
+        
+        $form->handleRequest($request);             
+        
+        if ($form->isValid()) 
+        {                                                
+            $query = $model->findQualityDimensionsByUser($user);
+        }
+        return $this->render(
+            'security/login.html.twig',
+            array(
+                // last username entered by the user
+                'last_username' => $session->get(SecurityContext::LAST_USERNAME),
+                'error' => false,
+                'form_registration' => $form->createView()
+            )
+        );
+    }
+    
+    /**
      * @Route("/security/reset", name="security-reset")
      */
     public function resetAction()
