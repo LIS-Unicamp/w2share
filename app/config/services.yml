@@ -16,6 +16,13 @@ services:
         tags:
         - { name: twig.extension }
         
+    app.twig.controller_action_extension:
+        class: AppBundle\Twig\Extension\ControllerActionExtension
+        calls:
+            - [setRequest, ["@?request="]]
+        tags:
+            - { name: twig.extension }
+        
     app.form.icon_button_extension:
         class: AppBundle\Form\Extension\IconButtonExtension
         tags:

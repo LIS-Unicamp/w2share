@@ -46,6 +46,37 @@ class Security
         return $this->driver->getResults($query);
     }
     
+    public function findAllUsers()
+    {                
+        $query = 
+        "SELECT * WHERE        
+        { 
+            GRAPH <".$this->driver->getDefaultGraph('security')."> 
+            { 
+                ?uri a <foaf:Person>;
+                <foaf:name> ?name;
+                <foaf:mbox> ?email;
+                <foaf:homepage> ?homepage.
+            }
+        }";   
+        
+        $user_array = $this->driver->getResults($query);
+        $users = array();
+        
+        for ($i = 0; $i < count($user_array); $i ++)
+        {
+            $user = new \AppBundle\Entity\Person(); 
+            $user->setUri($user_array[$i]['uri']['value']);
+            $user->setName($user_array[$i]['name']['value']);
+            $user->setEmail($user_array[$i]['email']['value']);
+            $user->setHomepage($user_array[$i]['homepage']['value']);
+            
+            $users[] = $user;
+        }                                        
+        
+        return $users;
+    }
+    
     public function loadUserByUsername($username)
     {
         $user = new \AppBundle\Entity\Person(); 

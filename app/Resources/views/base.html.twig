@@ -58,8 +58,8 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{{ path('homepage') }}">Home</a></li>
-            <li class="dropdown">
+            <li{% if get_controller_name() == 'default' %} class="active"{% endif %}><a href="{{ path('homepage') }}">Home</a></li>
+            <li class="dropdown{% if get_controller_name() == 'workflow' %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   Workflows <span class="caret"></span>
               </a>
@@ -69,9 +69,9 @@
                 <li><a href="{{ path('provenance-workflows') }}"><i class="glyphicon glyphicon-backward"></i> Provenance</a></li>                
               </ul>
             </li>
-            <li><a href="{{ path('provenance-workflows-run') }}">Provenance</a></li>
-            <li><a href="{{ path('yesworkflow-form') }}">YesWorkflow</a></li>
-            <li class="dropdown">
+            <li{% if get_controller_name() == 'provenance' %} class="active"{% endif %}><a href="{{ path('provenance-workflows-run') }}">Provenance</a></li>
+            <li{% if get_controller_name() == 'yesworkflow' %} class="active"{% endif %}><a href="{{ path('yesworkflow-form') }}">YesWorkflow</a></li>
+            <li class="dropdown{% if get_controller_name() == 'qualitydimension' %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   Quality Flow <span class="caret"></span>
               </a>
@@ -86,17 +86,12 @@
                 <li><a href="{{ path('annotatation-qualitydimension') }}"><i class="glyphicon glyphicon-edit"></i> Workflow Quality Annotation</a></li>      
               </ul>
             </li>                        
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-              <li>
-                  {{ render(controller('AppBundle:Provenance:concepts', { 'query':app.request.get('query'), 'concept':app.request.get('concept') } )) }}
-              </li>
-          </ul>        
+          </ul>               
           <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="glyphicon glyphicon-user"></span>
-                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
                             <strong>{{ app.user.name|split(' ')[0] }}</strong>                        
                         {% else %}
                             <strong>Anonymous</strong>   
@@ -113,7 +108,7 @@
                                         </p>
                                     </div>
                                     <div class="col-lg-8">
-                                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
                                         <p class="text-left"><strong>{{ app.user.name }}</strong></p>
                                         <p class="text-left small">{{ app.user.email }}</p>
                                         <p class="text-left">
@@ -127,7 +122,7 @@
                             </div>
                         </li>
                         <li class="divider navbar-login-session-bg"></li>
-                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        {% if app.user and is_granted('IS_AUTHENTICATED_FULLY') %}
                         <li><a href="#">Account Settings <span class="glyphicon glyphicon-cog pull-right"></span></a></li>
                         <li class="divider"></li>
                         <li><a href="#">Reset <span><i class="glyphicon glyphicon-alert pull-right"></i></span></a></li>
@@ -144,19 +139,23 @@
                         {% endif %}
                     </ul>
                 </li>
-            </ul>
-          
+            </ul>              
         </div><!--/.nav-collapse -->
       </div>
     </nav>
     <div class="container">
+        <div class="row pull-right">
+              <div class="col-lg-12">
+                  {{ render(controller('AppBundle:Provenance:concepts', { 'query':app.request.get('query'), 'concept':app.request.get('concept') } )) }}
+              </div>
+        </div> 
         {% block body %}{% endblock %}
         <footer class="margin">
             <p>&copy; 2017 <a href="http://www.lis.ic.unicamp.br">Laboratory of Information Systems (LIS)</a> - <a href="http://www.unicamp.br">UNICAMP</a>
             </p>
         </footer>
     </div>
-    <script src="{{ app.request.basepath }}/js/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="{{ app.request.basepath }}/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="{{ app.request.basepath }}/js/clipboard.min.js" type="text/javascript"></script>
 <script type="text/javascript">

@@ -84,6 +84,30 @@ class SecurityController extends Controller
     }
     
     /**
+     * @Route("/security/user-list", name="user-list")
+     */
+    public function userListAction(\Symfony\Component\HttpFoundation\Request $request)
+    {
+        
+        $model = $this->get('model.security');            
+        $users = $model->findAllUsers();
+            
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $users, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            5 /*limit per page*/
+        );
+        
+        return $this->render(
+            'security/user-list.html.twig',
+            array(
+                'pagination' => $pagination
+            )
+        );
+    }
+    
+    /**
      * @Route("/security/reset", name="security-reset")
      */
     public function resetAction()
