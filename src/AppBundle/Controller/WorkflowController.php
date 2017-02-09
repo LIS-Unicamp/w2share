@@ -13,8 +13,9 @@ class WorkflowController extends Controller
      */
     public function indexAction(Request $request)
     {         
-        $result = $this->get('doctrine')
-            ->getRepository('AppBundle:Workflow')->findAll();
+        $model_workflow = $this->get('model.workflow'); 
+        
+        $result = $model_workflow->findAll();
         
         return $this->render('workflow/index.html.twig', array(
             'result' => $result
@@ -29,44 +30,39 @@ class WorkflowController extends Controller
         $root_path = $this->get('kernel')->getRootDir();
 
         $model_workflow = $this->get('model.workflow'); 
-        $model_workflow->clearDB();
+        $model_workflow->clearGraph();
         $model_workflow->clearUploads($root_path);
                     
         return $this->redirect($this->generateUrl('workflows'));
     }     
     
     /**
-     * @Route("/workflow/upload", name="workflow-upload")
+     * @Route("/workflow/add", name="workflow-add")
      */
-    public function uploadAction(Request $request)
-    {        
-        $em = $this->get('doctrine')->getManager();
-        
+    public function addWorkflowAction(Request $request)
+    {                
         $workflow = new \AppBundle\Entity\Workflow();
         
-        $form = $this->createForm(new \AppBundle\Form\WorkflowUploadType($em), $workflow, array(
-            'action' => $this->generateUrl('workflow-upload'),
+        $form = $this->createForm(new \AppBundle\Form\WorkflowType(), $workflow, array(
+            'action' => $this->generateUrl('workflow-add'),
             'method' => 'POST'
         ));
         
         $form->handleRequest($request);
                 
         if ($form->isValid()) 
-        {  
-            $em->persist($workflow);
-            $em->flush();
-
+        {             
+            $workflow->upload();
+            
+            $model = $this->get('model.workflow'); 
+            $model->saveWorkflow($workflow);
+            
             $this->get('session')
                 ->getFlashBag()
-                ->add('success', 'Workflow uploaded!')
+                ->add('success', 'Workflow added!')
             ; 
-            
-            $root_path = $this->get('kernel')->getRootDir();
-
-            $model = $this->get('model.provenance'); 
-            $model->storeWorkflow($workflow, $root_path);
-            
-            return $this->redirect($this->generateUrl('workflow-edit',array('workflow_id' => $workflow->getId())));
+            return $this->redirect($this->generateUrl('workflows'));
+            //return $this->redirect($this->generateUrl('workflow-edit',array('workflow_uri' => urlencode($workflow->getUri()))));
         }
         
         return $this->render('workflow/form.html.twig', array(
@@ -76,22 +72,16 @@ class WorkflowController extends Controller
     }
     
     /**
-     * @Route("/workflow/delete/{workflow_id}", name="workflow-delete")
+     * @Route("/workflow/delete/{workflow_uri}", name="workflow-delete")
      */
-    public function removeAction(Request $request, $workflow_id)
-    {        
-        $em = $this->get('doctrine')->getManager();                
-        $workflow = $em->getRepository('AppBundle:Workflow')
-                ->find($workflow_id);
+    public function removeWorkflowAction(Request $request, $workflow_uri)
+    {                
                                 
-        if ($workflow)  
-        {                          
-            $model = $this->get('model.provenance'); 
-            $model->deleteWorkflow($workflow->getUri());
-                        
-            $em->remove($workflow);
-            $em->flush();
+        $model = $this->get('model.workflow'); 
+        $model->deleteWorkflow($workflow->getUri());                        
 
+        if (true)
+        {
             $this->get('session')
                 ->getFlashBag()
                 ->add('success', 'Workflow deleted!')
@@ -102,24 +92,21 @@ class WorkflowController extends Controller
     }
     
     /**
-     * @Route("/workflow/edit/{workflow_id}", name="workflow-edit")
+     * @Route("/workflow/edit/{workflow_uri}", name="workflow-edit")
      */
-    public function editAction(Request $request, $workflow_id)
-    {        
-        $em = $this->get('doctrine')->getManager();
-                
-        $workflow = $em->getRepository('AppBundle:Workflow')
-                ->find($workflow_id);
+    public function editWorkflowAction(Request $request, $workflow_uri)
+    {             
+        $workflow_uri = urldecode($workflow_uri);
         
-        $form = $this->createForm(new \AppBundle\Form\WorkflowUploadType($em), $workflow);
+        $model = $this->get('model.workflow');                                   
+        $workflow = $model->findWorkflow($workflow_uri);
+        
+        $form = $this->createForm(new \AppBundle\Form\WorkflowType(), $workflow);
         
         $form->handleRequest($request);
                 
         if ($form->isValid()) 
         {              
-            $em->persist($workflow);
-            $em->flush();
-
             $this->get('session')
                 ->getFlashBag()
                 ->add('success', 'Workflow edited!')
@@ -127,8 +114,8 @@ class WorkflowController extends Controller
             
             $root_path = $this->get('kernel')->getRootDir();
 
-            $model = $this->get('model.provenance'); 
-            $model->storeWorkflow($workflow, $root_path);
+            $model = $this->get('model.workflow'); 
+            $model->editWorkflow($workflow, $root_path);
         }
         
         return $this->render('workflow/form.html.twig', array(
@@ -138,21 +125,17 @@ class WorkflowController extends Controller
     }
     
     /**
-     * @Route("/workflow", name="workflow-details")
+     * @Route("/workflow/{workflow_uri}", name="workflow-details")
      */
-    public function workflowAction(Request $request)
+    public function workflowAction(Request $request, $workflow_uri)
     {       
-        $workflow_uri = urldecode($request->get('workflow'));
+        $workflow_uri = urldecode($workflow_uri);
         
-        $em = $this->get('doctrine')->getManager();
-                
-        $workflow = $em->getRepository('AppBundle:Workflow')
-                ->findOneBy(array('uri'=>$workflow_uri));
-    
-        $model_workflow = $this->get('model.workflow'); 
+        $model = $this->get('model.workflow');                                   
+        $workflow = $model->findWorkflow($workflow_uri);
 
         // workflow run information
-        $processes = $model_workflow->processes($workflow_uri);
+        $processes = $model->processes($workflow_uri);
         
         $model_provenance = $this->get('model.provenance'); 
         $inputs = $model_provenance->workflowInputs($workflow_uri);
@@ -170,7 +153,7 @@ class WorkflowController extends Controller
     /**
      * @Route("/workflow/process", name="workflow-process")
      */
-    public function processAction(Request $request)
+    public function workflowProcessAction(Request $request)
     {
         $process_uri = urldecode($request->get('process'));
 

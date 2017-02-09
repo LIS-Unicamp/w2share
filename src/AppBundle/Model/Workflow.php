@@ -9,18 +9,11 @@ namespace AppBundle\Model;
 class Workflow 
 {
     private $driver;
-    protected $em;
     
-    public function __construct(\Doctrine\ORM\EntityManager $em, $driver)
+    public function __construct($driver)
     {
         $this->driver = $driver;
-        $this->em = $em;
-    }
-    
-    public function clearDB ()
-    {
-        $this->em->createQuery('DELETE FROM AppBundle:Workflow')->execute();
-    }
+    }        
     
     public function clearUploads ($root_path)
     {       
@@ -30,7 +23,22 @@ class Workflow
         }
     }  
     
-    public function processes($workflow)
+    public function findAll()
+    {
+        $query = "
+            SELECT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
+                ?uri a wfdesc:Workflow.
+                ?uri dc:creator ?creator.
+                OPTIONAL { ?uri rdfs:label ?label. }
+                OPTIONAL { ?uri dcterms:description ?description. }
+                OPTIONAL { ?uri dcterms:title ?title. }
+            }}
+            ";
+        
+        return $this->driver->getResults($query);
+    }
+    
+    public function findProcessesByWorkflow($workflow)
     {
         // process information
         $query = "
@@ -43,6 +51,48 @@ class Workflow
             }}
             ";
         
+        return $this->driver->getResults($query);
+    }
+    
+    public function saveWorkflow($workflow)
+    {
+        $this->load($workflow->getProvenanceAbsolutePath());
+        $this->load($workflow->getWfdescAbsolutePath());        
+
+        $command = "ruby ".$root_path."/../src/AppBundle/Utils/script.rb ".$workflow->getWorkflowAbsolutePath()." ".$root_path."/../web/uploads/documents/".$workflow->getHash().".png";            
+        system($command);
+    }
+    
+    protected function load($file_path)
+    {        
+        $query = "LOAD <http://".$this->driver->getDomain()."/prototype/web/uploads/documents/".basename($file_path)."> INTO graph <".$this->driver->getDefaultGraph().">";
+        $this->driver->getResults($query);
+    }
+    
+    /**
+     * Delete triples related to a workflow URI
+     * @param type $workflow_uri
+     */
+    public function deleteWorkflow($workflow_uri)
+    {
+        $query = "
+            DELETE data FROM <".$this->driver->getDefaultGraph()."> {
+                <".$workflow_uri."> rdf:type wfdesc:Workflow.                
+            }
+            ";  
+        return $this->driver->getResults($query);
+    }
+    
+    public function workflows()
+    {
+        $query = "
+            SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
+                ?workflow rdf:type wfdesc:Workflow.
+                OPTIONAL { ?workflow dcterms:description ?description. }
+                OPTIONAL { ?workflow dcterms:title ?title. }
+            }}
+        ";
+  
         return $this->driver->getResults($query);
     }
     

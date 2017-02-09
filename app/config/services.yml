@@ -44,7 +44,7 @@ services:
         
     model.workflow:
         class: AppBundle\Model\Workflow
-        arguments: ["@doctrine.orm.default_entity_manager","@app.rest_api"]
+        arguments: ["@app.rest_api"]
         
     model.annotation:
         class: AppBundle\Model\Annotation

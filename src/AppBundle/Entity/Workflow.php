@@ -7,57 +7,75 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * Workflow
  */
 class Workflow
-{
-    /**
-     * @var integer
-     */
-    private $id;    
-
+{    
     /**
      * @var string
      */
-    private $author;
+    private $creator;
+    
+    /**
+     * @var string
+     */
+    private $hash;
 
     /**
      * @var string
      */
     private $description;
+       
+
+    public function __construct() {
+        $this->hash = sha1(uniqid(mt_rand(), true));
+    }
     
-
     /**
-     * Get id
+     * Set creator
      *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }    
-
-    /**
-     * Set author
-     *
-     * @param string $author
+     * @param string $creator
      *
      * @return Workflow
      */
-    public function setAuthor($author)
+    public function setCreator($creator)
     {
-        $this->author = $author;
+        $this->creator = $creator;
 
         return $this;
     }
 
     /**
-     * Get author
+     * Get creator
      *
      * @return string
      */
-    public function getAuthor()
+    public function getCreator()
     {
-        return $this->author;
+        return $this->creator;
     }
 
+    /**
+     * Set hash
+     *
+     * @param string $hash
+     *
+     * @return Workflow
+     */
+    public function setHash($hash)
+    {
+        $this->hash = $hash;
+
+        return $this;
+    }
+
+    /**
+     * Get hash
+     *
+     * @return string
+     */
+    public function getHash()
+    {
+        return $this->hash;
+    }
+    
     /**
      * Set description
      *
@@ -180,21 +198,19 @@ class Workflow
 
     public function preUpload()
     {
-        if (null !== $this->getWorkflowFile()) {
-            // do whatever you want to generate a unique name
-            $filename = sha1(uniqid(mt_rand(), true));
+        $filename = $this->getHash();
+        if (null !== $this->getWorkflowFile()) 
+        {
             $this->workflow_path = $filename.'.'.$this->getWorkflowFile()->getClientOriginalExtension();
         }
         
-        if (null !== $this->getProvenanceFile()) {
-            // do whatever you want to generate a unique name
-            $filename = sha1(uniqid(mt_rand(), true));
+        if (null !== $this->getProvenanceFile()) 
+        {
             $this->provenance_path = $filename.'.'.$this->getProvenanceFile()->getClientOriginalExtension();
         }
         
-        if (null !== $this->getWfdescFile()) {
-            // do whatever you want to generate a unique name
-            $filename = sha1(uniqid(mt_rand(), true));
+        if (null !== $this->getWfdescFile()) 
+        {
             $this->wfdesc_path = $filename.'.'.$this->getWfdescFile()->getClientOriginalExtension();
         }
     }

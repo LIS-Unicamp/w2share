@@ -13,55 +13,7 @@ class Provenance
     public function __construct($driver)
     {
         $this->driver = $driver;
-    }
-    
-    
-    public function storeWorkflow($workflow, $root_path)
-    {
-        $this->load($workflow->getProvenanceAbsolutePath());
-        $this->load($workflow->getWfdescAbsolutePath());        
-
-        $command = "ruby ".$root_path."/../src/AppBundle/Utils/script.rb ".$workflow->getWorkflowAbsolutePath()." ".$root_path."/../web/uploads/documents/".$workflow->getId().".png";            
-        system($command);
-    }
-    
-    protected function load($file_path)
-    {
-        //$query = "LOAD bif:concat (\"file://".$file_path."\") INTO GRAPH <".$this->driver->getDefaultGraph().">";
-        
-        //$load = "curl -T myfoaf.rdf http://demo.openlinksw.com/DAV/home/demo/rdf_sink/myfoaf.rdf -u demo:demo";
-        
-        //$this->driver->load($file_path);
-        $query = "LOAD <http://".$this->driver->getDomain()."/phd-prototype/web/uploads/documents/".basename($file_path)."> INTO graph <".$this->driver->getDefaultGraph().">";
-        $this->driver->getResults($query);
-    }
-    
-    /**
-     * Delete triples related to a workflow URI
-     * @param type $workflow_uri
-     */
-    public function deleteWorkflow($workflow_uri)
-    {
-        $query = "
-            DELETE data FROM <".$this->driver->getDefaultGraph()."> {
-                <".$workflow_uri."> rdf:type wfdesc:Workflow.                
-            }
-            ";  
-        return $this->driver->getResults($query);
-    }
-    
-    public function workflows()
-    {
-        $query = "
-            SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
-                ?workflow rdf:type wfdesc:Workflow.
-                OPTIONAL { ?workflow dcterms:description ?description. }
-                OPTIONAL { ?workflow dcterms:title ?title. }
-            }}
-        ";
-  
-        return $this->driver->getResults($query);
-    }
+    }            
     
     public function concepts()
     {

@@ -1,26 +1,23 @@
 <?php
-// src/AppBundle/Form/ProductType.php
 namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class WorkflowUploadType extends AbstractType
+class WorkflowType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text', array('label' => 'Title'))
-            ->add('author', 'text', array('label' => 'Author'))
             ->add('uri', 'text', array('label' => 'URI'))
-            ->add('description', 'textarea', array('label' => 'Description'))
             ->add('provenance_file', 'file', array('label' => 'Provenance File', 'required' => false))
             ->add('workflow_file', 'file', array('label' => 'Workflow Spec (Sculf) File', 'required' => false))
             ->add('wfdesc_file', 'file', array('label' => 'Workflow Desc (ttl) File', 'required' => false))
             ->add('save', 'submit', array(
-                    'label' => 'Salvar',
-                    'attr' => array('class' => 'btn blue')
+                    'label' => 'Add',
+                    'icon' => 'glyphicon glyphicon-floppy-disk',
+                    'attr' => array('class' => 'btn btn-primary')
                 ))
         ;
     }
