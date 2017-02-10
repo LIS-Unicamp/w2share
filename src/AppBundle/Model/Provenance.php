@@ -98,53 +98,7 @@ class Provenance
             ";
         
         return $this->driver->getResults($query);
-    }
-    
-    public function processes($workflow)
-    {
-        // process information
-        $query = "
-            SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
-                <$workflow> dct:hasPart ?process.
-                ?process a wfdesc:Process.
-                OPTIONAL { ?process rdfs:label ?label. }
-                OPTIONAL { ?process dcterms:description ?description }
-                OPTIONAL { ?process prov:specializationOf ?subworkflow. }
-            }}
-            ";
-        
-        return $this->driver->getResults($query);
-    }
-    
-    public function workflowInputs($workflow)
-    {
-        // inputs information
-        $query = "
-            SELECT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
-                <".$workflow."> a wfdesc:Workflow;
-                wfdesc:hasInput ?input.
-                OPTIONAL { ?input rdfs:label ?label. }
-                OPTIONAL { ?input dcterms:description ?description. }
-            }}
-            ";
-        
-        return $this->driver->getResults($query);
-    }
-    
-    public function workflowOutputs($workflow)
-    {
-        // outputs information
-        $query = "
-            SELECT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
-                <".$workflow."> a wfdesc:Workflow;
-                wfdesc:hasOutput ?output.
-                OPTIONAL { ?output rdfs:label ?label. }
-                OPTIONAL { ?output dcterms:description ?description. }
-            }}
-            ";
-        
-        return $this->driver->getResults($query);
-    }
+    }             
     
     public function processRun($process)
     {
@@ -195,51 +149,7 @@ class Provenance
             ";
         
         return $this->driver->getResults($query);
-    }
-    
-    public function processOutputs($process)
-    {
-        // outputs information
-        $query = "
-            SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
-                <".$process."> a wfdesc:Process;
-                wfdesc:hasOutput ?output.
-                OPTIONAL { ?output rdfs:label ?label }
-                OPTIONAL { ?output dcterms:description ?description }
-            }}
-            ";
-        
-        return $this->driver->getResults($query);
-    }
-    
-    public function processInputs($process)
-    {
-        $query = "
-            SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
-                <".$process."> a wfdesc:Process;
-                wfdesc:hasInput ?input.
-                OPTIONAL { ?input rdfs:label ?label }
-                OPTIONAL { ?input dcterms:description ?description }
-            }}
-            ";
-        
-        return $this->driver->getResults($query);
-    }
-    
-    public function process($process)
-    {
-        $query = "
-            SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
-                <".$process."> a wfdesc:Process.
-                ?workflow wfdesc:hasSubProcess <".$process.">.
-                OPTIONAL { <".$process."> rdfs:label ?label }
-                OPTIONAL { <".$process."> dcterms:description ?description }
-                OPTIONAL { <".$process."> prov:specializationOf ?subworkflow. }
-            }}
-            ";
-        
-        return $this->driver->getSingleResult($query);
-    }
+    }        
     
     public function clearGraph()
     {

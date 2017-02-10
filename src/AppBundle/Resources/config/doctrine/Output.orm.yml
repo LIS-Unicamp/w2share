@@ -1,0 +1,13 @@
+AppBundle\Entity\Output: 
+    type: entity
+    fields:   
+        uri:
+            type: string
+        description:
+            type: string
+        label:
+            type: string
+    manyToOne:
+        process:
+            targetEntity: Process
+            inversedBy: outputs

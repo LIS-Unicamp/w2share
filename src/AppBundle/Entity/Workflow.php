@@ -29,6 +29,35 @@ class Workflow
     }
     
     /**
+     * @var string
+     */
+    private $label;
+    
+    /**
+     * Set label
+     *
+     * @param string $label
+     *
+     * @return Workflow
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+    /**
+     * Get label
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }    
+    
+    /**
      * Set creator
      *
      * @param string $creator
@@ -481,5 +510,47 @@ class Workflow
     public function getWfdescPath()
     {
         return $this->wfdesc_path;
+    }
+    
+    public function __toString() {
+        return $this->title ? $this->title : $this->label;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $workflow;
+
+
+    /**
+     * Add workflow
+     *
+     * @param \AppBundle\Entity\Process $workflow
+     * @return Workflow
+     */
+    public function addWorkflow(\AppBundle\Entity\Process $workflow)
+    {
+        $this->workflow[] = $workflow;
+    
+        return $this;
+    }
+
+    /**
+     * Remove workflow
+     *
+     * @param \AppBundle\Entity\Process $workflow
+     */
+    public function removeWorkflow(\AppBundle\Entity\Process $workflow)
+    {
+        $this->workflow->removeElement($workflow);
+    }
+
+    /**
+     * Get workflow
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getWorkflow()
+    {
+        return $this->workflow;
     }
 }

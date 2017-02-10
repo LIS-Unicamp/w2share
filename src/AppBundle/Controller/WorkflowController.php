@@ -11,14 +11,21 @@ class WorkflowController extends Controller
     /**
      * @Route("/workflows", name="workflows")
      */
-    public function indexAction(Request $request)
+    public function listAction(Request $request)
     {         
         $model_workflow = $this->get('model.workflow'); 
         
-        $result = $model_workflow->findAll();
+        $workflows = $model_workflow->findAll();
         
-        return $this->render('workflow/index.html.twig', array(
-            'result' => $result
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $workflows, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+        
+        return $this->render('workflow/list.html.twig', array(
+            'pagination' => $pagination
         ));
     }
     
@@ -122,6 +129,28 @@ class WorkflowController extends Controller
             'form' => $form->createView(),
             'workflow' => $workflow
         ));
+    }       
+    
+    /**
+     * @Route("/workflow/process/{process_uri}", name="workflow-process")
+     */
+    public function workflowProcessAction(Request $request)
+    {
+        $process_uri = urldecode($request->get('process_uri'));
+
+        $model = $this->get('model.workflow');             
+        $process_inputs = $model->findProcessInputs($process_uri);
+        $process_outputs = $model->findProcessOutputs($process_uri);
+        $process = $model->findProcess($process_uri);
+        $workflow = $model->findWorkflow($process->getWorkflow()->getUri());
+                
+        return $this->render('workflow/process.html.twig', array(
+            'process' => $process,
+            'process_uri' => $process_uri,
+            'process_inputs' => $process_inputs,
+            'process_outputs' => $process_outputs,
+            'workflow' => $workflow
+        ));
     }
     
     /**
@@ -133,13 +162,11 @@ class WorkflowController extends Controller
         
         $model = $this->get('model.workflow');                                   
         $workflow = $model->findWorkflow($workflow_uri);
-
-        // workflow run information
-        $processes = $model->processes($workflow_uri);
         
-        $model_provenance = $this->get('model.provenance'); 
-        $inputs = $model_provenance->workflowInputs($workflow_uri);
-        $outputs = $model_provenance->workflowOutputs($workflow_uri);                                        
+        // workflow run information
+        $processes = $model->findProcessesByWorkflow($workflow_uri);        
+        $inputs = $model->findWorkflowInputs($workflow_uri);
+        $outputs = $model->findWorkflowOutputs($workflow_uri);                                        
         
         return $this->render('workflow/workflow.html.twig', array(
             'processes' => $processes,
@@ -147,26 +174,6 @@ class WorkflowController extends Controller
             'outputs' => $outputs,
             'workflow' => $workflow,
             'workflow_uri' => $workflow_uri
-        ));
-    }
-    
-    /**
-     * @Route("/workflow/process", name="workflow-process")
-     */
-    public function workflowProcessAction(Request $request)
-    {
-        $process_uri = urldecode($request->get('process'));
-
-        $model = $this->get('model.provenance');             
-        $process_inputs = $model->processInputs($process_uri);
-        $process_outputs = $model->processOutputs($process_uri);
-        $process = $model->process($process_uri);
-                
-        return $this->render('workflow/process.html.twig', array(
-            'process' => $process,
-            'process_uri' => $process_uri,
-            'process_inputs' => $process_inputs,
-            'process_outputs' => $process_outputs,
         ));
     }
 }

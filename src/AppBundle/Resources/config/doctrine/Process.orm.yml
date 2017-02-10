@@ -1,0 +1,20 @@
+AppBundle\Entity\Process: 
+    type: entity
+    fields:  
+        uri:
+            type: string
+        description:
+            type: string
+        label:
+            type: string
+    manyToOne:
+        workflow:
+            targetEntity: Workflow
+            inversedBy: processes
+    oneToMany:
+        outputs:
+            targetEntity: Output
+            mappedBy: process
+        inputs:
+            targetEntity: Input
+            mappedBy: process

@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+{% block title %}Workflows{% endblock %}
+{% block body %}
+<h1>Workflows</h1>
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+<a class="btn btn-success" href="{{ path('workflow-add') }}"><i class="glyphicon glyphicon-plus"></i> Add</a>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width:100px">Action</th>
+                <th>Title</th>
+                <th>Creator</th>
+                <th>Description</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+    {% for row in pagination %}
+        <tr>
+            <td style="width:150px">
+                <a href="{{ path('workflow-details', { 'workflow_uri':row.uri|url_encode() }) }}"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('workflow-edit', { 'workflow_uri':row.uri|url_encode() }) }}"><i class="glyphicon glyphicon-edit"></i></a>
+                <a href="{{ path('workflow-delete', { 'workflow_uri':row.uri|url_encode() }) }}"><i class="glyphicon glyphicon-trash"></i></a>
+                <a href="{{ path('provenance-workflow', { 'workflow_uri':row.uri|url_encode() }) }}"><i class="glyphicon glyphicon-fast-backward"></i></a>
+                <a href="{{ path('workflow-qualitydimension-annotation', { 'workflow_uri':row.uri|url_encode() }) }}"><i class="glyphicon glyphicon-pencil"></i></a>
+            </td> 
+            <td>{{ row.title }}</td>
+            <td>{{ row.creator }}</a></td>
+            <td>{{ row.description }}</td> 
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="navigation">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        {{ app_pagination_render(pagination) }}
+    </div>
+</div>
+{% endblock %}  
+{% block javascripts %}            
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 

@@ -1,0 +1,16 @@
+AppBundle\Entity\Workflow: 
+    type: entity
+    fields:   
+        description:
+            type: string
+        label:
+            type: string
+        title:
+            type: string
+    oneToMany:
+        workflow:
+            targetEntity: Process
+            mappedBy: workflow
+    manyToOne:
+        creator:
+            targetEntity: Person            
