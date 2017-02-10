@@ -58,7 +58,7 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li{% if get_controller_name() == 'default' %} class="active"{% endif %}><a href="{{ path('homepage') }}">Home</a></li>
+            <li{% if get_controller_name() == 'default' and get_action_name() == 'index' %} class="active"{% endif %}><a href="{{ path('homepage') }}">Home</a></li>
             <li class="dropdown{% if get_controller_name() == 'workflow' %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   Workflows <span class="caret"></span>
@@ -85,7 +85,8 @@
                 </li>
                 <li><a href="{{ path('annotatation-qualitydimension') }}"><i class="glyphicon glyphicon-edit"></i> Workflow Quality Annotation</a></li>      
               </ul>
-            </li>                        
+            </li> 
+            <li{% if get_controller_name() == 'default' and get_action_name() == 'about' %} class="active"{% endif %}><a href="{{ path('about') }}">About</a></li>
           </ul>               
           <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
