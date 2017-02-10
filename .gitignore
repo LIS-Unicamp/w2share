@@ -12,3 +12,5 @@
 /web/uploads/
 /nbproject/private/
 composer.lock
+/app/config/deploy.sh
+/app/config/rsync_exclude.txt

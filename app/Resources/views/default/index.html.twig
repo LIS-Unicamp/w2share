@@ -3,29 +3,59 @@
 
 {% block body %}
 <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-      <div class="container">
-        <h1>Hello, world!</h1>
+        <h1>Welcome!</h1>
         <p>This is an under development prototype to share models as scientific workflows .</p>
-        <p><a class="btn btn-primary btn-lg" href="{{ path('about') }}" role="button">Learn more &raquo;</a></p>
+        <p><a class="btn btn-primary btn-lg" href="{{ path('about') }}" role="button">About us &raquo;</a></p>
         <!-- Example row of columns -->
+        <h2>Features</h2>
         <div class="row">
-          <div class="col-md-4">
-            <h2>Workflows</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-            <p><a class="btn btn-default" href="{{ path('provenance-workflows') }}" role="button">View details &raquo;</a></p>
+          <div class="col-md-6">
+              <div class="thumbnail">
+                  <img src="http://www.lis.ic.unicamp.br/~lucascarvalho/s2rwro/robase/test-create-RO/workflow/executable-workflow.png" title="executable workflow" style="height:300px">
+                  <div class="caption">
+                    <h2>Workflows</h2>
+                    <p>This prototype supports workflows designed using the Taverna system. </p>
+                    <p><a class="btn btn-default" href="{{ path('workflows') }}" role="button">View details &raquo;</a></p>
+                  </div>
+              </div>
           </div>
-          <div class="col-md-4">
-            <h2>Workflow Runs</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-            <p><a class="btn btn-default" href="{{ path('provenance-workflows-run') }}" role="button">View details &raquo;</a></p>
+            
+          <div class="col-md-6">
+              <div class="thumbnail">
+                  <a href="https://www.w3.org/TR/prov-o/diagrams/starting-points.svg"><img src="https://www.w3.org/TR/prov-o/diagrams/starting-points.svg"  alt="PROV-O Starting Point terms"></a>
+                  <div class="caption">
+                    <h2>Workflow Runs</h2>
+                    <p>Provenance data exported using the Taverna system can be imported in this prototype to allow exploration and reproducibility of experiments. </p>
+                    <p><a class="btn btn-default" href="{{ path('provenance-workflows-run') }}" role="button">View details &raquo;</a></p>
+                  </div>
+              </div>
          </div>
-          <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+         <div class="col-md-6">
+             <div class="thumbnail">
+                 <a href="http://www.lis.ic.unicamp.br/wp-content/uploads/2017/02/methodology-conver-script-workflow.png" rel="lightbox-0"><img class="wp-image-834 size-large" src="http://www.lis.ic.unicamp.br/wp-content/uploads/2017/02/methodology-conver-script-workflow-1024x581.png" alt="Methodology for Conversion of Scripts into Reproducible Workflow Research Objects" width="580" height="329"></a>
+                  <div class="caption">
+                    <h2>Conversion of Scripts</h2>
+                    <p>We have been workfing in a feature to allow the scientist to convert scripts into Reproducible Workflow Research Objects. </p>
+                    <p><a class="btn btn-default" href="http://www.lis.ic.unicamp.br/~lucascarvalho/s2rwro/" role="button">View details &raquo;</a></p>
+                  </div>
+             </div>
+         </div>
+          <div class="col-md-6">
+              <div class="thumbnail">
+                  <img class="irc_mi" src="https://image.slidesharecdn.com/ontologydevelopmentinprotg-150220094105-conversion-gate01/95/ontology-development-in-protg-15-638.jpg?cb=1424425409"  width="638" height="359" style="margin-top: 17px;" alt="Image result for ontology example">
+                  <div class="caption">
+                    <h2>QualityFlow</h2>
+                    <p>We have been working in an ontology and a feature to allow scientists to create Quality Dimensions and support manual annotatation of workflows, processes and results.</p>
+                    <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+                  </div>
+              </div>
           </div>
-        </div>
-      </div>
-    </div>    
+        </div>   
+{% endblock %}
+{% block stylesheets %}
+    <style>
+        .thumbnail {
+            min-height: 550px;
+        }
+    </style>
 {% endblock %}
