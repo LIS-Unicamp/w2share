@@ -10,7 +10,7 @@
 /web/bundles/
 /app/sessions/*
 /web/uploads/
-/nbproject/private/
+/nbproject/*
 composer.lock
 /app/config/deploy.sh
 /app/config/rsync_exclude.txt

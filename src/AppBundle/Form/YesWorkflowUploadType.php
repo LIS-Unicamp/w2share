@@ -12,7 +12,7 @@ class YesWorkflowUploadType extends AbstractType
         $builder            
             ->add('script_file', 'file', array('label' => 'Script File'))
             ->add('send', 'submit', array(
-                    'label' => 'Enviar',
+                    'label' => 'Send',
                     'attr' => array('class' => 'btn blue')
                 ))
         ;

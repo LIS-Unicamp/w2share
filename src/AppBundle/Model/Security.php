@@ -97,7 +97,7 @@ class Security
         
         $user_array = $this->driver->getResults($query);
         
-        try 
+        if (count($user_array) > 0)
         {
             $user->setUri($user_array[0]['uri']['value']);
             $user->setName($user_array[0]['name']['value']);
@@ -106,8 +106,7 @@ class Security
             $user->setHomepage($user_array[0]['homepage']['value']);
             $user->setSalt($user_array[0]['salt']['value']);
         } 
-        catch (\Symfony\Component\Debug\Exception\ContextErrorException $ex) 
-        {
+        else {
             return null;
         }                                
         

@@ -59,10 +59,12 @@ class WorkflowController extends Controller
                 
         if ($form->isValid()) 
         {             
+            $workflow->preUpload();
             $workflow->upload();
             
-            $model = $this->get('model.workflow'); 
-            $model->saveWorkflow($workflow);
+            $root_path = $this->get('kernel')->getRootDir();
+            $model = $this->get('model.workflow');             
+            $model->saveWorkflow($workflow, $root_path);
             
             $this->get('session')
                 ->getFlashBag()

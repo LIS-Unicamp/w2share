@@ -43,7 +43,7 @@ class AuthenticationHandler extends ContainerAware implements AuthenticationSucc
         }
         else
         {
-            return new RedirectResponse($this->container->get('router')->generate('homepage'));
+            return new RedirectResponse($this->container->get('router')->generate('homepage', array(), true));
         }
     }
 }

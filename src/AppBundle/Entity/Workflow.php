@@ -185,7 +185,7 @@ class Workflow
             $this->workflow_temp = $this->workflow_path;
             $this->workflow_path = null;
         } else {
-            $this->workflow_path = 'initial';
+            $this->workflow_path = sha1(uniqid(mt_rand(), true));
         }
     }
     
@@ -203,7 +203,7 @@ class Workflow
             $this->provenance_temp = $this->provenance_path;
             $this->provenance_path = null;
         } else {
-            $this->provenance_path = 'initial';
+            $this->provenance_path = sha1(uniqid(mt_rand(), true));
         }
     }
     
@@ -221,7 +221,7 @@ class Workflow
             $this->wfdesc_temp = $this->wfdesc_path;
             $this->wfdesc_path = null;
         } else {
-            $this->wfdesc_path = 'initial';
+            $this->wfdesc_path = sha1(uniqid(mt_rand(), true));
         }
     }
 

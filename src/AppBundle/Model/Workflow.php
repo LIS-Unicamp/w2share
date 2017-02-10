@@ -224,7 +224,7 @@ class Workflow
         return null;
     }
     
-    public function saveWorkflow($workflow, $root_path)
+    public function saveWorkflow(\AppBundle\Entity\Workflow $workflow, $root_path)
     {
         $this->load($workflow->getProvenanceAbsolutePath());
         $this->load($workflow->getWfdescAbsolutePath());        
