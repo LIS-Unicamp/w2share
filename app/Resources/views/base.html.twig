@@ -58,7 +58,7 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li{% if get_controller_name() == 'default' and get_action_name() == 'index' %} class="active"{% endif %}><a href="{{ path('homepage') }}">Home</a></li>
+            <li{% if get_controller_name() == 'default' and get_action_name() == 'homepage' %} class="active"{% endif %}><a href="{{ path('homepage') }}">Home</a></li>
             <li class="dropdown{% if get_controller_name() == 'workflow' %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   Workflows <span class="caret"></span>
@@ -66,7 +66,6 @@
               <ul class="dropdown-menu">
                 <li><a href="{{ path('workflow-add') }}"><i class="glyphicon glyphicon-plus"></i> Add</a></li>
                 <li><a href="{{ path('workflows') }}"><i class="glyphicon glyphicon-list"></i> List</a></li>
-                <li><a href="{{ path('provenance-workflows') }}"><i class="glyphicon glyphicon-backward"></i> Provenance</a></li>                
               </ul>
             </li>
             <li{% if get_controller_name() == 'provenance' %} class="active"{% endif %}><a href="{{ path('provenance-workflows-run') }}">Provenance</a></li>
@@ -149,7 +148,7 @@
         {% if app.request.get('_route') not in ['login','registration-form'] %} 
         <div class="row pull-right">
               <div class="col-lg-12">
-                  {{ render(controller('AppBundle:Provenance:concepts', { 'query':app.request.get('query'), 'concept':app.request.get('concept') } )) }}
+                  {{ render(controller('AppBundle:Search:concepts', { 'query':app.request.get('query'), 'concept':app.request.get('concept') } )) }}
               </div>
         </div> 
         {% endif %}

@@ -7,52 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class ProvenanceController extends Controller
-{               
-    /**
-     * @Route("/provenance/concepts", name="provenance-concepts")
-     */
-    public function conceptsAction(Request $request)
-    {
-        $concept = $request->get('concept');
-        $query = $request->get('query');
-        
-        $model = $this->get('model.provenance'); 
-        $result = $model->concepts();
-        
-        return $this->render('provenance/concepts-select.html.twig', array(
-            'concept' => $concept,
-            'query' => $query,
-            'result' => $result
-        ));
-    }
-    
-    /**
-     * @Route("/provenance/reset", name="provenance-reset")
-     */
-    public function resetAction(Request $request)
-    {                   
-        $model_provenance = $this->get('model.provenance');         
-        $model_provenance->clearGraph();                
-                    
-        return $this->redirect($this->generateUrl('provenance-workflows'));
-    }     
-    
-    /**
-     * @Route("/provenance/query", name="provenance-query")
-     */
-    public function queryAction(Request $request)
-    {
-        $concept = urldecode($request->get('concept'));
-        $query = urldecode($request->get('query'));
-        
-        $model = $this->get('model.provenance'); 
-        $result = $model->query($query, $concept);
-                
-        return $this->render('provenance/query-result.html.twig', array(
-            'result' => $result
-        ));
-    }
-    
+{                                      
     /**
      * @Route("/provenance/workflows-run", name="provenance-workflows-run")
      */
@@ -107,31 +62,17 @@ class ProvenanceController extends Controller
     }
     
     /**
-     * @Route("/provenance/workflow/{workflow}/delete", name="provenance-workflow-delete")
+     * @Route("/provenance/workflow-run/{workflow_uri}/delete", name="provenance-workflow-run-delete")
      */
-    public function workflowDeleteAction(Request $request)
+    public function workflowDeleteAction(Request $request, $workflow_uri)
     {        
-        $workflow = urldecode($request->get('workflow'));
+        $workflow = urldecode($workflow_uri);
         $model = $this->get('model.provenance'); 
-        $model->deleteWorkflow($workflow);
+        $model->deleteWorkflowRun($workflow_uri);
                     
-        return $this->redirect($this->generateUrl('provenance-workflows'));
+        return $this->redirect($this->generateUrl('provenance-workflows-run'));
     }
-    
-    /**
-     * @Route("/provenance/workflows", name="provenance-workflows")
-     */
-    public function workflowsAction(Request $request)
-    {
-        $model = $this->get('model.provenance'); 
-        $result = $model->workflows();
-                   
-        return $this->render('provenance/workflows.html.twig', array(
-            'result' => $result
-        ));
-    }
-    
-    
+                
     /**
      * @Route("/provenance/process", name="provenance-process")
      */
@@ -176,6 +117,17 @@ class ProvenanceController extends Controller
             'process_outputs' => $process_outputs,
         ));
     }
+    
+    /**
+     * @Route("/provenance/reset", name="provenance-reset")
+     */
+    public function resetAction(Request $request)
+    {                   
+        $model_provenance = $this->get('model.provenance');         
+        $model_provenance->clearGraph();                
+                    
+        return $this->redirect($this->generateUrl('provenance-workflows'));
+    }  
 }
 
 

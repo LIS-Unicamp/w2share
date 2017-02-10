@@ -42,6 +42,10 @@ services:
         class: AppBundle\Model\Provenance
         arguments: ["@app.rest_api"]
         
+    model.search:
+        class: AppBundle\Model\Search
+        arguments: ["@app.rest_api"]
+        
     model.workflow:
         class: AppBundle\Model\Workflow
         arguments: ["@app.rest_api"]
