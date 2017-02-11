@@ -10,18 +10,13 @@ class Workflow
 {
     private $driver;
     
-    public function __construct($driver)
-    {
-        $this->driver = $driver;
-    }        
+    private $container;
     
-    public function clearUploads ($root_path)
-    {       
-        foreach(glob($root_path."/../web/uploads/documents/*.*") as $file)
-        {            
-            unlink($file);
-        }
-    }  
+    public function __construct($driver, \Symfony\Component\DependencyInjection\ContainerInterface $container)
+    {
+        $this->container = $container;
+        $this->driver = $driver;
+    }                
     
     public function findAll()
     {
@@ -64,6 +59,7 @@ class Workflow
             SELECT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <".$workflow_uri."> a wfdesc:Workflow.
                 <".$workflow_uri."> dc:creator ?creator.
+                <".$workflow_uri."> <w2share:hash> ?hash.
                 OPTIONAL { <".$workflow_uri."> rdfs:label ?label. }
                 OPTIONAL { <".$workflow_uri."> dcterms:description ?description. }
                 OPTIONAL { <".$workflow_uri."> dcterms:title ?title. }
@@ -79,7 +75,8 @@ class Workflow
             $workflow->setTitle($workflow_array[0]['title']['value']);
             $workflow->setDescription($workflow_array[0]['description']['value']);
             $workflow->setLabel($workflow_array[0]['label']['value']);            
-            $workflow->setCreator($workflow_array[0]['creator']['value']);    
+            $workflow->setCreator($workflow_array[0]['creator']['value']); 
+            $workflow->setHash($workflow_array[0]['hash']['value']);
             return $workflow;
         }
         
@@ -224,18 +221,54 @@ class Workflow
         return null;
     }
     
-    public function saveWorkflow(\AppBundle\Entity\Workflow $workflow, $root_path)
+    public function addWorkflow(\AppBundle\Entity\Workflow $workflow)
     {
+        $root_path = $this->container->get('kernel')->getRootDir();
         $this->load($workflow->getProvenanceAbsolutePath());
-        $this->load($workflow->getWfdescAbsolutePath());        
+        $this->load($workflow->getWfdescAbsolutePath());
+        $this->saveWorkflowHash($workflow);
+        
+        $this->createWorkflowPNG($workflow, $root_path);
+    }
+    
+    public function editWorkflow(\AppBundle\Entity\Workflow $workflow)
+    {
+        $root_path = $this->container->get('kernel')->getRootDir();
+        $this->load($workflow->getProvenanceAbsolutePath());
+        $this->load($workflow->getWfdescAbsolutePath());
 
+        $this->createWorkflowPNG($workflow, $root_path);
+    }
+    
+    private function createWorkflowPNG($workflow, $root_path)
+    {
         $command = "ruby ".$root_path."/../src/AppBundle/Utils/script.rb ".$workflow->getWorkflowAbsolutePath()." ".$root_path."/../web/uploads/documents/".$workflow->getHash().".png";            
         system($command);
     }
     
+    private function saveWorkflowHash(\AppBundle\Entity\Workflow $workflow) 
+    {      
+        $query = 
+        "        
+        INSERT        
+        { 
+            GRAPH <".$this->driver->getDefaultGraph()."> 
+            { 
+                <".$workflow->getUri()."> <w2share:hash> '".$workflow->getHash()."'. 
+            }
+        }"; 
+
+        return $this->driver->getResults($query);        
+    }
+    
     protected function load($file_path)
     {        
-        $query = "LOAD <http://".$this->driver->getDomain()."/prototype/web/uploads/documents/".basename($file_path)."> INTO graph <".$this->driver->getDefaultGraph().">";
+        $path_url = "http://"
+                . $this->container->get('request')->getHost()
+                . $this->container->get('templating.helper.assets')
+                ->getUrl("/uploads/documents/".basename($file_path), null, true, true);
+
+        $query = "LOAD <".$path_url."> INTO graph <".$this->driver->getDefaultGraph().">";
         $this->driver->getResults($query);
     }
     
@@ -243,14 +276,20 @@ class Workflow
      * Delete triples related to a workflow URI
      * @param type $workflow_uri
      */
-    public function deleteWorkflow($workflow_uri)
+    public function deleteWorkflow(\AppBundle\Entity\Workflow $workflow)
     {
         $query = "
-            DELETE data FROM <".$this->driver->getDefaultGraph()."> {
-                <".$workflow_uri."> rdf:type wfdesc:Workflow.                
+            DELETE FROM <".$this->driver->getDefaultGraph()."> {
+                <".$workflow->getUri()."> ?property ?subject.                
+            }
+            WHERE
+            {
+                <".$workflow->getUri()."> ?property ?subject.  
             }
             ";  
-        return $this->driver->getResults($query);
+        $this->driver->getResults($query);
+        $workflow->removeUpload();
+        
     }        
     
     public function clearGraph()
@@ -258,4 +297,14 @@ class Workflow
         $query = "CLEAR GRAPH <".$this->driver->getDefaultGraph().">";        
         return $this->driver->getResults($query);              
     }
+    
+    public function clearUploads ()
+    {       
+        $root_path = $this->container->get('kernel')->getRootDir();
+
+        foreach(glob($root_path."/../web/uploads/documents/*.*") as $file)
+        {            
+            unlink($file);
+        }
+    }  
 }

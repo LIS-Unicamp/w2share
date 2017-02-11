@@ -48,7 +48,7 @@ services:
         
     model.workflow:
         class: AppBundle\Model\Workflow
-        arguments: ["@app.rest_api"]
+        arguments: [@app.rest_api, @service_container]
         
     model.annotation:
         class: AppBundle\Model\Annotation

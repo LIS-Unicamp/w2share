@@ -34,7 +34,7 @@
                     <button class="btn btn-xs" data-clipboard-text="{{ row.process.value }}">
                         <i class="glyphicon glyphicon-copy"></i>
                     </button>
-                    <a href="{{ path('provenance-process', { 'process': row.process.value|url_encode }) }}">{{ row.label.value }}</a></td>
+                    <a href="{{ path('provenance-process', { 'process_uri': row.process.value|url_encode }) }}">{{ row.label.value }}</a></td>
                 <td></a></td>
                 <td></a></td>
                 <td>{{ row.startedAtTime.value }}</a></td>

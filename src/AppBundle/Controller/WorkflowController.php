@@ -27,21 +27,7 @@ class WorkflowController extends Controller
         return $this->render('workflow/list.html.twig', array(
             'pagination' => $pagination
         ));
-    }
-    
-     /**
-     * @Route("/workflow/reset", name="workflow-reset")
-     */
-    public function resetAction(Request $request)
-    {                                   
-        $root_path = $this->get('kernel')->getRootDir();
-
-        $model_workflow = $this->get('model.workflow'); 
-        $model_workflow->clearGraph();
-        $model_workflow->clearUploads($root_path);
-                    
-        return $this->redirect($this->generateUrl('workflows'));
-    }     
+    }          
     
     /**
      * @Route("/workflow/add", name="workflow-add")
@@ -58,13 +44,12 @@ class WorkflowController extends Controller
         $form->handleRequest($request);
                 
         if ($form->isValid()) 
-        {             
+        {       
             $workflow->preUpload();
             $workflow->upload();
             
-            $root_path = $this->get('kernel')->getRootDir();
             $model = $this->get('model.workflow');             
-            $model->saveWorkflow($workflow, $root_path);
+            $model->addWorkflow($workflow);
             
             $this->get('session')
                 ->getFlashBag()
@@ -85,16 +70,26 @@ class WorkflowController extends Controller
      */
     public function removeWorkflowAction(Request $request, $workflow_uri)
     {                
-                                
+        $workflow_uri = urldecode($workflow_uri);
+                
         $model = $this->get('model.workflow'); 
-        $model->deleteWorkflow($workflow->getUri());                        
+        $workflow = $model->findWorkflow($workflow_uri);
 
-        if (true)
+        if ($workflow)
+        {
+            $model->deleteWorkflow($workflow);                        
+
+            $this->get('session')
+                    ->getFlashBag()
+                    ->add('success', 'Workflow deleted!')
+                ;
+        }
+        else
         {
             $this->get('session')
-                ->getFlashBag()
-                ->add('success', 'Workflow deleted!')
-            ;
+                    ->getFlashBag()
+                    ->add('error', 'Workflow does not exist!')
+                ;
         }
         
         return $this->redirect($this->generateUrl('workflows'));
@@ -115,16 +110,17 @@ class WorkflowController extends Controller
         $form->handleRequest($request);
                 
         if ($form->isValid()) 
-        {              
+        {                                     
+            $workflow->preUpload();            
+            $workflow->upload();
+            
+            $model = $this->get('model.workflow'); 
+            $model->editWorkflow($workflow);
+            
             $this->get('session')
                 ->getFlashBag()
                 ->add('success', 'Workflow edited!')
-            ;
-            
-            $root_path = $this->get('kernel')->getRootDir();
-
-            $model = $this->get('model.workflow'); 
-            $model->editWorkflow($workflow, $root_path);
+            ; 
         }
         
         return $this->render('workflow/form.html.twig', array(
@@ -156,7 +152,7 @@ class WorkflowController extends Controller
     }
     
     /**
-     * @Route("/workflow/{workflow_uri}", name="workflow-details")
+     * @Route("/workflow/details/{workflow_uri}", name="workflow-details")
      */
     public function workflowAction(Request $request, $workflow_uri)
     {       
@@ -178,5 +174,17 @@ class WorkflowController extends Controller
             'workflow_uri' => $workflow_uri
         ));
     }
+    
+    /**
+     * @Route("/workflow/reset", name="workflow-reset")
+     */
+    public function resetAction(Request $request)
+    {                                   
+        $model_workflow = $this->get('model.workflow'); 
+        $model_workflow->clearGraph();
+        $model_workflow->clearUploads();
+                    
+        return $this->redirect($this->generateUrl('workflows'));
+    }   
 }
 

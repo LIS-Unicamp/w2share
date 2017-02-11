@@ -1,5 +1,6 @@
 <?php
 namespace AppBundle\Utils;
+
 class RestAPI 
 {       
     private $default_graph = "http://www.lis.ic.unicamp.br/w2share/";
@@ -33,7 +34,7 @@ class RestAPI
     public function __construct(\Symfony\Component\DependencyInjection\ContainerInterface $container)
     {
         $this->env = $container->get('kernel')->getEnvironment();
-    }
+    }        
     
     public function getDomainSPAQL()
     {

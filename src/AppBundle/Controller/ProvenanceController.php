@@ -22,11 +22,11 @@ class ProvenanceController extends Controller
     }
     
     /**
-     * @Route("/provenance/workflow-run", name="provenance-workflow-run")
+     * @Route("/provenance/workflow-run/{workflow_run_uri}", name="provenance-workflow-run")
      */
-    public function workflowRunAction(Request $request)
+    public function workflowRunAction(Request $request, $workflow_run_uri)
     {        
-        $workflow_run = urldecode($request->get('workflow_run'));
+        $workflow_run = urldecode($workflow_run_uri);
         
         $model = $this->get('model.provenance'); 
         $result = $model->workflowRun($workflow_run);
@@ -38,33 +38,29 @@ class ProvenanceController extends Controller
     }
     
     /**
-     * @Route("/provenance/workflow", name="provenance-workflow")
+     * @Route("/provenance/workflow-runs/{workflow_uri}", name="provenance-workflow")
      */
-    public function workflowAction(Request $request)
+    public function workflowRunByworkflowAction(Request $request, $workflow_uri)
     {       
-        $workflow = urldecode($request->get('workflow'));
+        $workflow_uri = urldecode($workflow_uri);                
     
-        $model = $this->get('model.provenance'); 
+        $model_provenance = $this->get('model.provenance'); 
+        $model_workflow = $this->get('model.workflow'); 
 
         // workflow run information
-        $workflow_runs = $model->workflowRuns($workflow);
-        $processes = $model->processes($workflow);
-        $inputs = $model->workflowInputs($workflow);
-        $outputs = $model->workflowOutputs($workflow);                                        
+        $workflow = $model_workflow->findWorkflow($workflow_uri);
+        $workflow_runs = $model_provenance->workflowRuns($workflow_uri);                                               
         
         return $this->render('provenance/workflow.html.twig', array(
-            'result1' => $workflow_runs,
-            'result2' => $processes,
-            'inputs' => $inputs,
-            'outputs' => $outputs,
+            'workflow_runs' => $workflow_runs,
             'workflow' => $workflow
         ));
     }
     
     /**
-     * @Route("/provenance/workflow-run/{workflow_uri}/delete", name="provenance-workflow-run-delete")
+     * @Route("/provenance/workflow-run/{workflow_run_uri}/delete", name="provenance-workflow-run-delete")
      */
-    public function workflowDeleteAction(Request $request, $workflow_uri)
+    public function workflowRunDeleteAction(Request $request, $workflow_uri)
     {        
         $workflow = urldecode($workflow_uri);
         $model = $this->get('model.provenance'); 
@@ -74,20 +70,22 @@ class ProvenanceController extends Controller
     }
                 
     /**
-     * @Route("/provenance/process", name="provenance-process")
+     * @Route("/provenance/process/{process_uri}", name="provenance-process")
      */
-    public function processAction(Request $request)
+    public function processAction(Request $request, $process_uri)
     {
-        $process_uri = urldecode($request->get('process'));
+        $process_uri = urldecode($process_uri);
 
         $model = $this->get('model.provenance'); 
            
         $result1 = $model->processRun($process_uri);
         $result2 = $model->processRunInputs($process_uri);
         $result3 = $model->processRunOutputs($process_uri); 
-        $process_inputs = $model->processInputs($process_uri);
-        $process_outputs = $model->processOutputs($process_uri);
-        $process = $model->process($process_uri);
+        
+        $model_workflow = $this->get('model.workflow');        
+        $process_inputs = $model_workflow->findProcessInputs($process_uri);
+        $process_outputs = $model_workflow->findProcessOutputs($process_uri);
+        $process = $model_workflow->findProcess($process_uri);
 
         $inputs = array();
         if ($result2 != '')

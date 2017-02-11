@@ -224,6 +224,14 @@ class Workflow
             $this->wfdesc_path = sha1(uniqid(mt_rand(), true));
         }
     }
+    
+    public function fileNames()
+    {
+        $filename = $this->getHash();
+        $this->provenance_path = $filename.'.prov.ttl';
+        $this->workflow_path = $filename.'.t2flow';
+        $this->wfdesc_path = $filename.'.wfdesc.ttl';
+    }
 
     public function preUpload()
     {
@@ -235,12 +243,12 @@ class Workflow
         
         if (null !== $this->getProvenanceFile()) 
         {
-            $this->provenance_path = $filename.'.'.$this->getProvenanceFile()->getClientOriginalExtension();
+            $this->provenance_path = $filename.'.prov.'.$this->getProvenanceFile()->getClientOriginalExtension();
         }
         
         if (null !== $this->getWfdescFile()) 
         {
-            $this->wfdesc_path = $filename.'.'.$this->getWfdescFile()->getClientOriginalExtension();
+            $this->wfdesc_path = $filename.'.wfdesc.'.$this->getWfdescFile()->getClientOriginalExtension();
         }
     }
 
@@ -307,19 +315,20 @@ class Workflow
 
     public function removeUpload()
     {
+        $this->fileNames();
         $workflow_file = $this->getWorkflowAbsolutePath();
         if ($workflow_file) {
-            @unlink($workflow_file);
+            unlink($workflow_file);
         }
         
         $provenance_file = $this->getProvenanceAbsolutePath();
         if ($provenance_file) {
-            @unlink($provenance_file);
+            unlink($provenance_file);
         }
         
         $wfdesc_file = $this->getWfdescAbsolutePath();
         if ($wfdesc_file) {
-            @unlink($wfdesc_file);
+            unlink($wfdesc_file);
         }
     }
 
