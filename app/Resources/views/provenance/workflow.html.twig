@@ -31,7 +31,7 @@
                 <button class="btn btn-xs" data-clipboard-text="{{ row.workflowRun.value }}">
                     <i class="glyphicon glyphicon-copy"></i>
                 </button>
-                <a href="{{ path('provenance-workflow-run', { 'workflow_run': row.workflowRun.value|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('provenance-workflow-run', { 'workflow_run_uri': row.workflowRun.value|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>
             </td>
             <td>{{ row.startedAtTime.value }}</a></td>
             <td>{{ row.endedAtTime.value }}</td>

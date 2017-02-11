@@ -16,9 +16,9 @@
         <tbody>
             <!-- TO-DO: Recuperar só as informacoes do workflow selecionado -->
             <tr>
-                <td>{{workflow.title}}</td>
-                <td>{{workflow.author}}</td>
-                <td>{{workflow.description}}</td>
+                <td>{{ workflow.title }}</td>
+                <td>{{ workflow.creator }}</td>
+                <td>{{ workflow.description }}</td>
             </tr>
         </tbody>
     </table>
@@ -83,9 +83,9 @@
             <!-- TO-DO: Recuperar só as informacoes do workflow selecionado -->
             <tr>
                 <td>
-                    <button class="btn btn-xs" data-clipboard-text=""> <!-- TO-DO: trocar depois pela funcao Delete -->
+                    <a class="btn btn-xs delete" href="{# path('alguma-rota') #}"> <!-- TO-DO: trocar depois pela funcao Delete -->
                         <i class="glyphicon glyphicon-trash"></i>
-                    </button>
+                    </a>
                 </td>
                 <td>Dummy</td>
                 <td>Dummy</td>

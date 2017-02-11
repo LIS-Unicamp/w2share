@@ -52,10 +52,10 @@ class AnnotationController extends Controller
         $model = $this->get('model.annotation'); 
         $annotations = $model->listAnnotations($uri);
         
-        $model_provenance = $this->get('model.provenance'); 
+        $model_workflow = $this->get('model.workflow'); 
         if ($artefact == 'process')
         {
-            $object = $model_provenance->process($uri);
+            $object = $model_workflow->findProcess($uri);
         }
                     
         return $this->render('annotation/list.html.twig', array(
@@ -64,38 +64,24 @@ class AnnotationController extends Controller
             'annotations' => $annotations
         ));
     }  
-    
-    /**
-     * @Route("/annotatation/reset", name="annotation-reset")
-     */
-    public function annotatationResetAction(Request $request)
-    {                
-        $model = $this->get('model.annotation'); 
-        $model->clearGraph();
         
-        return $this->redirect($this->generateUrl('homepage'));
-    }  
     /**
      * 
-     * @Route("/annotation/qualitydimension/workflow", name="workflow-qualitydimension-annotation")
+     * @Route("/annotation/qualitydimension/workflow/{workflow_uri}", name="workflow-qualitydimension-annotation")
      */
-    public function workflowQualityDimensionAnnotationAction(Request $request)
+    public function workflowQualityDimensionAnnotationAction(Request $request, $workflow_uri)
     {
-        $workflow_uri = urldecode($request->get('workflow'));
+        $workflow_uri = urldecode($workflow_uri);
         
-        $em = $this->get('doctrine')->getManager();
+        $model = $this->get('model.workflow');
                 
-        $workflow = $em->getRepository('AppBundle:Workflow')
-                ->findOneBy(array('uri'=>$workflow_uri));
+        $workflow = $model->findWorkflow($workflow_uri);
     
-        $model_workflow = $this->get('model.workflow'); 
-
         // workflow run information
-        $processes = $model_workflow->processes($workflow_uri);
+        $processes = $model->findProcessesByWorkflow($workflow_uri);
         
-        $model_provenance = $this->get('model.provenance'); 
-        $inputs = $model_provenance->workflowInputs($workflow_uri);
-        $outputs = $model_provenance->workflowOutputs($workflow_uri);
+        $inputs = $model->findWorkflowInputs($workflow_uri);
+        $outputs = $model->findWorkflowOutputs($workflow_uri);
         
         //Info from Quality dimension
         $model_qualitydimension = $this->get('model.qualitydimension'); 
@@ -103,14 +89,13 @@ class AnnotationController extends Controller
         
         //Annotation quality dimension and value
         $qualityannotation = new \AppBundle\Entity\QualityAnnotation();
-        $model = $this->get('model.annotation');
         
         $value = $request->get('value');
         $name = $request->get('name');
         
         $form = $this->createForm(new \AppBundle\Form\QualityAnnotationAddType(), $qualityannotation,
                                   array(
-                                  'action' => $this->generateUrl('workflow-qualitydimension-annotation'),
+                                  'action' => $this->generateUrl('workflow-qualitydimension-annotation', array('workflow_uri' => urlencode($workflow_uri))),
                                   'method' => 'POST'
                                   ));
         
@@ -201,5 +186,16 @@ class AnnotationController extends Controller
             'workflows' => $workflows
         ));
     }
+    
+    /**
+     * @Route("/annotatation/reset", name="annotation-reset")
+     */
+    public function annotatationResetAction(Request $request)
+    {                
+        $model = $this->get('model.annotation'); 
+        $model->clearGraph();
+        
+        return $this->redirect($this->generateUrl('homepage'));
+    }  
     
 }

@@ -3,7 +3,7 @@
 {% block body %}
 <h1>Annotation <small>Form</small></h1>
         
-<a href="{{ path('workflow-'~app.request.get('artefact'), { 'process': app.request.get('uri')|url_decode }) }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-arrow-left"> {{ app.request.get('artefact')|capitalize }}</i></a>
+<a href="{{ path('workflow-'~app.request.get('artefact'), { 'process_uri': app.request.get('uri') }) }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-arrow-left"> {{ app.request.get('artefact')|capitalize }}</i></a>
 
 <form action="" method="POST">
     <div class="form-body">
@@ -49,9 +49,7 @@
     <div class="form-actions">
         <input type="submit" class="btn btn-default">
     </div>
-</form>
-                
-
+</form>               
 {% endblock %}  
 {% block javascripts %}            
 {% endblock %}
