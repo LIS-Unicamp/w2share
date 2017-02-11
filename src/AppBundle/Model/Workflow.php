@@ -263,11 +263,17 @@ class Workflow
     
     protected function load($file_path)
     {        
-        $path_url = "http://"
-                . $this->container->get('request')->getHost()
-                . $this->container->get('templating.helper.assets')
+        $env = $this->container->get('kernel')->getEnvironment();
+        
+        $path_url = '';
+        if ($env == 'dev')
+        {
+            $path_url = "http://"
+                . $this->container->get('request')->getHost();
+        }
+        $path_url .= $this->container->get('templating.helper.assets')
                 ->getUrl("/uploads/documents/".basename($file_path), null, true, true);
-
+        
         $query = "LOAD <".$path_url."> INTO graph <".$this->driver->getDefaultGraph().">";
         $this->driver->getResults($query);
     }

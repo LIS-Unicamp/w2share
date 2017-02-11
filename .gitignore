@@ -11,6 +11,6 @@
 /app/sessions/*
 /web/uploads/
 /nbproject/*
-composer.lock
+/composer.lock
 /app/config/deploy.sh
 /app/config/rsync_exclude.txt
