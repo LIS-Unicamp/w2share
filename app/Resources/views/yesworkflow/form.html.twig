@@ -34,14 +34,15 @@
     </div>
     {{ form_end(form) }}
 </form>
-
+{% if script_content %}
 <h2>Abstract Workflow</h2>
-<img src="{{ app.request.basepath }}/{{ abstract_workflow }}">
+<a href="{{ app.request.basepath }}/{{ abstract_workflow }}"><img src="{{ app.request.basepath }}/{{ abstract_workflow }}" style="max-width: 1300px"></a>
 
 <h2>Uploaded Script</h2>
 <pre class="brush: bash">
 {{ script_content }}
 </pre>
+{% endif %}
 {% endblock %}  
 {% block javascripts %}  
     <!-- Include required JS files -->

@@ -8,8 +8,17 @@ AppBundle\Entity\Workflow:
         title:
             type: string
     oneToMany:
-        workflow:
+        workflow_runs:
+            targetEntity: WorkflowRun
+            mappedBy: workflow
+        processes:
             targetEntity: Process
+            mappedBy: workflow
+        inputs:
+            targetEntity: Input
+            mappedBy: workflow
+        outputs:
+            targetEntity: Output
             mappedBy: workflow
     manyToOne:
         creator:

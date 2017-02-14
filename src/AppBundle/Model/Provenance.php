@@ -27,8 +27,12 @@ class Provenance
             }}
             ORDER BY  DESC(?startedAtTime)
             ";
+        $workflow_run_array = $this->driver->getResults($query);
+        
+        $workflowRun = new WorkflowRun();
+        
 
-        return $this->driver->getResults($query);
+        return $workflowRun;
     }
     
     /**

@@ -1,0 +1,13 @@
+AppBundle\Entity\OutputRun: 
+    type: entity
+    fields:   
+        uri:
+            type: string
+        description:
+            type: string
+        label:
+            type: string
+    manyToOne:
+        process:
+            targetEntity: ProcessRun
+            inversedBy: outputs

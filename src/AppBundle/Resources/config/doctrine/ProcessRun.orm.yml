@@ -1,0 +1,20 @@
+AppBundle\Entity\ProcessRun: 
+    type: entity
+    fields:  
+        uri:
+            type: string
+        description:
+            type: string
+        label:
+            type: string
+    manyToOne:
+        workflow_run:
+            targetEntity: WorkflowRun
+            inversedBy: processesRun
+    oneToMany:
+        outputs:
+            targetEntity: Output
+            mappedBy: process
+        inputs:
+            targetEntity: Input
+            mappedBy: process
