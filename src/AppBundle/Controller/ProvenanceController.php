@@ -14,10 +14,10 @@ class ProvenanceController extends Controller
     public function workflowsRunAction(Request $request)
     {
         $model = $this->get('model.provenance'); 
-        $result = $model->workflowsRun();
+        $workflows_run = $model->findWorkflowsRunByWorkflowOrAll();
                 
         return $this->render('provenance/workflows-run.html.twig', array(
-            'result' => $result
+            'workflows_run' => $workflows_run
         ));
     }
     
@@ -26,21 +26,29 @@ class ProvenanceController extends Controller
      */
     public function workflowRunAction(Request $request, $workflow_run_uri)
     {        
-        $workflow_run = urldecode($workflow_run_uri);
+        $workflow_run_uri = urldecode($workflow_run_uri);
         
         $model = $this->get('model.provenance'); 
-        $result = $model->workflowRun($workflow_run);
+        $workflowRun = $model->findWorkflowRun($workflow_run_uri);        
+        
+        if (null === $workflowRun)
+        {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Workflow run not found!');
+        }
+        
+        $processes = $model->findProcessesByWorkflowRun($workflow_run_uri);
+        
+        $workflowRun->setProcesses($processes);
         
         return $this->render('provenance/workflow-run.html.twig', array(
-            'result' => $result,
-            'workflow_run' => $workflow_run
+            'workflowRun' => $workflowRun
         ));
     }
     
     /**
      * @Route("/provenance/workflow-runs/{workflow_uri}", name="provenance-workflow")
      */
-    public function workflowRunByworkflowAction(Request $request, $workflow_uri)
+    public function workflowRunByWorkflowAction(Request $request, $workflow_uri)
     {       
         $workflow_uri = urldecode($workflow_uri);                
     
@@ -49,7 +57,7 @@ class ProvenanceController extends Controller
 
         // workflow run information
         $workflow = $model_workflow->findWorkflow($workflow_uri);
-        $workflow_runs = $model_provenance->workflowRuns($workflow_uri);                                               
+        $workflow_runs = $model_provenance->findWorkflowRunsByWorkflowOrAll($workflow_uri);                                               
         
         return $this->render('provenance/workflow.html.twig', array(
             'workflow_runs' => $workflow_runs,

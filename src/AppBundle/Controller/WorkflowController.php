@@ -105,6 +105,11 @@ class WorkflowController extends Controller
         $model = $this->get('model.workflow');                                   
         $workflow = $model->findWorkflow($workflow_uri);
         
+        if (null === $workflow)
+        {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Workflow not found!');
+        }
+        
         $form = $this->createForm(new \AppBundle\Form\WorkflowType(), $workflow);
         
         $form->handleRequest($request);

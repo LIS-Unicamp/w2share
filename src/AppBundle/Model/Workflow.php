@@ -24,6 +24,7 @@ class Workflow
             SELECT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 ?uri a wfdesc:Workflow.
                 ?uri dc:creator ?creator.
+                ?uri <w2share:hash> ?hash.
                 OPTIONAL { ?uri rdfs:label ?label. }
                 OPTIONAL { ?uri dcterms:description ?description. }
                 OPTIONAL { ?uri dcterms:title ?title. }
@@ -234,15 +235,27 @@ class Workflow
     public function editWorkflow(\AppBundle\Entity\Workflow $workflow)
     {
         $root_path = $this->container->get('kernel')->getRootDir();
-        $this->load($workflow->getProvenanceAbsolutePath());
-        $this->load($workflow->getWfdescAbsolutePath());
-
-        $this->createWorkflowPNG($workflow, $root_path);
+        
+        if ($workflow->getProvenanceFile())
+        {
+            $this->load($workflow->getProvenanceAbsolutePath());
+        }
+        
+        if ($workflow->getWfdescFile())
+        {
+            $this->load($workflow->getWfdescAbsolutePath());
+        }
+        
+        if ($workflow->getWorkflowFile())
+        {
+            $this->createWorkflowPNG($workflow, $root_path);
+        }
     }
     
     private function createWorkflowPNG($workflow, $root_path)
     {
         $command = "ruby ".$root_path."/../src/AppBundle/Utils/script.rb ".$workflow->getWorkflowAbsolutePath()." ".$root_path."/../web/uploads/documents/".$workflow->getHash().".png";            
+        echo $command; exit;
         system($command);
     }
     

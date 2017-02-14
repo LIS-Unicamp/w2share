@@ -12,6 +12,9 @@ AppBundle\Entity\Process:
             targetEntity: Workflow
             inversedBy: processes
     oneToMany:
+        process_runs:
+            targetEntity: ProcessRun
+            mappedBy: process
         outputs:
             targetEntity: Output
             mappedBy: process

@@ -205,4 +205,42 @@ class Process
     {
         return $this->inputs;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $process_runs;
+
+
+    /**
+     * Add process_runs
+     *
+     * @param \AppBundle\Entity\ProcessRun $processRuns
+     * @return Process
+     */
+    public function addProcessRun(\AppBundle\Entity\ProcessRun $processRuns)
+    {
+        $this->process_runs[] = $processRuns;
+    
+        return $this;
+    }
+
+    /**
+     * Remove process_runs
+     *
+     * @param \AppBundle\Entity\ProcessRun $processRuns
+     */
+    public function removeProcessRun(\AppBundle\Entity\ProcessRun $processRuns)
+    {
+        $this->process_runs->removeElement($processRuns);
+    }
+
+    /**
+     * Get process_runs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProcessRuns()
+    {
+        return $this->process_runs;
+    }
 }

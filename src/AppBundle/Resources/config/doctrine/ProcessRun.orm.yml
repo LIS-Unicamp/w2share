@@ -2,19 +2,24 @@ AppBundle\Entity\ProcessRun:
     type: entity
     fields:  
         uri:
-            type: string
-        description:
-            type: string
+            type: string        
         label:
             type: string
+        started_at_time:
+            type: datetime
+        ended_at_time:
+            type: datetime
     manyToOne:
         workflow_run:
             targetEntity: WorkflowRun
             inversedBy: processesRun
+        process:
+            targetEntity: Process
+            inversedBy: processesRun
     oneToMany:
         outputs:
-            targetEntity: Output
+            targetEntity: OutputRun
             mappedBy: process
         inputs:
-            targetEntity: Input
+            targetEntity: InputRun
             mappedBy: process

@@ -562,4 +562,156 @@ class Workflow
     {
         return $this->workflow;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $processes;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $inputs;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $outputs;
+
+
+    /**
+     * Add processes
+     *
+     * @param \AppBundle\Entity\Process $processes
+     * @return Workflow
+     */
+    public function addProcesse(\AppBundle\Entity\Process $processes)
+    {
+        $this->processes[] = $processes;
+    
+        return $this;
+    }
+
+    /**
+     * Remove processes
+     *
+     * @param \AppBundle\Entity\Process $processes
+     */
+    public function removeProcesse(\AppBundle\Entity\Process $processes)
+    {
+        $this->processes->removeElement($processes);
+    }
+
+    /**
+     * Get processes
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProcesses()
+    {
+        return $this->processes;
+    }
+
+    /**
+     * Add inputs
+     *
+     * @param \AppBundle\Entity\Input $inputs
+     * @return Workflow
+     */
+    public function addInput(\AppBundle\Entity\Input $inputs)
+    {
+        $this->inputs[] = $inputs;
+    
+        return $this;
+    }
+
+    /**
+     * Remove inputs
+     *
+     * @param \AppBundle\Entity\Input $inputs
+     */
+    public function removeInput(\AppBundle\Entity\Input $inputs)
+    {
+        $this->inputs->removeElement($inputs);
+    }
+
+    /**
+     * Get inputs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getInputs()
+    {
+        return $this->inputs;
+    }
+
+    /**
+     * Add outputs
+     *
+     * @param \AppBundle\Entity\Output $outputs
+     * @return Workflow
+     */
+    public function addOutput(\AppBundle\Entity\Output $outputs)
+    {
+        $this->outputs[] = $outputs;
+    
+        return $this;
+    }
+
+    /**
+     * Remove outputs
+     *
+     * @param \AppBundle\Entity\Output $outputs
+     */
+    public function removeOutput(\AppBundle\Entity\Output $outputs)
+    {
+        $this->outputs->removeElement($outputs);
+    }
+
+    /**
+     * Get outputs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getOutputs()
+    {
+        return $this->outputs;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $workflow_runs;
+
+
+    /**
+     * Add workflow_runs
+     *
+     * @param \AppBundle\Entity\WorkflowRun $workflowRuns
+     * @return Workflow
+     */
+    public function addWorkflowRun(\AppBundle\Entity\WorkflowRun $workflowRuns)
+    {
+        $this->workflow_runs[] = $workflowRuns;
+    
+        return $this;
+    }
+
+    /**
+     * Remove workflow_runs
+     *
+     * @param \AppBundle\Entity\WorkflowRun $workflowRuns
+     */
+    public function removeWorkflowRun(\AppBundle\Entity\WorkflowRun $workflowRuns)
+    {
+        $this->workflow_runs->removeElement($workflowRuns);
+    }
+
+    /**
+     * Get workflow_runs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getWorkflowRuns()
+    {
+        return $this->workflow_runs;
+    }
 }

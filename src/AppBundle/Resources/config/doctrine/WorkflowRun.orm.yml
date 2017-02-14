@@ -1,16 +1,15 @@
 AppBundle\Entity\WorkflowRun: 
     type: entity
     fields:   
-        description:
+        uri:
             type: string
         label:
             type: string
-        title:
-            type: string
+        started_at_time:
+            type: datetime
+        ended_at_time:
+            type: datetime
     oneToMany:
-        workflow:
-            targetEntity: Workflow
-            inversedBy: workflow_runs
         processes:
             targetEntity: ProcessRun
             mappedBy: workflow_run
@@ -19,4 +18,8 @@ AppBundle\Entity\WorkflowRun:
             mappedBy: workflow_run
         outputs:
             targetEntity: OutputRun
-            mappedBy: workflow_run               
+            mappedBy: workflow_run 
+    manyToOne:
+        workflow:
+            targetEntity: Workflow
+            inversedBy: workflow_runs

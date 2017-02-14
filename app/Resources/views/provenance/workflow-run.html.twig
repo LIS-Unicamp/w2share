@@ -6,7 +6,7 @@
         2. o tempo de execução de cada processo
         3. as entradas e saídas de cada processo
     -->
-    <h1>Workflow Run <small><button class="btn btn-xs" data-clipboard-text="{{ workflow_run }}">
+    <h1>Workflow Run <small><button class="btn btn-xs" data-clipboard-text="{{ workflowRun.uri }}">
                     <i class="glyphicon glyphicon-copy"></i>
                     </button></small></h1>
     <h2>Processes Run</h2>
@@ -16,12 +16,11 @@
                 <tr>
                     <th>Process Run</th>
                     <th>Process</th>           
-                    <th>Start Time</th>
-                    <th>End Time</th>
+                    <th>Time</th>
                 </tr>
             </thead>
             <tbody>
-        {% for processRun in result %}
+        {% for processRun in workflowRun.processes %}
             <tr>
                 <td>
                     <button class="btn btn-xs" data-clipboard-text="{{ processRun.uri }}">
@@ -33,8 +32,10 @@
                         <i class="glyphicon glyphicon-copy"></i>
                     </button>
                     <a href="{{ path('provenance-process', { 'process_uri': processRun.process.uri|url_encode }) }}">{{ processRun.label }}</a></td>
-                <td>{{ processRun.startedAtTime }}</a></td>
-                <td>{{ processRun.endedAtTime }}</td>
+                <td>
+                    {{ processRun.startedAtTime|date('H:i:s.v m-d-Y') }} (<strong>Started</strong>)
+                    <br>{{ processRun.endedAtTime|date('H:i:s.v m-d-Y') }} (<strong>End</strong>)
+                </td>
             </tr>
         {% endfor %}
             </tbody>

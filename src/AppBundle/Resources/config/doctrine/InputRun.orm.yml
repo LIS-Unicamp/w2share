@@ -3,9 +3,7 @@ AppBundle\Entity\InputRun:
     fields:   
         uri:
             type: string
-        description:
-            type: string
-        label:
+        content:
             type: string
     manyToOne:
         process:

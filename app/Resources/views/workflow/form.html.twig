@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
-{% block title %}Add Workflow{% endblock %}
+{% block title %}{% if workflow.uri %}Edit{% else %}Add{% endif %} Workflow{% endblock %}
 {% block body %}
-<h1>Workflow <small>Add</small></h1>
+<h1>Workflow <small>{% if workflow.uri %}Edit{% else %}Add{% endif %}</small></h1>
 {{ form_start(form) }}
     <div class="form-body">
         {% for flashMessage in app.session.flashbag.get('success') %}
