@@ -12,14 +12,14 @@ AppBundle\Entity\ProcessRun:
     manyToOne:
         workflow_run:
             targetEntity: WorkflowRun
-            inversedBy: processesRun
+            inversedBy: processes_run
         process:
             targetEntity: Process
-            inversedBy: processesRun
+            inversedBy: processes_run
     oneToMany:
-        outputs:
+        outputs_run:
             targetEntity: OutputRun
-            mappedBy: process
-        inputs:
+            mappedBy: process_run
+        inputs_run:
             targetEntity: InputRun
-            mappedBy: process
+            mappedBy: process_run

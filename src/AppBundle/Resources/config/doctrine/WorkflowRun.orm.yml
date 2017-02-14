@@ -10,13 +10,13 @@ AppBundle\Entity\WorkflowRun:
         ended_at_time:
             type: datetime
     oneToMany:
-        processes:
+        processes_run:
             targetEntity: ProcessRun
             mappedBy: workflow_run
-        inputs:
+        inputs_run:
             targetEntity: InputRun
             mappedBy: workflow_run
-        outputs:
+        outputs_run:
             targetEntity: OutputRun
             mappedBy: workflow_run 
     manyToOne:

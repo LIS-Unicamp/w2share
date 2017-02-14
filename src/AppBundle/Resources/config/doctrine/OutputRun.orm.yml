@@ -6,6 +6,9 @@ AppBundle\Entity\OutputRun:
         content:
             type: string
     manyToOne:
-        process:
+        process_run:
             targetEntity: ProcessRun
+            inversedBy: outputs
+        workflow_run:
+            targetEntity: WorkflowRun
             inversedBy: outputs

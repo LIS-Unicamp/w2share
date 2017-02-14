@@ -20,7 +20,7 @@
                 </tr>
             </thead>
             <tbody>
-        {% for processRun in workflowRun.processes %}
+        {% for processRun in workflowRun.processesRun %}
             <tr>
                 <td>
                     <button class="btn btn-xs" data-clipboard-text="{{ processRun.uri }}">
@@ -31,7 +31,7 @@
                     <button class="btn btn-xs" data-clipboard-text="{{ processRun.process.uri }}">
                         <i class="glyphicon glyphicon-copy"></i>
                     </button>
-                    <a href="{{ path('provenance-process', { 'process_uri': processRun.process.uri|url_encode }) }}">{{ processRun.label }}</a></td>
+                    <a href="{{ path('provenance-process-run', { 'process_run_uri': processRun.uri|url_encode }) }}">{{ processRun.label }}</a></td>
                 <td>
                     {{ processRun.startedAtTime|date('H:i:s.v m-d-Y') }} (<strong>Started</strong>)
                     <br>{{ processRun.endedAtTime|date('H:i:s.v m-d-Y') }} (<strong>End</strong>)
@@ -42,8 +42,64 @@
         </table>
     </div>
 
-<h2>Inputs / Outputs</h2>
-<p>TODO!</p>
+<h2>Inputs</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Input Run</th>           
+                    <th>Content</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for inputRun in inputs %}
+            <tr>
+                <td>
+                    <button class="btn btn-xs" data-clipboard-text="{{ inputRun.uri }}">
+                        <i class="glyphicon glyphicon-copy"></i>
+                    </button>
+                </td>
+                <td>
+                    {{ inputRun.uri }}
+                </td>
+                <td>
+                    {{ inputRun.content }}
+                </td>
+            </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+    </div>
+<h2>Outputs</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Output Run</th>           
+                    <th>Content</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for outputRun in outputs %}
+            <tr>
+                <td>
+                    <button class="btn btn-xs" data-clipboard-text="{{ outputRun.uri }}">
+                        <i class="glyphicon glyphicon-copy"></i>
+                    </button>
+                </td>
+                <td>
+                    {{ outputRun.uri }}
+                </td>
+                <td>
+                    {{ outputRun.content }}
+                </td>
+            </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}  
 {% block javascripts %}   
 <script type="text/javascript">

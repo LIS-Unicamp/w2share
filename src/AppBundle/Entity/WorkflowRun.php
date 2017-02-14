@@ -40,17 +40,7 @@ class WorkflowRun
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $processes;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $inputs;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $outputs;
+    private $processes;   
 
     /**
      * @var \AppBundle\Entity\Workflow
@@ -62,23 +52,10 @@ class WorkflowRun
      */
     public function __construct()
     {
-        $this->processes = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->inputs = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->outputs = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-    
-    /**
-     * Add processes
-     *
-     * @param \AppBundle\Entity\ProcessRun $processes
-     * @return WorkflowRun
-     */
-    public function addProcess(\AppBundle\Entity\ProcessRun $process)
-    {
-        $this->processes[] = $process;
-    
-        return $this;
-    }
+        $this->processes_run = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->inputs_run = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->outputs_run = new \Doctrine\Common\Collections\ArrayCollection();
+    }        
     
     /**
      * Set processes
@@ -86,65 +63,12 @@ class WorkflowRun
      * @param \Doctrine\Common\Collections\Collection 
      * @return WorkflowRun
      */
-    public function setProcesses(array $processes)
+    public function setProcessesRun(array $processes)
     {        
-        $this->processes = new \Doctrine\Common\Collections\ArrayCollection($processes);
+        $this->processes_run = new \Doctrine\Common\Collections\ArrayCollection($processes);
     
         return $this;
-    }
-
-    /**
-     * Remove processes
-     *
-     * @param \AppBundle\Entity\ProcessRun $processes
-     */
-    public function removeProcess(\AppBundle\Entity\ProcessRun $process)
-    {
-        $this->processes->removeElement($process);
-    }
-
-    /**
-     * Get processes
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getProcesses()
-    {
-        return $this->processes;
-    }
-
-    /**
-     * Add inputs
-     *
-     * @param \AppBundle\Entity\InputRun $inputs
-     * @return WorkflowRun
-     */
-    public function addInput(\AppBundle\Entity\InputRun $inputs)
-    {
-        $this->inputs[] = $inputs;
-    
-        return $this;
-    }
-
-    /**
-     * Remove inputs
-     *
-     * @param \AppBundle\Entity\InputRun $inputs
-     */
-    public function removeInput(\AppBundle\Entity\InputRun $inputs)
-    {
-        $this->inputs->removeElement($inputs);
-    }
-
-    /**
-     * Get inputs
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getInputs()
-    {
-        return $this->inputs;
-    }
+    }      
     
     /**
      * Set inputs
@@ -152,45 +76,12 @@ class WorkflowRun
      * @param \Doctrine\Common\Collections\Collection 
      * @return WorkflowRun
      */
-    public function setInputs(array $inputs)
+    public function setInputsRun(array $inputs)
     {        
-        $this->inputs = new \Doctrine\Common\Collections\ArrayCollection($inputs);
+        $this->inputs_run = new \Doctrine\Common\Collections\ArrayCollection($inputs);
     
         return $this;
-    }
-
-    /**
-     * Add outputs
-     *
-     * @param \AppBundle\Entity\OutputRun $outputs
-     * @return WorkflowRun
-     */
-    public function addOutput(\AppBundle\Entity\OutputRun $outputs)
-    {
-        $this->outputs[] = $outputs;
-    
-        return $this;
-    }
-
-    /**
-     * Remove outputs
-     *
-     * @param \AppBundle\Entity\OutputRun $outputs
-     */
-    public function removeOutput(\AppBundle\Entity\OutputRun $outputs)
-    {
-        $this->outputs->removeElement($outputs);
-    }
-
-    /**
-     * Get outputs
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getOutputs()
-    {
-        return $this->outputs;
-    }
+    }    
     
     /**
      * Set outputs
@@ -198,9 +89,9 @@ class WorkflowRun
      * @param \Doctrine\Common\Collections\Collection 
      * @return WorkflowRun
      */
-    public function setOutputs(array $outputs)
+    public function setOutputsRun(array $outputs)
     {        
-        $this->outputs = new \Doctrine\Common\Collections\ArrayCollection($outputs);
+        $this->outputs_run = new \Doctrine\Common\Collections\ArrayCollection($outputs);
     
         return $this;
     }
@@ -311,27 +202,119 @@ class WorkflowRun
     {
         return $this->ended_at_time;
     }
+       
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $processes_run;
 
     /**
-     * Add processes
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $inputs_run;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $outputs_run;
+
+
+    /**
+     * Add processes_run
      *
-     * @param \AppBundle\Entity\ProcessRun $processes
+     * @param \AppBundle\Entity\ProcessRun $processesRun
      * @return WorkflowRun
      */
-    public function addProcesse(\AppBundle\Entity\ProcessRun $processes)
+    public function addProcessesRun(\AppBundle\Entity\ProcessRun $processesRun)
     {
-        $this->processes[] = $processes;
+        $this->processes_run[] = $processesRun;
     
         return $this;
     }
 
     /**
-     * Remove processes
+     * Remove processes_run
      *
-     * @param \AppBundle\Entity\ProcessRun $processes
+     * @param \AppBundle\Entity\ProcessRun $processesRun
      */
-    public function removeProcesse(\AppBundle\Entity\ProcessRun $processes)
+    public function removeProcessesRun(\AppBundle\Entity\ProcessRun $processesRun)
     {
-        $this->processes->removeElement($processes);
+        $this->processes_run->removeElement($processesRun);
+    }
+
+    /**
+     * Get processes_run
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProcessesRun()
+    {
+        return $this->processes_run;
+    }
+
+    /**
+     * Add inputs_run
+     *
+     * @param \AppBundle\Entity\InputRun $inputsRun
+     * @return WorkflowRun
+     */
+    public function addInputsRun(\AppBundle\Entity\InputRun $inputsRun)
+    {
+        $this->inputs_run[] = $inputsRun;
+    
+        return $this;
+    }
+
+    /**
+     * Remove inputs_run
+     *
+     * @param \AppBundle\Entity\InputRun $inputsRun
+     */
+    public function removeInputsRun(\AppBundle\Entity\InputRun $inputsRun)
+    {
+        $this->inputs_run->removeElement($inputsRun);
+    }
+
+    /**
+     * Get inputs_run
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getInputsRun()
+    {
+        return $this->inputs_run;
+    }
+
+    /**
+     * Add outputs_run
+     *
+     * @param \AppBundle\Entity\OutputRun $outputsRun
+     * @return WorkflowRun
+     */
+    public function addOutputsRun(\AppBundle\Entity\OutputRun $outputsRun)
+    {
+        $this->outputs_run[] = $outputsRun;
+    
+        return $this;
+    }
+
+    /**
+     * Remove outputs_run
+     *
+     * @param \AppBundle\Entity\OutputRun $outputsRun
+     */
+    public function removeOutputsRun(\AppBundle\Entity\OutputRun $outputsRun)
+    {
+        $this->outputs_run->removeElement($outputsRun);
+    }
+
+    /**
+     * Get outputs_run
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getOutputsRun()
+    {
+        return $this->outputs_run;
     }
 }

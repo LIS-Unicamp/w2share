@@ -12,17 +12,7 @@ class ProcessRun
     /**
      * @var string
      */
-    private $uri;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $outputs;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $inputs;
+    private $uri;   
 
     /**
      * @var \AppBundle\Entity\WorkflowRun
@@ -34,8 +24,8 @@ class ProcessRun
      */
     public function __construct()
     {
-        $this->outputs = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->inputs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->outputs_run = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->inputs_run = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -59,73 +49,7 @@ class ProcessRun
     public function getUri()
     {
         return $this->uri;
-    }
-
-    /**
-     * Add outputs
-     *
-     * @param \AppBundle\Entity\OutputRun $outputs
-     * @return ProcessRun
-     */
-    public function addOutput(\AppBundle\Entity\OutputRun $outputs)
-    {
-        $this->outputs[] = $outputs;
-    
-        return $this;
-    }
-
-    /**
-     * Remove outputs
-     *
-     * @param \AppBundle\Entity\OutputRun $outputs
-     */
-    public function removeOutput(\AppBundle\Entity\OutputRun $outputs)
-    {
-        $this->outputs->removeElement($outputs);
-    }
-
-    /**
-     * Get outputs
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getOutputs()
-    {
-        return $this->outputs;
-    }
-
-    /**
-     * Add inputs
-     *
-     * @param \AppBundle\Entity\InputRun $inputs
-     * @return ProcessRun
-     */
-    public function addInput(\AppBundle\Entity\InputRun $inputs)
-    {
-        $this->inputs[] = $inputs;
-    
-        return $this;
-    }
-
-    /**
-     * Remove inputs
-     *
-     * @param \AppBundle\Entity\InputRun $inputs
-     */
-    public function removeInput(\AppBundle\Entity\InputRun $inputs)
-    {
-        $this->inputs->removeElement($inputs);
-    }
-
-    /**
-     * Get inputs
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getInputs()
-    {
-        return $this->inputs;
-    }
+    }   
 
     /**
      * Set workflow_run
@@ -260,5 +184,81 @@ class ProcessRun
     public function getProcess()
     {
         return $this->process;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $outputs_run;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $inputs_run;
+
+
+    /**
+     * Add outputs_run
+     *
+     * @param \AppBundle\Entity\OutputRun $outputsRun
+     * @return ProcessRun
+     */
+    public function addOutputsRun(\AppBundle\Entity\OutputRun $outputsRun)
+    {
+        $this->outputs_run[] = $outputsRun;
+    
+        return $this;
+    }
+
+    /**
+     * Remove outputs_run
+     *
+     * @param \AppBundle\Entity\OutputRun $outputsRun
+     */
+    public function removeOutputsRun(\AppBundle\Entity\OutputRun $outputsRun)
+    {
+        $this->outputs_run->removeElement($outputsRun);
+    }
+
+    /**
+     * Get outputs_run
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getOutputsRun()
+    {
+        return $this->outputs_run;
+    }
+
+    /**
+     * Add inputs_run
+     *
+     * @param \AppBundle\Entity\InputRun $inputsRun
+     * @return ProcessRun
+     */
+    public function addInputsRun(\AppBundle\Entity\InputRun $inputsRun)
+    {
+        $this->inputs_run[] = $inputsRun;
+    
+        return $this;
+    }
+
+    /**
+     * Remove inputs_run
+     *
+     * @param \AppBundle\Entity\InputRun $inputsRun
+     */
+    public function removeInputsRun(\AppBundle\Entity\InputRun $inputsRun)
+    {
+        $this->inputs_run->removeElement($inputsRun);
+    }
+
+    /**
+     * Get inputs_run
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getInputsRun()
+    {
+        return $this->inputs_run;
     }
 }

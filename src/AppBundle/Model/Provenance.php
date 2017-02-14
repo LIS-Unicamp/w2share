@@ -53,7 +53,7 @@ class Provenance
      * @param type $workflow_run
      * @return array
      */
-    public function findProcessesByWorkflowRun($workflow_run_uri)
+    public function findProcessesRunByWorkflowRun($workflow_run_uri)
     {
         $query = "
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
@@ -130,12 +130,33 @@ class Provenance
         return null;        
     }        
     
-    public function findProcessRun($process_uri)
+    public function findProcessRun($process_run_uri)
     {
         // Process information
         $query = "
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
-                ?processRun wfprov:describedByProcess <".$process.">.
+                <".$process_run_uri."> wfprov:describedByProcess ?process.
+                <".$process_run_uri."> a wfprov:ProcessRun.
+                <".$process_run_uri."> prov:endedAtTime ?endedAtTime.
+                <".$process_run_uri."> prov:startedAtTime ?startedAtTime.
+            }}
+            ";
+        
+        $result_array = $this->driver->getResults($query);
+        
+        $processRun = new \AppBundle\Entity\ProcessRun();
+        $process = new \AppBundle\Entity\Process();
+        $processRun->setProcess($process);
+        return $processRun;
+        
+    }
+    
+    public function findProcessRunByProcess($process_uri)
+    {
+        // Process information
+        $query = "
+            SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
+                ?processRun wfprov:describedByProcess <".$process_uri.">.
                 ?processRun a wfprov:ProcessRun.
                 ?processRun prov:endedAtTime ?endedAtTime.
                 ?processRun prov:startedAtTime ?startedAtTime.
@@ -144,15 +165,21 @@ class Provenance
             ORDER BY  DESC(?startedAtTime)
             ";
         
-        return $this->driver->getResults($query);
+        $result_array = $this->driver->getResults($query);
+        
+        $processRun = new \AppBundle\Entity\ProcessRun();
+        $process = new \AppBundle\Entity\Process();
+        $processRun->setProcess($process);
+        return $processRun;
+        
     }
     
-    public function findInputsByProcessRun($process_uri)
+    public function findInputsRunByProcessRun($process_run_uri)
     {
         // inputs information
         $query = "
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
-                ?processRun wfprov:describedByProcess <".$process.">.
+                ?processRun wfprov:describedByProcess <".$process_run_uri.">.
                 ?processRun a wfprov:ProcessRun.
                 ?processRun wfprov:usedInput ?usedInput.
                 ?processRun prov:startedAtTime ?startedAtTime.
@@ -164,12 +191,12 @@ class Provenance
         return $this->driver->getResults($query);
     }
     
-    public function findOutputsByProcessRun($process_run_uri)
+    public function findOutputsRunByProcessRun($process_run_uri)
     {
         // outputs information
         $query = "
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
-                ?processRun wfprov:describedByProcess <".$process.">.
+                ?processRun wfprov:describedByProcess <".$process_run_uri.">.
                 ?processRun a wfprov:ProcessRun.
                 ?processRun prov:startedAtTime ?startedAtTime.
                 ?output prov:wasGeneratedBy ?processRun.
@@ -181,13 +208,12 @@ class Provenance
         return $this->driver->getResults($query);
     }
     
-    public function findOutputsByWorkflowRun($workflow_run_uri)
+    public function findOutputsRunByWorkflowRun($workflow_run_uri)
     {
         // outputs information
         $query = "
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 ?outputRun wfprov:wasOutputFrom <".$workflow_run_uri.">.
-                ?outputRun a wfprov:ProcessRun.
                 ?outputRun tavernaprov:content ?content.
             }}
             ";
@@ -209,6 +235,35 @@ class Provenance
         }
         
         return $outputs;  
+    }
+    
+    public function findInputsRunByWorkflowRun($workflow_run_uri)
+    {
+        // inputs information
+        $query = "
+            SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
+                <".$workflow_run_uri."> wfprov:usedInput ?inputRun.
+                ?inputRun tavernaprov:content ?content.
+            }}
+            ";
+        
+        $results_array = $this->driver->getResults($query);
+        
+        $inputs = array();
+        for ($i = 0; $i < count($results_array); $i++)
+        {
+            $workflowRun = new \AppBundle\Entity\WorkflowRun();
+            $workflowRun->setUri($workflow_run_uri);
+                         
+            $inputRun = new \AppBundle\Entity\InputRun();
+            $inputRun->setUri($results_array[$i]['inputRun']['value']);
+            $inputRun->setContent($results_array[$i]['content']['value']);
+            $inputRun->setWorkflowRun($workflowRun);            
+        
+            $inputs[] = $inputRun;
+        }
+        
+        return $inputs;  
     }
     
     public function clearGraph()

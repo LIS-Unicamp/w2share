@@ -36,12 +36,16 @@ class ProvenanceController extends Controller
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Workflow run not found!');
         }
         
-        $processes = $model->findProcessesByWorkflowRun($workflow_run_uri);
+        $processes = $model->findProcessesRunByWorkflowRun($workflow_run_uri);
+        $outputs = $model->findOutputsRunByWorkflowRun($workflow_run_uri);
+        $inputs = $model->findInputsRunByWorkflowRun($workflow_run_uri);;
         
-        $workflowRun->setProcesses($processes);
+        $workflowRun->setProcessesRun($processes);
         
         return $this->render('provenance/workflow-run.html.twig', array(
-            'workflowRun' => $workflowRun
+            'workflowRun' => $workflowRun,
+            'inputs' => $inputs,
+            'outputs' => $outputs
         ));
     }
     
@@ -78,45 +82,29 @@ class ProvenanceController extends Controller
     }
                 
     /**
-     * @Route("/provenance/process/{process_uri}", name="provenance-process")
+     * @Route("/provenance/process-run/{process_run_uri}", name="provenance-process-run")
      */
-    public function processAction(Request $request, $process_uri)
+    public function processRunAction(Request $request, $process_run_uri)
     {
-        $process_uri = urldecode($process_uri);
+        $process_run_uri = urldecode($process_run_uri);
 
         $model = $this->get('model.provenance'); 
            
-        $result1 = $model->processRun($process_uri);
-        $result2 = $model->processRunInputs($process_uri);
-        $result3 = $model->processRunOutputs($process_uri); 
+        $processRun = $model->findProcessRun($process_run_uri);
+        $inputsRun = $model->findInputsRunByProcessRun($process_run_uri);
+        $outputsRun = $model->findOutputsRunByProcessRun($process_run_uri); 
+        
+        $process_uri = $processRun->getProcess()->getUri();
         
         $model_workflow = $this->get('model.workflow');        
         $process_inputs = $model_workflow->findProcessInputs($process_uri);
         $process_outputs = $model_workflow->findProcessOutputs($process_uri);
         $process = $model_workflow->findProcess($process_uri);
-
-        $inputs = array();
-        if ($result2 != '')
-        {        
-            foreach($result2 as $row)
-            {
-                $inputs[$row['processRun']['value']][] = $row['content']['value'];
-            }
-        }        
-
-        $outputs = array();        
-        if (is_array($result3))
-        {
-            foreach($result3 as $row)
-            {
-                $outputs[$row['processRun']['value']][] = $row['content']['value'];
-            }
-        }
         
         return $this->render('provenance/process.html.twig', array(
-            'result' => $result1,
-            'inputs' => $inputs,
-            'outputs' => $outputs,
+            'processRun' => $processRun,
+            'inputs' => $inputsRun,
+            'outputs' => $outputsRun,
             'process' => $process,
             'process_uri' => $process_uri,
             'process_inputs' => $process_inputs,
