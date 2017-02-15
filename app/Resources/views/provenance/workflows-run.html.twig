@@ -15,7 +15,7 @@
     {% for workflow_run in workflows_run %}
         <tr>
             <td>
-                <button class="btn btn-xs" data-clipboard-text="{{ workflow_run.uri }}">
+                <button class="btn btn-xs copy" data-clipboard-text="{{ workflow_run.uri }}">
                     <i class="glyphicon glyphicon-copy"></i>
                 </button>
                 <a href="{{ path('provenance-workflow-run', { 'workflow_run_uri': workflow_run.uri|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>

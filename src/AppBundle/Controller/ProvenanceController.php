@@ -108,19 +108,14 @@ class ProvenanceController extends Controller
         
         $process_uri = $processRun->getProcess()->getUri();
         
-        $model_workflow = $this->get('model.workflow');        
-        $process_inputs = $model_workflow->findProcessInputs($process_uri);
-        $process_outputs = $model_workflow->findProcessOutputs($process_uri);
+        $model_workflow = $this->get('model.workflow');     
         $process = $model_workflow->findProcess($process_uri);
+        $processRun->setProcess($process);        
         
         return $this->render('provenance/process-run.html.twig', array(
             'processRun' => $processRun,
-            'inputs' => $inputsRun,
-            'outputs' => $outputsRun,
-            'process' => $process,
-            'process_uri' => $process_uri,
-            'process_inputs' => $process_inputs,
-            'process_outputs' => $process_outputs,
+            'inputsRun' => $inputsRun,
+            'outputsRun' => $outputsRun,
         ));
     }
     

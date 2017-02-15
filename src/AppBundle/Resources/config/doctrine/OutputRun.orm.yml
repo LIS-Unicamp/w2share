@@ -12,3 +12,6 @@ AppBundle\Entity\OutputRun:
         workflow_run:
             targetEntity: WorkflowRun
             inversedBy: outputs
+        output:
+            targetEntity: Output
+            inversedBy: outputs_run

@@ -7,7 +7,12 @@ AppBundle\Entity\Input:
             type: string
         label:
             type: string
+        example_data:
+            type: string
     manyToOne:
         process:
             targetEntity: Process
+            inversedBy: inputs
+        workflow:
+            targetEntity: Workflow
             inversedBy: inputs

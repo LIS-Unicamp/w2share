@@ -3,7 +3,7 @@
 {% block body %}
     <h1>Workflow
         <small>
-            <button class="btn btn-xs" data-clipboard-text="{{ workflow.uri }}">
+            <button class="btn btn-xs copy" data-clipboard-text="{{ workflow.uri }}">
                 <i class="glyphicon glyphicon-copy"></i>
             </button>
         </small>
@@ -25,14 +25,14 @@
             </tr>
         </thead>
         <tbody>
-    {% for row in processes %}
+    {% for process in processes %}
         <tr>
-            <td>{{ row.label.value }}</td>
-            <td>{% if 'description' in row|keys %}{{ row.description.value }}{% endif %}</td>
+            <td>{{ process.label }}</td>
+            <td>{{ process.description }}</td>
             <td>
-                <a href="{{ path('workflow-process', { 'process_uri': row.process.value|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>
-                <a href="{{ path('annotatation-form', { 'artefact':'process', 'uri': row.process.value|url_encode }) }}"><i class="glyphicon glyphicon-plus-sign"></i></a>
-                <a href="{{ path('annotatation-list', { 'artefact':'process', 'uri': row.process.value|url_encode }) }}"><i class="glyphicon glyphicon glyphicon-list-alt"></i></a>
+                <a href="{{ path('workflow-process', { 'process_uri': process.uri|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('annotatation-form', { 'artefact':'process', 'uri': process.uri|url_encode }) }}"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                <a href="{{ path('annotatation-list', { 'artefact':'process', 'uri': process.uri|url_encode }) }}"><i class="glyphicon glyphicon glyphicon-list-alt"></i></a>
             </td>
         </tr>
     {% endfor %}
@@ -47,13 +47,15 @@
             <tr>
                 <th>Name</th>
                 <th>Description</th>
+                <th>Example Data</th>
             </tr>
         </thead>
         <tbody>
-    {% for row in inputs %}
+    {% for input in inputs %}
         <tr>
-            <td>{{ row.label.value }}</a></td>
-            <td>{% if 'description' in row|keys %}{{ row.description.value }}{% endif %}</a></td>
+            <td>{{ input.label }}</a></td>
+            <td>{{ input.description }}</a></td>
+            <td>{{ input.exampleData }}</a></td>
         </tr>
     {% else %}
         <tr>
@@ -71,13 +73,15 @@
             <tr>
                 <th>Name</th>
                 <th>Description</th>
+                <th>Example Data</th>
             </tr>
         </thead>
         <tbody>
-    {% for row in outputs %}
+    {% for output in outputs %}
         <tr>
-            <td>{{ row.label.value }}</a></td>
-            <td>{% if 'description' in row|keys %}{{ row.description.value }}{% endif %}</a></td>
+            <td>{{ output.label }}</a></td>
+            <td>{{ output.description }}</a></td>
+            <td>{{ output.exampleData }}</a></td>
         </tr>
     {% else %}
         <tr>

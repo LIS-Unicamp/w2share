@@ -29,6 +29,10 @@ class RestAPI
     prefix skos:  <http://www.w3.org/2004/02/skos/core#>
     prefix scufl2:  <http://ns.taverna.org.uk/2010/scufl2#>
     prefix oa:      <http://www.w3.org/ns/oa#>
+    prefix comp: <http://purl.org/DP/components#>
+    prefix dep: <http://scape.keep.pt/vocab/dependencies#>
+    prefix wf4ever: <http://purl.org/wf4ever/wf4ever#>
+    prefix biocat: <http://biocatalogue.org/attribute/>
     prefix w2share: <http://www.lis.ic.unicamp.br/w2share/qualityflow#>";
     
     public function __construct(\Symfony\Component\DependencyInjection\ContainerInterface $container)

@@ -8,7 +8,10 @@ AppBundle\Entity\InputRun:
     manyToOne:
         process_run:
             targetEntity: ProcessRun
-            inversedBy: inputs
+            inversedBy: inputs_run
         workflow_run:
             targetEntity: WorkflowRun
-            inversedBy: inputs
+            inversedBy: inputs_run
+        input:
+            targetEntity: Input
+            inversedBy: inputs_run

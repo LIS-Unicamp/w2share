@@ -121,4 +121,60 @@ class Input
     {
         return $this->process;
     }
+    /**
+     * @var string
+     */
+    private $example_data;
+
+    /**
+     * @var \AppBundle\Entity\Workflow
+     */
+    private $workflow;
+
+
+    /**
+     * Set example_data
+     *
+     * @param string $exampleData
+     * @return Input
+     */
+    public function setExampleData($exampleData)
+    {
+        $this->example_data = $exampleData;
+    
+        return $this;
+    }
+
+    /**
+     * Get example_data
+     *
+     * @return string 
+     */
+    public function getExampleData()
+    {
+        return $this->example_data;
+    }
+
+    /**
+     * Set workflow
+     *
+     * @param \AppBundle\Entity\Workflow $workflow
+     * @return Input
+     */
+    public function setWorkflow(\AppBundle\Entity\Workflow $workflow = null)
+    {
+        $this->workflow = $workflow;
+    
+        return $this;
+    }
+
+    /**
+     * Get workflow
+     *
+     * @return \AppBundle\Entity\Workflow 
+     */
+    public function getWorkflow()
+    {
+        return $this->workflow;
+    }
 }

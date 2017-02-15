@@ -122,4 +122,32 @@ class OutputRun
     {
         return $this->workflow_run;
     }
+    /**
+     * @var \AppBundle\Entity\Output
+     */
+    private $output;
+
+
+    /**
+     * Set output
+     *
+     * @param \AppBundle\Entity\Output $output
+     * @return OutputRun
+     */
+    public function setOutput(\AppBundle\Entity\Output $output = null)
+    {
+        $this->output = $output;
+    
+        return $this;
+    }
+
+    /**
+     * Get output
+     *
+     * @return \AppBundle\Entity\Output 
+     */
+    public function getOutput()
+    {
+        return $this->output;
+    }
 }

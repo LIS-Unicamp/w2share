@@ -6,7 +6,7 @@
         2. o tempo de execução de cada processo
         3. as entradas e saídas de cada processo
     -->
-    <h1>Workflow Run <small><button class="btn btn-xs" data-clipboard-text="{{ workflowRun.uri }}">
+    <h1>Workflow Run <small><button class="btn btn-xs copy" data-clipboard-text="{{ workflowRun.uri }}">
                     <i class="glyphicon glyphicon-copy"></i>
                     </button></small></h1>
     <h2>Processes Run</h2>
@@ -14,8 +14,8 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Process Run</th>
-                    <th>Process</th>           
+                    <th>Process</th>
+                    <th>Process Run</th>           
                     <th>Time</th>
                 </tr>
             </thead>
@@ -23,12 +23,13 @@
         {% for processRun in workflowRun.processesRun %}
             <tr>
                 <td>
-                    <button class="btn btn-xs" data-clipboard-text="{{ processRun.uri }}">
+                    <button class="btn btn-xs copy" data-clipboard-text="{{ processRun.process.uri }}">
                         <i class="glyphicon glyphicon-copy"></i>
                     </button>
+                    <a href="{{ path('workflow-process', { 'process_uri': processRun.process.uri|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a></td>
                 </td>
                 <td>
-                    <button class="btn btn-xs" data-clipboard-text="{{ processRun.process.uri }}">
+                    <button class="btn btn-xs copy" data-clipboard-text="{{ processRun.uri }}">
                         <i class="glyphicon glyphicon-copy"></i>
                     </button>
                     <a href="{{ path('provenance-process-run', { 'process_run_uri': processRun.uri|url_encode }) }}">{{ processRun.label }}</a></td>
@@ -48,7 +49,8 @@
             <thead>
                 <tr>
                     <th>Action</th>
-                    <th>Input Run</th>           
+                    <th>Input Port</th> 
+                    <th>Port Description</th> 
                     <th>Content</th>
                 </tr>
             </thead>
@@ -56,12 +58,15 @@
         {% for inputRun in inputs %}
             <tr>
                 <td>
-                    <button class="btn btn-xs" data-clipboard-text="{{ inputRun.uri }}">
+                    <button class="btn btn-xs copy" data-clipboard-text="{{ inputRun.uri }}">
                         <i class="glyphicon glyphicon-copy"></i>
                     </button>
                 </td>
                 <td>
-                    {{ inputRun.uri }}
+                    {{ inputRun.input.label }}
+                </td>
+                <td>
+                    {{ inputRun.input.description }}
                 </td>
                 <td>
                     {{ inputRun.content }}
@@ -77,7 +82,8 @@
             <thead>
                 <tr>
                     <th>Action</th>
-                    <th>Output Run</th>           
+                    <th>Output Port</th>
+                    <th>Port Description</th>  
                     <th>Content</th>
                 </tr>
             </thead>
@@ -85,12 +91,15 @@
         {% for outputRun in outputs %}
             <tr>
                 <td>
-                    <button class="btn btn-xs" data-clipboard-text="{{ outputRun.uri }}">
+                    <button class="btn btn-xs copy" data-clipboard-text="{{ outputRun.uri }}">
                         <i class="glyphicon glyphicon-copy"></i>
                     </button>
                 </td>
                 <td>
-                    {{ outputRun.uri }}
+                    {{ outputRun.output.label }}
+                </td>
+                <td>
+                    {{ outputRun.output.description }}
                 </td>
                 <td>
                     {{ outputRun.content }}

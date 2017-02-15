@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block title %}Process Run{% endblock %}
 {% block body %}
-<h1>Process <small><button class="btn btn-xs" data-clipboard-text="{{ processRun.uri }}">
+<h1>Process <small><button class="btn btn-xs copy" data-clipboard-text="{{ processRun.process.uri }}">
                         <i class="glyphicon glyphicon-copy"></i>
                     </button></small>
 </h1>
@@ -10,21 +10,42 @@
     <li>Title: {{ processRun.process.label }}</li>
     <li>Description: {{ processRun.process.description }}</li>
 </ul>
+    
+<h2>Process Run <small><button class="btn btn-xs copy" data-clipboard-text="{{ processRun.uri }}">
+                        <i class="glyphicon glyphicon-copy"></i>
+                    </button></small>
+</h2>
+                        
+<ul>
+    <li>Title: {{ processRun.label }}</li>
+    <li>Time: 
+        <br>{{ processRun.startedAtTime|date('H:i:s.v m-d-Y') }} (<strong>Started</strong>)
+        <br>{{ processRun.endedAtTime|date('H:i:s.v m-d-Y') }} (<strong>End</strong>)
+    </li>
+</ul>
 
 <h2>Inputs</h2>
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Description</th>
+                <th>Action</th>
+                <th>Input Port</th>
+                <th>Port Description</th>
+                <th>Content</th>
             </tr>
         </thead>
         <tbody>
-    {% for row in process_inputs %}
+    {% for inputRun in inputsRun %}
         <tr>
-            <td>{{ row.label }}</a></td>
-            <td>{{ row.description }}</a></td>
+            <td>
+                <button class="btn btn-xs copy" data-clipboard-text="{{ inputRun.uri }}">
+                    <i class="glyphicon glyphicon-copy"></i>
+                </button>
+            </td>
+            <td>{{ inputRun.input.label }}</td>
+            <td>{{ inputRun.input.description }}</a></td>
+            <td>{{ inputRun.content }}</td>
         </tr>
     {% else %}
         <tr>
@@ -40,15 +61,23 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Description</th>
+                <th>Action</th>
+                <th>Output Port</th>
+                <th>Port Description</th>
+                <th>Content</th>
             </tr>
         </thead>
         <tbody>
-    {% for row in process_outputs %}
+    {% for outputRun in outputsRun %}
         <tr>
-            <td>{{ row.label }}</a></td>
-            <td>{{ row.description }}</a></td>
+            <td>
+                <button class="btn btn-xs copy" data-clipboard-text="{{ outputRun.uri }}">
+                    <i class="glyphicon glyphicon-copy"></i>
+                </button>
+            </td>
+            <td>{{ outputRun.output.label }}</td>
+            <td>{{ outputRun.output.description }}</a></td>
+            <td>{{ outputRun.content }}</td>
         </tr>
     {% else %}
         <tr>
@@ -57,7 +86,7 @@
     {% endfor %}
         </tbody>
     </table>
-</div>
+</div>       
 
 {% endblock %}  
 {% block javascripts %}   

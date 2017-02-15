@@ -123,4 +123,32 @@ class InputRun
     {
         return $this->workflow_run;
     }
+    /**
+     * @var \AppBundle\Entity\Input
+     */
+    private $input;
+
+
+    /**
+     * Set input
+     *
+     * @param \AppBundle\Entity\Input $input
+     * @return InputRun
+     */
+    public function setInput(\AppBundle\Entity\Input $input = null)
+    {
+        $this->input = $input;
+    
+        return $this;
+    }
+
+    /**
+     * Get input
+     *
+     * @return \AppBundle\Entity\Input 
+     */
+    public function getInput()
+    {
+        return $this->input;
+    }
 }

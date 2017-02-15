@@ -84,20 +84,37 @@ class Workflow
         return null;
     }
     
-    public function findProcessesByWorkflow($workflow)
+    public function findProcessesByWorkflow($workflow_uri)
     {
         // process information
         $query = "
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
-                <$workflow> wfdesc:hasSubProcess ?process.
+                <$workflow_uri> wfdesc:hasSubProcess ?process.
                 ?process a wfdesc:Process.
+                FILTER regex(?label, \"Processor\", \"i\").
                 OPTIONAL { ?process rdfs:label ?label. }
                 OPTIONAL { ?process dcterms:description ?description. }
                 OPTIONAL { ?process prov:specializationOf ?workflow. }
-            }}
+            }} 
             ";
         
-        return $this->driver->getResults($query);
+        $process_array = $this->driver->getResults($query);   
+        $processes = array();
+        
+        for ($i = 0; $i < count($process_array); $i++)
+        {
+            $process = new \AppBundle\Entity\Process();
+            $process->setUri($process_array[$i]['process']['value']);
+            $process->setDescription($process_array[$i]['description']['value']);
+            $process->setLabel($process_array[$i]['label']['value']);            
+                
+            $workflow = new \AppBundle\Entity\Workflow();
+            $workflow->setUri($workflow_uri);
+            $process->setWorkflow($workflow);
+            
+            $processes[] = $process;
+        }
+        return $processes;
     }
     
     public function findWorkflowInputs($workflow_uri)
@@ -107,12 +124,33 @@ class Workflow
             SELECT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <".$workflow_uri."> a wfdesc:Workflow;
                 wfdesc:hasInput ?input.
+                OPTIONAL { ?input biocat:exampleData ?exampleData. }
                 OPTIONAL { ?input rdfs:label ?label. }
                 OPTIONAL { ?input dcterms:description ?description. }
             }}
             ";
         
-        return $this->driver->getResults($query);
+        $input_array = array();
+        $inputs = $this->driver->getResults($query);   
+        
+        for ($i = 0; $i < count($inputs); $i++)
+        {
+            $input = new \AppBundle\Entity\Input();
+            $input->setUri($inputs[$i]['input']['value']);
+            if (in_array('description', array_keys($inputs[$i])))
+            {
+                $input->setDescription($inputs[$i]['description']['value']);
+            }
+            if (in_array('exampleData', array_keys($inputs[$i])))
+            {
+                $input->setExampleData($inputs[$i]['exampleData']['value']);
+            }
+            $input->setLabel($inputs[$i]['label']['value']);            
+            
+            $input_array[] = $input;  
+        }
+        
+        return $input_array;
     }
     
     public function findWorkflowOutputs($workflow_uri)
@@ -122,12 +160,33 @@ class Workflow
             SELECT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <".$workflow_uri."> a wfdesc:Workflow;
                 wfdesc:hasOutput ?output.
+                OPTIONAL { ?output biocat:exampleData ?exampleData. }
                 OPTIONAL { ?output rdfs:label ?label. }
                 OPTIONAL { ?output dcterms:description ?description. }
             }}
             ";
         
-        return $this->driver->getResults($query);
+        $output_array = array();
+        $outputs = $this->driver->getResults($query);   
+        
+        for ($i = 0; $i < count($outputs); $i++)
+        {
+            $output = new \AppBundle\Entity\Output();
+            $output->setUri($outputs[$i]['output']['value']);
+            if (in_array('description', array_keys($outputs[$i])))
+            {
+                $output->setDescription($outputs[$i]['description']['value']);
+            }
+            if (in_array('exampleData', array_keys($outputs[$i])))
+            {
+                $output->setExampleData($outputs[$i]['exampleData']['value']);
+            }
+            $output->setLabel($outputs[$i]['label']['value']);            
+            
+            $output_array[] = $output;  
+        }
+        
+        return $output_array;
     }
     
     public function findProcessOutputs($process_uri)
@@ -137,6 +196,7 @@ class Workflow
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <".$process_uri."> a wfdesc:Process;
                 wfdesc:hasOutput ?output.
+                OPTIONAL { ?output biocat:exampleData ?exampleData. }
                 OPTIONAL { ?output rdfs:label ?label }
                 OPTIONAL { ?output dcterms:description ?description }
             }}
@@ -149,9 +209,13 @@ class Workflow
         {
             $output = new \AppBundle\Entity\Output();
             $output->setUri($outputs[$i]['output']['value']);
-            if (in_array('description', $outputs[$i]))
+            if (in_array('description', array_keys($outputs[$i])))
             {
                 $output->setDescription($outputs[$i]['description']['value']);
+            }
+            if (in_array('exampleData', array_keys($outputs[$i])))
+            {
+                $output->setExampleData($outputs[$i]['exampleData']['value']);
             }
             $output->setLabel($outputs[$i]['label']['value']);            
             
@@ -167,6 +231,7 @@ class Workflow
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <".$process_uri."> a wfdesc:Process;
                 wfdesc:hasInput ?input.
+                OPTIONAL { ?input biocat:exampleData ?exampleData. }
                 OPTIONAL { ?input rdfs:label ?label }
                 OPTIONAL { ?input dcterms:description ?description }
             }}
@@ -179,9 +244,13 @@ class Workflow
         {
             $input = new \AppBundle\Entity\Input();
             $input->setUri($inputs[$i]['input']['value']);
-            if (in_array('description', $inputs[$i]))
+            if (in_array('description', array_keys($inputs[$i])))
             {
                 $input->setDescription($inputs[$i]['description']['value']);
+            }
+            if (in_array('exampleData', array_keys($inputs[$i])))
+            {
+                $input->setExampleData($inputs[$i]['exampleData']['value']);
             }
             $input->setLabel($inputs[$i]['label']['value']);            
             

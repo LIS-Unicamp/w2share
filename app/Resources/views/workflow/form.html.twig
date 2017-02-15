@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block title %}{% if workflow.uri %}Edit{% else %}Add{% endif %} Workflow{% endblock %}
 {% block body %}
-<h1>Workflow <small>{% if workflow.uri %}<button class="btn btn-xs" data-clipboard-text="{{ workflow.uri }}">
+<h1>Workflow <small>{% if workflow.uri %}<button class="btn btn-xs copy" data-clipboard-text="{{ workflow.uri }}">
                 <i class="glyphicon glyphicon-copy"></i>
             </button> Edit{% else %}Add{% endif %}</small></h1>
     {% if workflow.uri %}

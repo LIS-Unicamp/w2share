@@ -3,7 +3,7 @@
 {% block body %}
     <h1>Workflow 
         <small>
-            <button class="btn btn-xs" data-clipboard-text="{{ workflow.uri }}">
+            <button class="btn btn-xs copy" data-clipboard-text="{{ workflow.uri }}">
                 <i class="glyphicon glyphicon-copy"></i>
             </button>
         </small>
@@ -27,7 +27,7 @@
     {% for workflowRun in workflow_runs %}
         <tr>
             <td>
-                <button class="btn btn-xs" data-clipboard-text="{{ workflowRun.uri }}">
+                <button class="btn btn-xs copy" data-clipboard-text="{{ workflowRun.uri }}">
                     <i class="glyphicon glyphicon-copy"></i>
                 </button>
                 <a href="{{ path('provenance-workflow-run', { 'workflow_run_uri': workflowRun.uri|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>

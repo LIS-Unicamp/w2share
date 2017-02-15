@@ -3,7 +3,7 @@
 {% block body %}
 <h1>Workflow
         <small>
-            <button class="btn btn-xs" data-clipboard-text="{{ workflow.uri }}">
+            <button class="btn btn-xs copy" data-clipboard-text="{{ workflow.uri }}">
                 <i class="glyphicon glyphicon-copy"></i>
             </button>
         </small>
@@ -20,7 +20,7 @@
 {% endif %}
 
 <h2>Process 
-        <small><button class="btn btn-xs" data-clipboard-text="{{ process.uri }}">
+        <small><button class="btn btn-xs copy" data-clipboard-text="{{ process.uri }}">
             <i class="glyphicon glyphicon-copy"></i>
         </button></small>
 </h2>
@@ -37,6 +37,7 @@
             <tr>
                 <th>Name</th>
                 <th>Description</th>
+                <th>Example Data</th>
             </tr>
         </thead>
         <tbody>
@@ -44,6 +45,7 @@
         <tr>
             <td>{{ input.label }}</a></td>
             <td>{{ input.description }}</a></td>
+            <td>{{ input.exampleData }}</a></td>
         </tr>
     {% else %}
         <tr>
@@ -61,6 +63,7 @@
             <tr>
                 <th>Name</th>
                 <th>Description</th>
+                <th>Example Data</th>
             </tr>
         </thead>
         <tbody>
@@ -68,6 +71,7 @@
         <tr>
             <td>{{ output.label }}</a></td>
             <td>{{ output.description }}</a></td>
+            <td>{{ output.exampleData }}</a></td>
         </tr>
     {% else %}
         <tr>
@@ -84,31 +88,29 @@
         <thead>
             <tr>
                 <th>Process Run</th>
+                <th>Time</th>                
                 <th>Workflow Run</th>
-                <th>Time</th>
-                <th>Inputs</th>
-                <th>Outputs</th>
-                
             </tr>
         </thead>
         <tbody>
         {% for processRun in processRuns %}
         <tr>
             <td>
-                <button class="btn btn-xs" data-clipboard-text="{{ processRun.uri }}">
+                <button class="btn btn-xs copy" data-clipboard-text="{{ processRun.uri }}">
                     <i class="glyphicon glyphicon-copy"></i>
                 </button>
-            </td>
-            <td>
-                <button class="btn btn-xs" data-clipboard-text="{{ processRun.workflowRun.uri }}">
-                    <i class="glyphicon glyphicon-copy"></i>
-                </button>
-                <a href="{{ path("provenance-workflow-run", { 'workflow_run_uri': processRun.workflowRun.uri|url_encode() } )}}"> <i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path("provenance-process-run", { 'process_run_uri': processRun.uri|url_encode() } )}}"> <i class="glyphicon glyphicon-search"></i></a>
             </td>
             <td>
                     {{ processRun.startedAtTime|date('H:i:s.v m-d-Y') }} (<strong>Started</strong>)
                     <br>{{ processRun.endedAtTime|date('H:i:s.v m-d-Y') }} (<strong>End</strong>)
-            </td>            
+            </td> 
+            <td>
+                <button class="btn btn-xs copy" data-clipboard-text="{{ processRun.workflowRun.uri }}">
+                    <i class="glyphicon glyphicon-copy"></i>
+                </button>
+                <a href="{{ path("provenance-workflow-run", { 'workflow_run_uri': processRun.workflowRun.uri|url_encode() } )}}"> <i class="glyphicon glyphicon-search"></i></a>
+            </td>                       
         </tr>
     {% endfor %}
         </tbody>

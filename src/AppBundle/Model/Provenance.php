@@ -137,6 +137,7 @@ class Provenance
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <".$process_run_uri."> wfprov:describedByProcess ?process.
                 <".$process_run_uri."> a wfprov:ProcessRun.
+                <".$process_run_uri."> rdfs:label ?label.
                 <".$process_run_uri."> prov:endedAtTime ?endedAtTime.
                 <".$process_run_uri."> prov:startedAtTime ?startedAtTime.
             }}
@@ -144,20 +145,31 @@ class Provenance
         
         $result_array = $this->driver->getResults($query);
         
-        $processRun = new \AppBundle\Entity\ProcessRun();
-        $process = new \AppBundle\Entity\Process();
-        $processRun->setProcess($process);
-        return $processRun;
+        if (count($result_array) > 0)
+        {
+            $processRun = new \AppBundle\Entity\ProcessRun();
+            $processRun->setUri($process_run_uri);
+            $processRun->setLabel($result_array[0]['label']['value']);
+            $processRun->setStartedAtTime(new \Datetime($result_array[0]['startedAtTime']['value']));
+            $processRun->setEndedAtTime(new \Datetime($result_array[0]['endedAtTime']['value']));
+            
+            $process = new \AppBundle\Entity\Process();
+            $process->setUri($result_array[0]['process']['value']);
+            $processRun->setProcess($process);
+            return $processRun;
+        }
         
+        return null;
     }
     
-    public function findProcessRunByProcess($process_uri)
+    public function findProcessRunsByProcess($process_uri)
     {
         // Process information
         $query = "
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 ?processRun wfprov:describedByProcess <".$process_uri.">.
                 ?processRun a wfprov:ProcessRun.
+                ?processRun rdfs:label ?label.
                 ?processRun prov:endedAtTime ?endedAtTime.
                 ?processRun prov:startedAtTime ?startedAtTime.
                 ?processRun wfprov:wasPartOfWorkflowRun ?workflowRun.
@@ -166,12 +178,28 @@ class Provenance
             ";
         
         $result_array = $this->driver->getResults($query);
+        $processRuns = array();
         
-        $processRun = new \AppBundle\Entity\ProcessRun();
-        $process = new \AppBundle\Entity\Process();
-        $processRun->setProcess($process);
-        return $processRun;
+        for ($i = 0; $i < count($result_array); $i++)
+        {
+            $processRun = new \AppBundle\Entity\ProcessRun();
+            $processRun->setUri($result_array[0]['processRun']['value']);
+            $processRun->setLabel($result_array[0]['label']['value']);
+            $processRun->setStartedAtTime(new \Datetime($result_array[0]['startedAtTime']['value']));
+            $processRun->setEndedAtTime(new \Datetime($result_array[0]['endedAtTime']['value']));
+            
+            $process = new \AppBundle\Entity\Process();
+            $process->setUri($process_uri);
+            $processRun->setProcess($process);
+            
+            $workflowRun = new \AppBundle\Entity\WorkflowRun();
+            $workflowRun->setUri($result_array[0]['workflowRun']['value']);
+            $processRun->setWorkflowRun($workflowRun);     
+            
+            $processRuns[] = $processRun;
+        }
         
+        return $processRuns;
     }
     
     public function findInputsRunByProcessRun($process_run_uri)
@@ -179,16 +207,45 @@ class Provenance
         // inputs information
         $query = "
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
-                ?processRun wfprov:describedByProcess <".$process_run_uri.">.
-                ?processRun a wfprov:ProcessRun.
-                ?processRun wfprov:usedInput ?usedInput.
-                ?processRun prov:startedAtTime ?startedAtTime.
-                ?usedInput tavernaprov:content ?content.
+                <".$process_run_uri."> a wfprov:ProcessRun.
+                <".$process_run_uri."> wfprov:usedInput ?inputRun.
+                ?inputRun tavernaprov:content ?content.
+                ?inputRun wfprov:describedByParameter ?input.
+                ?input a wfdesc:Input.
+                OPTIONAL { ?input dcterms:description ?description. }
+                ?input rdfs:label ?label.
+                ?process  wfdesc:hasInput ?input.
             }}
-            ORDER BY  DESC(?startedAtTime)
             ";
         
-        return $this->driver->getResults($query);
+        $inputs_array = $this->driver->getResults($query);
+        
+        $inputs = array();
+        for ($i = 0; $i < count($inputs_array); $i++)
+        {
+            $processRun = new \AppBundle\Entity\ProcessRun();
+            $processRun->setUri($process_run_uri);
+            //$workflowRun = new \AppBundle\Entity\WorkflowRun();
+            //$workflowRun->setUri($workflow_run_uri);
+                         
+            $inputRun = new \AppBundle\Entity\InputRun();
+            $inputRun->setUri($inputs_array[$i]['inputRun']['value']);
+            $inputRun->setContent($inputs_array[$i]['content']['value']);
+            //$inputRun->setWorkflowRun($workflowRun);   
+            $inputRun->setProcessRun($processRun);
+            
+            $input = new \AppBundle\Entity\Input();
+            if (in_array('description', array_keys($inputs_array[$i])))
+            {
+                $input->setDescription($inputs_array[$i]['description']['value']);
+            }
+            $input->setLabel($inputs_array[$i]['label']['value']);
+            $input->setUri($inputs_array[$i]['input']['value']);
+            $inputRun->setInput($input);
+            
+            $inputs[] = $inputRun;
+        }
+        return $inputs; 
     }
     
     public function findOutputsRunByProcessRun($process_run_uri)
@@ -196,16 +253,46 @@ class Provenance
         // outputs information
         $query = "
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
-                ?processRun wfprov:describedByProcess <".$process_run_uri.">.
-                ?processRun a wfprov:ProcessRun.
-                ?processRun prov:startedAtTime ?startedAtTime.
-                ?output prov:wasGeneratedBy ?processRun.
-                ?output tavernaprov:content ?content.
+                <".$process_run_uri."> a wfprov:ProcessRun.
+                ?outputRun prov:wasGeneratedBy <".$process_run_uri.">.
+                ?outputRun tavernaprov:content ?content.
+                ?outputRun wfprov:describedByParameter ?output.
+                OPTIONAL { ?output dcterms:description ?description. }
+                ?output rdfs:label ?label.
+                ?output a wfdesc:Output.
+                ?process  wfdesc:hasOutput ?output.                
             }}
-            ORDER BY  DESC(?startedAtTime)
             ";
         
-        return $this->driver->getResults($query);
+        $outputs_array = $this->driver->getResults($query);
+        
+        $outputs = array();
+        for ($i = 0; $i < count($outputs_array); $i++)
+        {
+            $processRun = new \AppBundle\Entity\ProcessRun();
+            $processRun->setUri($process_run_uri);
+            //$workflowRun = new \AppBundle\Entity\WorkflowRun();
+            //$workflowRun->setUri($workflow_run_uri);
+                         
+            $outputRun = new \AppBundle\Entity\OutputRun();
+            $outputRun->setUri($outputs_array[$i]['outputRun']['value']);
+            $outputRun->setContent($outputs_array[$i]['content']['value']);
+            //$outputRun->setWorkflowRun($workflowRun);   
+            $outputRun->setProcessRun($processRun);
+            
+            $output = new \AppBundle\Entity\Output();
+            if (in_array('description', array_keys($outputs_array[$i])))
+            {
+                $output->setDescription($outputs_array[$i]['description']['value']);
+            }
+            $output->setLabel($outputs_array[$i]['label']['value']);
+            $output->setUri($outputs_array[$i]['output']['value']);
+            $outputRun->setOutput($output);
+            
+            $outputs[] = $outputRun;
+        }
+        
+        return $outputs;  
     }
     
     public function findOutputsRunByWorkflowRun($workflow_run_uri)
@@ -215,6 +302,11 @@ class Provenance
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 ?outputRun wfprov:wasOutputFrom <".$workflow_run_uri.">.
                 ?outputRun tavernaprov:content ?content.
+                ?outputRun wfprov:describedByParameter ?output.
+                OPTIONAL { ?output dcterms:description ?description. }
+                ?output rdfs:label ?label.
+                ?workflow  wfdesc:hasOutput ?output.
+                <".$workflow_run_uri."> wfprov:describedByWorkflow ?workflow.
             }}
             ";
         
@@ -229,8 +321,17 @@ class Provenance
             $outputRun = new \AppBundle\Entity\OutputRun();
             $outputRun->setUri($outputs_array[$i]['outputRun']['value']);
             $outputRun->setContent($outputs_array[$i]['content']['value']);
-            $outputRun->setWorkflowRun($workflowRun);            
-        
+            $outputRun->setWorkflowRun($workflowRun);   
+            
+            $output = new \AppBundle\Entity\Output();
+            if (in_array('description', array_keys($outputs_array[$i])))
+            {
+                $output->setDescription($outputs_array[$i]['description']['value']);
+            }
+            $output->setLabel($outputs_array[$i]['label']['value']);
+            $output->setUri($outputs_array[$i]['output']['value']);
+            $outputRun->setOutput($output);
+            
             $outputs[] = $outputRun;
         }
         
@@ -244,6 +345,11 @@ class Provenance
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <".$workflow_run_uri."> wfprov:usedInput ?inputRun.
                 ?inputRun tavernaprov:content ?content.
+                ?inputRun wfprov:describedByParameter ?input.
+                OPTIONAL { ?input dcterms:description ?description. }
+                ?input rdfs:label ?label.
+                ?workflow  wfdesc:hasInput ?input.
+                <".$workflow_run_uri."> wfprov:describedByWorkflow ?workflow.
             }}
             ";
         
@@ -258,7 +364,16 @@ class Provenance
             $inputRun = new \AppBundle\Entity\InputRun();
             $inputRun->setUri($results_array[$i]['inputRun']['value']);
             $inputRun->setContent($results_array[$i]['content']['value']);
-            $inputRun->setWorkflowRun($workflowRun);            
+            $inputRun->setWorkflowRun($workflowRun);  
+            
+            $input = new \AppBundle\Entity\Input();
+            if (in_array('description', array_keys($results_array[$i])))
+            {
+                $input->setDescription($results_array[$i]['description']['value']);
+            }
+            $input->setLabel($results_array[$i]['label']['value']);
+            $input->setUri($results_array[$i]['input']['value']);
+            $inputRun->setInput($input);
         
             $inputs[] = $inputRun;
         }

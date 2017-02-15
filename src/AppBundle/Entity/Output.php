@@ -120,4 +120,88 @@ class Output
     {
         return $this->process;
     }
+    /**
+     * @var string
+     */
+    private $example_data;
+
+    /**
+     * @var \AppBundle\Entity\Workflow
+     */
+    private $workflow;
+
+
+    /**
+     * Set example_data
+     *
+     * @param string $exampleData
+     * @return Output
+     */
+    public function setExampleData($exampleData)
+    {
+        $this->example_data = $exampleData;
+    
+        return $this;
+    }
+
+    /**
+     * Get example_data
+     *
+     * @return string 
+     */
+    public function getExampleData()
+    {
+        return $this->example_data;
+    }
+
+    /**
+     * Set workflow
+     *
+     * @param \AppBundle\Entity\Workflow $workflow
+     * @return Output
+     */
+    public function setWorkflow(\AppBundle\Entity\Workflow $workflow = null)
+    {
+        $this->workflow = $workflow;
+    
+        return $this;
+    }
+
+    /**
+     * Get workflow
+     *
+     * @return \AppBundle\Entity\Workflow 
+     */
+    public function getWorkflow()
+    {
+        return $this->workflow;
+    }
+    /**
+     * @var \AppBundle\Entity\Output
+     */
+    private $output;
+
+
+    /**
+     * Set output
+     *
+     * @param \AppBundle\Entity\Output $output
+     * @return Output
+     */
+    public function setOutput(\AppBundle\Entity\Output $output = null)
+    {
+        $this->output = $output;
+    
+        return $this;
+    }
+
+    /**
+     * Get output
+     *
+     * @return \AppBundle\Entity\Output 
+     */
+    public function getOutput()
+    {
+        return $this->output;
+    }
 }
