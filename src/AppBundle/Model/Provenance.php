@@ -15,7 +15,7 @@ class Provenance
         $this->driver = $driver;
     }                    
     
-    public function findWorkflowsRunByWorkflowOrAll($workflow_uri = null)
+    public function findWorkflowsRunsByWorkflowOrAll($workflow_uri = null)
     {
         $query = "
             SELECT DISTINCT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
@@ -39,7 +39,7 @@ class Provenance
             $workflowRun->setEndedAtTime(new \Datetime($workflows_run_array[$i]['endedAtTime']['value']));
             
             $workflow = new \AppBundle\Entity\Workflow();
-            $workflow->setUri($workflows_run_array[$i]['workflow']['value']);
+            $workflow->setUri(($workflow_uri)?$workflow_uri:$workflows_run_array[$i]['workflow']['value']);
             $workflowRun->setWorkflow($workflow);
             
             $workflowsRun[] = $workflowRun;

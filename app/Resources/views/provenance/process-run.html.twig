@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+{% block title %}Process Run{% endblock %}
+{% block body %}
+<h1>Process <small><button class="btn btn-xs" data-clipboard-text="{{ processRun.uri }}">
+                        <i class="glyphicon glyphicon-copy"></i>
+                    </button></small>
+</h1>
+                        
+<ul>
+    <li>Title: {{ processRun.process.label }}</li>
+    <li>Description: {{ processRun.process.description }}</li>
+</ul>
+
+<h2>Inputs</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for row in process_inputs %}
+        <tr>
+            <td>{{ row.label }}</a></td>
+            <td>{{ row.description }}</a></td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="2">No input.</td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
+    
+<h2>Outputs</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for row in process_outputs %}
+        <tr>
+            <td>{{ row.label }}</a></td>
+            <td>{{ row.description }}</a></td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="2">No output.</td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}  
+{% block javascripts %}   
+    <script type="text/javascript">
+    </script>
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 

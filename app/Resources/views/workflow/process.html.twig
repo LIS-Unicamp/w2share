@@ -40,10 +40,10 @@
             </tr>
         </thead>
         <tbody>
-    {% for row in process_inputs %}
+    {% for input in process_inputs %}
         <tr>
-            <td>{{ row.label }}</a></td>
-            <td>{% if 'description' in row %}{{ row.description }}{% endif %}</a></td>
+            <td>{{ input.label }}</a></td>
+            <td>{{ input.description }}</a></td>
         </tr>
     {% else %}
         <tr>
@@ -64,14 +64,51 @@
             </tr>
         </thead>
         <tbody>
-    {% for row in process_outputs %}
+    {% for output in process_outputs %}
         <tr>
-            <td>{{ row.label }}</a></td>
-            <td>{% if 'description' in row %}{{ row.description }}{% endif %}</a></td>
+            <td>{{ output.label }}</a></td>
+            <td>{{ output.description }}</a></td>
         </tr>
     {% else %}
         <tr>
             <td colspan="2">No output.</td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
+        
+<h2>Process Runs</h2>
+ <div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Process Run</th>
+                <th>Workflow Run</th>
+                <th>Time</th>
+                <th>Inputs</th>
+                <th>Outputs</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+        {% for processRun in processRuns %}
+        <tr>
+            <td>
+                <button class="btn btn-xs" data-clipboard-text="{{ processRun.uri }}">
+                    <i class="glyphicon glyphicon-copy"></i>
+                </button>
+            </td>
+            <td>
+                <button class="btn btn-xs" data-clipboard-text="{{ processRun.workflowRun.uri }}">
+                    <i class="glyphicon glyphicon-copy"></i>
+                </button>
+                <a href="{{ path("provenance-workflow-run", { 'workflow_run_uri': processRun.workflowRun.uri|url_encode() } )}}"> <i class="glyphicon glyphicon-search"></i></a>
+            </td>
+            <td>
+                    {{ processRun.startedAtTime|date('H:i:s.v m-d-Y') }} (<strong>Started</strong>)
+                    <br>{{ processRun.endedAtTime|date('H:i:s.v m-d-Y') }} (<strong>End</strong>)
+            </td>            
         </tr>
     {% endfor %}
         </tbody>

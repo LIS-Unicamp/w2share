@@ -1,7 +1,17 @@
 {% extends 'base.html.twig' %}
 {% block title %}{% if workflow.uri %}Edit{% else %}Add{% endif %} Workflow{% endblock %}
 {% block body %}
-<h1>Workflow <small>{% if workflow.uri %}Edit{% else %}Add{% endif %}</small></h1>
+<h1>Workflow <small>{% if workflow.uri %}<button class="btn btn-xs" data-clipboard-text="{{ workflow.uri }}">
+                <i class="glyphicon glyphicon-copy"></i>
+            </button> Edit{% else %}Add{% endif %}</small></h1>
+    {% if workflow.uri %}
+    <ul>
+        <li><strong>Title:</strong> {{ workflow.title }}</li>
+        <li><strong>Creator:</strong> {{ workflow.creator }}</li>
+        <li><strong>Description:</strong> {{ workflow.description }}</li>
+        <li><strong>Label:</strong> {{ workflow.label }}</li>
+    </ul>
+    {% endif %}
 {{ form_start(form) }}
     <div class="form-body">
         {% for flashMessage in app.session.flashbag.get('success') %}

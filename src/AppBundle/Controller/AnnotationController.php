@@ -133,7 +133,7 @@ class AnnotationController extends Controller
         //$workflow_run = urldecode($request->get('workflow_run'));
         
         $model_workflow_run = $this->get('model.provenance'); 
-        $workflows = $model_workflow_run->workflowsRun();
+        $workflows = $model_workflow_run->findWorkflowsRunsByWorkflowOrAll();
                 
         /*Possibilidades:
          * 1. Workflow anotado com uma ou mais dimenssões de qualidade.
@@ -144,12 +144,7 @@ class AnnotationController extends Controller
         $model = $this->get('model.annotation');
         
         $value = $request->get('value');
-        $name = $request->get('name');
-        
-        $em = $this->get('doctrine')->getManager();
-        //$qualitydimension = $em->getRepository('AppBundle:QualityDimension')
-          //                          ->findOneBy(array( 'name'=> $name ) );
-      
+        $name = $request->get('name');                      
        
         //Just for test - remover depois
         $qualitydimension = new \AppBundle\Entity\QualityDimension();
@@ -158,8 +153,8 @@ class AnnotationController extends Controller
         $qualitydimension->setValueType('type');
         
         // Load all the workflows
-        //$workflows = $this->get('doctrine')
-          //  ->getRepository('AppBundle:Workflow')->findAll();
+        // $model_workflow = $this->get('model.workflow');
+        // $workflows = $model_workflow->findAll();
         
         $form = $this->createForm(new \AppBundle\Form\QualityAnnotationAddType($em), $qualityannotation,
                                   array(

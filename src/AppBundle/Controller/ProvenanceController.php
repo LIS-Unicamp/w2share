@@ -14,7 +14,7 @@ class ProvenanceController extends Controller
     public function workflowsRunAction(Request $request)
     {
         $model = $this->get('model.provenance'); 
-        $workflows_run = $model->findWorkflowsRunByWorkflowOrAll();
+        $workflows_run = $model->findWorkflowsRunsByWorkflowOrAll();
                 
         return $this->render('provenance/workflows-run.html.twig', array(
             'workflows_run' => $workflows_run
@@ -61,7 +61,13 @@ class ProvenanceController extends Controller
 
         // workflow run information
         $workflow = $model_workflow->findWorkflow($workflow_uri);
-        $workflow_runs = $model_provenance->findWorkflowRunsByWorkflowOrAll($workflow_uri);                                               
+        
+        if (null === $workflow)
+        {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Workflow not found!');
+        }
+        
+        $workflow_runs = $model_provenance->findWorkflowsRunsByWorkflowOrAll($workflow_uri);                                               
         
         return $this->render('provenance/workflow.html.twig', array(
             'workflow_runs' => $workflow_runs,
@@ -74,7 +80,7 @@ class ProvenanceController extends Controller
      */
     public function workflowRunDeleteAction(Request $request, $workflow_uri)
     {        
-        $workflow = urldecode($workflow_uri);
+        $workflow_uri = urldecode($workflow_uri);
         $model = $this->get('model.provenance'); 
         $model->deleteWorkflowRun($workflow_uri);
                     
@@ -91,6 +97,12 @@ class ProvenanceController extends Controller
         $model = $this->get('model.provenance'); 
            
         $processRun = $model->findProcessRun($process_run_uri);
+        
+        if (null === $processRun)
+        {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Process run not found!');
+        }
+        
         $inputsRun = $model->findInputsRunByProcessRun($process_run_uri);
         $outputsRun = $model->findOutputsRunByProcessRun($process_run_uri); 
         
@@ -101,7 +113,7 @@ class ProvenanceController extends Controller
         $process_outputs = $model_workflow->findProcessOutputs($process_uri);
         $process = $model_workflow->findProcess($process_uri);
         
-        return $this->render('provenance/process.html.twig', array(
+        return $this->render('provenance/process-run.html.twig', array(
             'processRun' => $processRun,
             'inputs' => $inputsRun,
             'outputs' => $outputsRun,
