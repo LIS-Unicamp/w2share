@@ -98,11 +98,23 @@ class Annotation
         return $this->driver->getResults($query);                  
     }
     
-    public function insertQualityAnnotation($qd, $value)
+    public function insertQualityAnnotation($wf_uri, $name, $value, $user)
     {
-       $query = '';
-        
-       return $this->driver->getResults($query);
+        $uri = Utils::convertNameToUri("Quality Dimension", $name);
+        $qd->setUri($uri);
+        $query = 
+        "INSERT        
+        { 
+            GRAPH <".$this->driver->getDefaultGraph('qualitydimension-annotation')."> 
+            { 
+                _:annotation a oa:QualityAnnotation ;
+                oa:hasTarget <".$wf_uri.">;
+                oa:hasBody [<".$qd->getUri()."> ".$value."];
+                oa:annotatedBy <dc:creator> <".$user->getUri().">. 
+            }
+        }";
+
+        return $this->driver->getResults($query);    
     }
     
 }

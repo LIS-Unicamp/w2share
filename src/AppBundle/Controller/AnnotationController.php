@@ -93,6 +93,8 @@ class AnnotationController extends Controller
         $value = $request->get('value');
         $name = $request->get('name');
         
+        $model_annotation = $this->get('model.annotation');
+        
         $form = $this->createForm(new \AppBundle\Form\QualityAnnotationAddType(), $qualityannotation,
                                   array(
                                   'action' => $this->generateUrl('workflow-qualitydimension-annotation', array('workflow_uri' => urlencode($workflow_uri))),
@@ -102,8 +104,10 @@ class AnnotationController extends Controller
         $form->handleRequest($request);
         
         if ($form->isValid())
-        {   //TO-DO: insertQualityAnnotation
-            $model->insertQualityAnnotation($qualitydimension, $value);
+        {   
+            $user = $this->getUser();
+            //TO-DO: insertQualityAnnotation
+            $model_annotation->insertQualityAnnotation($workflow_uri, $name, $value, $user);
             $this->get('session')
                 ->getFlashBag()
                 ->add('success', 'Workflow annotated with a quality dimension!'); 
