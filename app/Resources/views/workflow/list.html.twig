@@ -30,11 +30,11 @@
     {% for row in pagination %}
         <tr>
             <td style="width:150px">
-                <a href="{{ path('workflow-details', { 'workflow_uri':row.uri|url_encode() }) }}"><i class="glyphicon glyphicon-search"></i></a>
-                <a href="{{ path('workflow-edit', { 'workflow_uri':row.uri|url_encode() }) }}"><i class="glyphicon glyphicon-edit"></i></a>
-                <a href="{{ path('workflow-delete', { 'workflow_uri':row.uri|url_encode() }) }}"><i class="glyphicon glyphicon-trash delete"></i></a>
-                <a href="{{ path('provenance-workflow', { 'workflow_uri':row.uri|url_encode() }) }}"><i class="glyphicon glyphicon-fast-backward"></i></a>
-                <a href="{{ path('workflow-qualitydimension-annotation', { 'workflow_uri':row.uri|url_encode() }) }}"><i class="glyphicon glyphicon-pencil"></i></a>
+                <a href="{{ path('workflow-details', { 'workflow_uri':row.uri|url_encode() }) }}" title="Go to Workflow details"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('workflow-edit', { 'workflow_uri':row.uri|url_encode() }) }}" title="Edit Workflow"><i class="glyphicon glyphicon-edit"></i></a>
+                <a href="{{ path('workflow-delete', { 'workflow_uri':row.uri|url_encode() }) }}" title="Delete Workflow"><i class="glyphicon glyphicon-trash delete"></i></a>
+                <a href="{{ path('provenance-workflow', { 'workflow_uri':row.uri|url_encode() }) }}" title="Go to Workflow Runs"><i class="glyphicon glyphicon-fast-backward"></i></a>
+                <a href="{{ path('workflow-qualitydimension-annotation', { 'workflow_uri':row.uri|url_encode() }) }}" title="Add Quality Annotation"><i class="glyphicon glyphicon-pencil"></i></a>
             </td> 
             <td>{{ row.title }}</td>
             <td>{{ row.creator }}</a></td>
