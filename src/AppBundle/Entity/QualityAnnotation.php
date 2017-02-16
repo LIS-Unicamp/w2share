@@ -36,6 +36,15 @@ class QualityAnnotation {
     */
     private $value;
     
+    /**
+    * get $qualityDimension
+    * 
+    * @return QualityDimension
+    */
+  public function getQualityDimension()
+  {
+        return $this->qualityDimension;
+  }
     
    /**
     * Set $qualityDimension
@@ -81,4 +90,93 @@ class QualityAnnotation {
       
   }
     
+    /**
+     * @var string
+     */
+    private $uri;
+
+    /**
+     * @var \DateTime
+     */
+    private $created_at_time;
+
+    /**
+     * @var \AppBundle\Entity\QualityDimension
+     */
+    private $quality_dimension;
+
+    /**
+     * @var \AppBundle\Entity\Workflow
+     */
+    private $workflow;
+
+
+    /**
+     * Set uri
+     *
+     * @param string $uri
+     * @return QualityAnnotation
+     */
+    public function setUri($uri)
+    {
+        $this->uri = $uri;
+    
+        return $this;
+    }
+
+    /**
+     * Get uri
+     *
+     * @return string 
+     */
+    public function getUri()
+    {
+        return $this->uri;
+    }
+
+    /**
+     * Set created_at_time
+     *
+     * @param \DateTime $createdAtTime
+     * @return QualityAnnotation
+     */
+    public function setCreatedAtTime($createdAtTime)
+    {
+        $this->created_at_time = $createdAtTime;
+    
+        return $this;
+    }
+
+    /**
+     * Get created_at_time
+     *
+     * @return \DateTime 
+     */
+    public function getCreatedAtTime()
+    {
+        return $this->created_at_time;
+    }
+
+    /**
+     * Set workflow
+     *
+     * @param \AppBundle\Entity\Workflow $workflow
+     * @return QualityAnnotation
+     */
+    public function setWorkflow(\AppBundle\Entity\Workflow $workflow = null)
+    {
+        $this->workflow = $workflow;
+    
+        return $this;
+    }
+
+    /**
+     * Get workflow
+     *
+     * @return \AppBundle\Entity\Workflow 
+     */
+    public function getWorkflow()
+    {
+        return $this->workflow;
+    }
 }

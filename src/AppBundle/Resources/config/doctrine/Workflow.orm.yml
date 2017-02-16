@@ -20,6 +20,9 @@ AppBundle\Entity\Workflow:
         outputs:
             targetEntity: Output
             mappedBy: workflow
+        quality_annotation:
+            targetEntity: QualityAnnotation
+            mappedBy: workflow
     manyToOne:
         creator:
-            targetEntity: Person            
+            targetEntity: Person  

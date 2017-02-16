@@ -1,0 +1,17 @@
+AppBundle\Entity\QualityDimension: 
+    type: entity
+    fields:   
+        uri:
+            type: string
+        name:
+            type: string
+        description:
+            type: string
+        valueType:
+            type: string
+        creator:
+            type: string
+    oneToMany:
+        quality_annotation:
+            targetEntity: QualityAnnotation
+            mappedBy: quality_dimension

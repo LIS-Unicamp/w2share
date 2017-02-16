@@ -12,7 +12,5 @@ AppBundle\Entity\Input:
     manyToOne:
         process:
             targetEntity: Process
-            inversedBy: inputs
         workflow:
             targetEntity: Workflow
-            inversedBy: inputs

@@ -1,5 +1,6 @@
 <?php
 namespace AppBundle\Model;
+use AppBundle\Utils\Utils;
 
 /**
  * Description of Provenance
@@ -98,23 +99,58 @@ class Annotation
         return $this->driver->getResults($query);                  
     }
     
-    public function insertQualityAnnotation($wf_uri, $name, $value, $user)
-    {
-        $uri = Utils::convertNameToUri("Quality Dimension", $name);
-        $qd->setUri($uri);
+    public function insertQualityAnnotation(\AppBundle\Entity\Workflow $workflow, \AppBundle\Entity\QualityDimension $qualityDimension, $value, $user)
+    {   
+        $now = new \Datetime();
+        $uri = Utils::convertNameToUri("Quality Annotation", $qualityDimension->getName().'/'.$now->format('Ymdhis'));
+        
+        $qualityAnnotation = new \AppBundle\Entity\QualityAnnotation();
+        $qualityAnnotation->setUri($uri);
         $query = 
         "INSERT        
         { 
             GRAPH <".$this->driver->getDefaultGraph('qualitydimension-annotation')."> 
             { 
-                _:annotation a oa:QualityAnnotation ;
-                oa:hasTarget <".$wf_uri.">;
-                oa:hasBody [<".$qd->getUri()."> ".$value."];
-                oa:annotatedBy <dc:creator> <".$user->getUri().">. 
+                <".$qualityAnnotation->getUri()."> a w2share:QualityAnnotation;
+                oa:hasTarget <".$workflow->getUri().">;
+                w2share:hasQualityDimension <".$qualityDimension->getUri().">;
+                w2share:hasValue '".$value."';
+                oa:annotatedAt \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\";
+                oa:annotatedBy <".$user->getUri().">. 
             }
         }";
-
-        return $this->driver->getResults($query);    
+        $this->driver->getResults($query);    
+        return $qualityAnnotation;
+    }
+    
+    public function findQualityAnnotationByObject($uri)
+    {
+        $query = 
+        "SELECT * WHERE        
+        { 
+            GRAPH <".$this->driver->getDefaultGraph('qualitydimension-annotation')."> 
+            { 
+                ?quality_annotation a <w2share:QualityAnnotation>;
+                <oa:hasTarget> <".$uri.">;
+                <w2share:hasQualityDimension> ?quality_dimension;
+                <w2share:hasValue> ?value;
+                oa:annotatedAt ?annotatedAt;
+                oa:annotatedBy ?creator.
+            }
+        }"; 
+        
+        return $this->driver->getResults($query); 
+    }
+    
+    public function clearGraphQualityAnnotation()
+    {
+        $query = "CLEAR GRAPH <".$this->driver->getDefaultGraph('qualitydimension-annotation').">";        
+        return $this->driver->getResults($query);                  
     }
     
 }
+
+//TO-DO
+//Listar as qualityannotations que existem
+//No formulario listar as qualityannotation para o workflow/processo/resultado/fonte
+//um clear graph mais robusto para apagar todos os grafos

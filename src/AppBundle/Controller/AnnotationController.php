@@ -85,17 +85,14 @@ class AnnotationController extends Controller
         
         //Info from Quality dimension
         $model_qualitydimension = $this->get('model.qualitydimension'); 
-        $qualitydimension = $model_qualitydimension->findAllQualityDimensions();
+        $quality_dimensions = $model_qualitydimension->findAllQualityDimensions();
         
         //Annotation quality dimension and value
-        $qualityannotation = new \AppBundle\Entity\QualityAnnotation();
-        
-        $value = $request->get('value');
-        $name = $request->get('name');
+        $qualityAnnotation = new \AppBundle\Entity\QualityAnnotation();
         
         $model_annotation = $this->get('model.annotation');
         
-        $form = $this->createForm(new \AppBundle\Form\QualityAnnotationAddType(), $qualityannotation,
+        $form = $this->createForm(new \AppBundle\Form\QualityAnnotationAddType($quality_dimensions), $qualityAnnotation,
                                   array(
                                   'action' => $this->generateUrl('workflow-qualitydimension-annotation', array('workflow_uri' => urlencode($workflow_uri))),
                                   'method' => 'POST'
@@ -105,85 +102,28 @@ class AnnotationController extends Controller
         
         if ($form->isValid())
         {   
+            $value = $form->get('value')->getData();
+            $quality_dimension = $form->get('quality_dimension')->getData();
             $user = $this->getUser();
             //TO-DO: insertQualityAnnotation
-            $model_annotation->insertQualityAnnotation($workflow_uri, $name, $value, $user);
+            $model_annotation->insertQualityAnnotation($workflow, $quality_dimensions[$quality_dimension], $value, $user);
+            
             $this->get('session')
                 ->getFlashBag()
                 ->add('success', 'Workflow annotated with a quality dimension!'); 
         }
-        
+        $workflow_quality_annotations = $model_annotation->findQualityAnnotationByObject($workflow_uri);
         return $this->render('qualityflow/workflow-qualitydimension-annotation-form.html.twig', array(
             'form' => $form->createView(),
-            'name' => $name,
-            'value' => $value,
             'processes' => $processes,
             'inputs' => $inputs,
             'outputs' => $outputs,
             'workflow' => $workflow,
             'workflow_uri' => $workflow_uri,
-            'qualitydimension' => $qualitydimension
+            'quality_dimensions' => $quality_dimensions,
+            'workflow_quality_annotations' => $workflow_quality_annotations
         ));
         
-    }
-    
-    //This function will be modified!!!
-    /**
-     * @Route("/annotation/qualitydimension", name="annotatation-qualitydimension")
-     */
-    public function annotatationQualityDimensionAction(Request $request)
-    {   
-        //Retrieve all workflows
-        //$workflow_run = urldecode($request->get('workflow_run'));
-        
-        $model_workflow_run = $this->get('model.provenance'); 
-        $workflows = $model_workflow_run->findWorkflowsRunsByWorkflowOrAll();
-                
-        /*Possibilidades:
-         * 1. Workflow anotado com uma ou mais dimenssões de qualidade.
-         * 2. Idem com os processos.
-         * 3. Idem com os resultados  
-        */
-        $qualityannotation = new \AppBundle\Entity\QualityAnnotation();
-        $model = $this->get('model.annotation');
-        
-        $value = $request->get('value');
-        $name = $request->get('name');                      
-       
-        //Just for test - remover depois
-        $qualitydimension = new \AppBundle\Entity\QualityDimension();
-        $qualitydimension->setName('teste');
-        $qualitydimension->setDescription('description');
-        $qualitydimension->setValueType('type');
-        
-        // Load all the workflows
-        // $model_workflow = $this->get('model.workflow');
-        // $workflows = $model_workflow->findAll();
-        
-        $form = $this->createForm(new \AppBundle\Form\QualityAnnotationAddType($em), $qualityannotation,
-                                  array(
-                                  'action' => $this->generateUrl('annotatation-qualitydimension'),
-                                  'method' => 'POST'
-                                  ));
-        
-        $form->handleRequest($request);
-        
-        if ($form->isValid())
-        {
-            $model->insertQualityAnnotation($qualitydimension, $value);
-            $this->get('session')
-                ->getFlashBag()
-                ->add('success', 'Quality Annotation created!'); 
-        }
-        
-        //TO-DO verificar onde irá redirecionar
-        return $this->render('qualityflow/annotation-form.html.twig', array(
-            'form' => $form->createView(),
-            'name' => $name,
-            'value' => $value,
-            'qualitydimension' => $qualitydimension,
-            'workflows' => $workflows
-        ));
     }
     
     /**

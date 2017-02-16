@@ -1,0 +1,18 @@
+AppBundle\Entity\QualityAnnotation: 
+    type: entity
+    fields: 
+        qualityDimension:
+            type: object
+        uri:
+            type: string
+        value:
+            type: string
+        created_at_time:
+            type: datetime
+    manyToOne:
+        quality_dimension:
+            targetEntity: QualityDimension
+            inversedBy: quality_annotation
+        workflow:
+            targetEntity: Workflow
+            inversedBy: quality_annotation

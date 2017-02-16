@@ -24,18 +24,12 @@
     </table>
 </div> 
 
-<!-- TO-DO: Tentar agrupar todos estes elementos numa so fila -->
-<div class="form-group">
-  <label>Select a quality dimension</label>
-  <select class="form-control" name="qualitydimension" style="width:20%"> <!--style="width:120px" -->
-      {% for qd in qualitydimension %} <!--TODO: depois trocar por qualitydimension -->
-        <option value="{{ qd.name }}">{{ qd.name }}</option> <!--TODO: depois trocar por qd.name  -->
-      {% endfor %}
-  </select>
-</div>
+
   
 <div>
     {{ form_start(form) }}
+    
+    <!-- TO-DO: Tentar agrupar todos estes elementos numa so fila -->
         <div class="form-body">
             {% for flashMessage in app.session.flashbag.get('success') %}
                 <div class="alert alert-success">
@@ -50,6 +44,15 @@
                 </div>            
             {% endfor %}
             {{ form_errors(form) }}
+             <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        {{ form_label(form.quality_dimension) }}
+                        {{ form_widget(form.quality_dimension, { 'attr': { 'class':'form-control' } }) }}
+                        {{ form_errors(form.quality_dimension) }}
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-2">
                     <div class="form-group">
@@ -66,7 +69,6 @@
         </div>
 
     {{ form_end(form) }}
-    </form>
 </div>
 
 <div class="table-responsive">
@@ -81,15 +83,17 @@
         </thead>
         <tbody>
             <!-- TO-DO: Recuperar só as informacoes do workflow selecionado -->
-            <tr>
-                <td>
-                    <a class="btn btn-xs delete" href="{# path('alguma-rota') #}"> <!-- TO-DO: trocar depois pela funcao Delete -->
-                        <i class="glyphicon glyphicon-trash"></i>
-                    </a>
-                </td>
-                <td>Dummy</td>
-                <td>Dummy</td>
-            </tr>
+            {% for annotations in workflow_quality_annotations %}
+                <tr>
+                    <td>
+                        <a class="btn btn-xs delete" href="{# path('alguma-rota') #}"> <!-- TO-DO: trocar depois pela funcao Delete -->
+                            <i class="glyphicon glyphicon-trash"></i>
+                        </a>
+                    </td>
+                    <td>{{ annotations.quality_dimension }}</td>
+                    <td>{{ annotations.value }}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div> 

@@ -727,4 +727,65 @@ class Workflow
     {
         return $this->workflow_runs;
     }
+
+    /**
+     * Add processes
+     *
+     * @param \AppBundle\Entity\Process $processes
+     * @return Workflow
+     */
+    public function addProcesse(\AppBundle\Entity\Process $processes)
+    {
+        $this->processes[] = $processes;
+    
+        return $this;
+    }
+
+    /**
+     * Remove processes
+     *
+     * @param \AppBundle\Entity\Process $processes
+     */
+    public function removeProcesse(\AppBundle\Entity\Process $processes)
+    {
+        $this->processes->removeElement($processes);
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $quality_annotation;
+
+
+    /**
+     * Add quality_annotation
+     *
+     * @param \AppBundle\Entity\QualityAnnotation $qualityAnnotation
+     * @return Workflow
+     */
+    public function addQualityAnnotation(\AppBundle\Entity\QualityAnnotation $qualityAnnotation)
+    {
+        $this->quality_annotation[] = $qualityAnnotation;
+    
+        return $this;
+    }
+
+    /**
+     * Remove quality_annotation
+     *
+     * @param \AppBundle\Entity\QualityAnnotation $qualityAnnotation
+     */
+    public function removeQualityAnnotation(\AppBundle\Entity\QualityAnnotation $qualityAnnotation)
+    {
+        $this->quality_annotation->removeElement($qualityAnnotation);
+    }
+
+    /**
+     * Get quality_annotation
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getQualityAnnotation()
+    {
+        return $this->quality_annotation;
+    }
 }
