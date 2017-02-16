@@ -24,6 +24,8 @@ class Provenance
                 ?workflowRun prov:endedAtTime ?endedAtTime.
                 ?workflowRun prov:startedAtTime ?startedAtTime.
                 ?workflowRun wfprov:describedByWorkflow ".(($workflow_uri)?"<".$workflow_uri.">":"?workflow").".
+                ".(($workflow_uri)?"<".$workflow_uri.">":"?workflow")." dcterms:title ?title.
+                ".(($workflow_uri)?"<".$workflow_uri.">":"?workflow")." dcterms:description ?description.
             }}
             ORDER BY  DESC(?startedAtTime)
             ";
@@ -40,6 +42,8 @@ class Provenance
             
             $workflow = new \AppBundle\Entity\Workflow();
             $workflow->setUri(($workflow_uri)?$workflow_uri:$workflows_run_array[$i]['workflow']['value']);
+            $workflow->setTitle(($workflow_uri)?$workflow_uri:$workflows_run_array[$i]['title']['value']);
+            $workflow->setDescription(($workflow_uri)?$workflow_uri:$workflows_run_array[$i]['description']['value']);
             $workflowRun->setWorkflow($workflow);
             
             $workflowsRun[] = $workflowRun;
@@ -380,6 +384,24 @@ class Provenance
         
         return $inputs;  
     }
+    
+    /**
+     * Delete triples related to a workflowRun URI
+     * @param type WorkflowRun
+     */
+    public function deleteWorkflowRun(\AppBundle\Entity\WorkflowRun $workflowRun)
+    {
+        $query = "
+            DELETE FROM <".$this->driver->getDefaultGraph()."> {
+                <".$workflowRun->getUri()."> ?property ?subject.                
+            }
+            WHERE
+            {
+                <".$workflowRun->getUri()."> ?property ?subject.  
+            }
+            ";  
+        $this->driver->getResults($query);     
+    } 
     
     public function clearGraph()
     {

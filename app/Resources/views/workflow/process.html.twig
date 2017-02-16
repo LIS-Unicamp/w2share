@@ -6,7 +6,9 @@
             <button class="btn btn-xs copy" data-clipboard-text="{{ workflow.uri }}">
                 <i class="glyphicon glyphicon-copy"></i>
             </button>
+            <a href="{{ path('workflow-details', { 'workflow_uri': process.workflow.uri|url_encode() }) }}" class="btn btn-xs" title="Go to workflow"><i class="glyphicon glyphicon-search"></i></a>
         </small>
+        
     </h1>
     <ul>
         <li><strong>Title:</strong> {{ workflow.title }}</li>
@@ -14,10 +16,6 @@
         <li><strong>Description:</strong> {{ workflow.description }}</li>
         <li><strong>Label:</strong> {{ workflow.label }}</li>
     </ul>
-    <a href="{{ path('workflow-details', { 'workflow_uri': process.workflow.uri|url_encode() }) }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-arrow-left"> Workflow</i></a>
-{% if 'subworkflow' in process %}
-    <a href="{{ path('workflow-details', { 'workflow_uri': process.subworkflow.uri|url_encode() }) }}" class="btn btn-sm btn-info">Subworkflow <i class="glyphicon glyphicon-arrow-right"></i></a>
-{% endif %}
 
 <h2>Process 
         <small><button class="btn btn-xs copy" data-clipboard-text="{{ process.uri }}">
@@ -30,7 +28,7 @@
     <li>Description: {{ process.description }}</li>
 </ul>
     
-<h2>Inputs</h2>
+<h3>Inputs</h3>
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -49,14 +47,14 @@
         </tr>
     {% else %}
         <tr>
-            <td colspan="2">No input.</td>
+            <td colspan="3">No input.</td>
         </tr>
     {% endfor %}
         </tbody>
     </table>
 </div>
     
-<h2>Outputs</h2>
+<h3>Outputs</h3>
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -75,14 +73,14 @@
         </tr>
     {% else %}
         <tr>
-            <td colspan="2">No output.</td>
+            <td colspan="3">No output.</td>
         </tr>
     {% endfor %}
         </tbody>
     </table>
 </div>
         
-<h2>Process Runs</h2>
+<h3>Process Runs</h3>
  <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -99,7 +97,7 @@
                 <button class="btn btn-xs copy" data-clipboard-text="{{ processRun.uri }}">
                     <i class="glyphicon glyphicon-copy"></i>
                 </button>
-                <a href="{{ path("provenance-process-run", { 'process_run_uri': processRun.uri|url_encode() } )}}"> <i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path("provenance-process-run", { 'process_run_uri': processRun.uri|url_encode() } )}}" title="Go to process run information"><i class="glyphicon glyphicon-search"></i></a>
             </td>
             <td>
                     {{ processRun.startedAtTime|date('H:i:s.v m-d-Y') }} (<strong>Started</strong>)
@@ -109,8 +107,12 @@
                 <button class="btn btn-xs copy" data-clipboard-text="{{ processRun.workflowRun.uri }}">
                     <i class="glyphicon glyphicon-copy"></i>
                 </button>
-                <a href="{{ path("provenance-workflow-run", { 'workflow_run_uri': processRun.workflowRun.uri|url_encode() } )}}"> <i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path("provenance-workflow-run", { 'workflow_run_uri': processRun.workflowRun.uri|url_encode() } )}}" title="Go to workflow run information"><i class="glyphicon glyphicon-search"></i></a>
             </td>                       
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="3">No process run.</td>
         </tr>
     {% endfor %}
         </tbody>

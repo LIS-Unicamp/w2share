@@ -1,20 +1,38 @@
 {% extends 'base.html.twig' %}
 {% block title %}Process Run{% endblock %}
 {% block body %}
-<h1>Process <small><button class="btn btn-xs copy" data-clipboard-text="{{ processRun.process.uri }}">
+<h1>Workflow
+        <small>
+            <button class="btn btn-xs copy" data-clipboard-text="{{ processRun.process.workflow.uri }}">
+                <i class="glyphicon glyphicon-copy"></i>
+            </button>
+            <a href="{{ path('workflow-details', { 'workflow_uri': processRun.process.workflow.uri|url_encode() }) }}" class="btn btn-xs" title="Go to workflow"><i class="glyphicon glyphicon-search"></i></a>
+        </small>
+        
+    </h1>
+    <ul>
+        <li><strong>Title:</strong> {{ processRun.process.workflow.title }}</li>
+        <li><strong>Creator:</strong> {{ processRun.process.workflow.creator }}</li>
+        <li><strong>Description:</strong> {{ processRun.process.workflow.description }}</li>
+        <li><strong>Label:</strong> {{ processRun.process.workflow.label }}</li>
+    </ul>
+    
+<h2>Process <small><button class="btn btn-xs copy" data-clipboard-text="{{ processRun.process.uri }}">
                         <i class="glyphicon glyphicon-copy"></i>
-                    </button></small>
-</h1>
+                    </button>
+                    <a href="{{ path('workflow-process', { 'process_uri': processRun.process.uri|url_encode() }) }}" class="btn btn-xs" title="Go to process"><i class="glyphicon glyphicon-search"></i></a>
+    </small>
+</h2>
                         
 <ul>
     <li>Title: {{ processRun.process.label }}</li>
     <li>Description: {{ processRun.process.description }}</li>
 </ul>
     
-<h2>Process Run <small><button class="btn btn-xs copy" data-clipboard-text="{{ processRun.uri }}">
+<h3>Process Run <small><button class="btn btn-xs copy" data-clipboard-text="{{ processRun.uri }}">
                         <i class="glyphicon glyphicon-copy"></i>
                     </button></small>
-</h2>
+</h3>
                         
 <ul>
     <li>Title: {{ processRun.label }}</li>
@@ -24,7 +42,7 @@
     </li>
 </ul>
 
-<h2>Inputs</h2>
+<h4>Inputs</h4>
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -49,14 +67,14 @@
         </tr>
     {% else %}
         <tr>
-            <td colspan="2">No input.</td>
+            <td colspan="3">No input.</td>
         </tr>
     {% endfor %}
         </tbody>
     </table>
 </div>
     
-<h2>Outputs</h2>
+<h4>Outputs</h4>
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -81,17 +99,14 @@
         </tr>
     {% else %}
         <tr>
-            <td colspan="2">No output.</td>
+            <td colspan="3">No output.</td>
         </tr>
     {% endfor %}
         </tbody>
     </table>
 </div>       
-
 {% endblock %}  
 {% block javascripts %}   
-    <script type="text/javascript">
-    </script>
 {% endblock %}
 {% block stylesheets %}
 {% endblock %} 

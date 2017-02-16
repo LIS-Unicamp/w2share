@@ -324,7 +324,6 @@ class Workflow
     private function createWorkflowPNG($workflow, $root_path)
     {
         $command = "ruby ".$root_path."/../src/AppBundle/Utils/script.rb ".$workflow->getWorkflowAbsolutePath()." ".$root_path."/../web/uploads/documents/".$workflow->getHash().".png";            
-        echo $command; exit;
         system($command);
     }
     
@@ -362,7 +361,7 @@ class Workflow
     
     /**
      * Delete triples related to a workflow URI
-     * @param type $workflow_uri
+     * @param type Workflow
      */
     public function deleteWorkflow(\AppBundle\Entity\Workflow $workflow)
     {
@@ -376,8 +375,7 @@ class Workflow
             }
             ";  
         $this->driver->getResults($query);
-        $workflow->removeUpload();
-        
+        $workflow->removeUpload();        
     }        
     
     public function clearGraph()

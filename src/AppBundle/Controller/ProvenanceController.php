@@ -38,9 +38,13 @@ class ProvenanceController extends Controller
         
         $processes = $model->findProcessesRunByWorkflowRun($workflow_run_uri);
         $outputs = $model->findOutputsRunByWorkflowRun($workflow_run_uri);
-        $inputs = $model->findInputsRunByWorkflowRun($workflow_run_uri);;
+        $inputs = $model->findInputsRunByWorkflowRun($workflow_run_uri);
+        
+        $model_workflow = $this->get('model.workflow');
+        $workflow = $model_workflow->findWorkflow($workflowRun->getWorkflow()->getUri());
         
         $workflowRun->setProcessesRun($processes);
+        $workflowRun->setWorkflow($workflow);
         
         return $this->render('provenance/workflow-run.html.twig', array(
             'workflowRun' => $workflowRun,
@@ -76,13 +80,31 @@ class ProvenanceController extends Controller
     }
     
     /**
-     * @Route("/provenance/workflow-run/{workflow_run_uri}/delete", name="provenance-workflow-run-delete")
+     * @Route("/provenance/workflow-run/delete/{workflow_run_uri}", name="provenance-workflow-run-delete")
      */
-    public function workflowRunDeleteAction(Request $request, $workflow_uri)
+    public function workflowRunDeleteAction(Request $request, $workflow_run_uri)
     {        
-        $workflow_uri = urldecode($workflow_uri);
-        $model = $this->get('model.provenance'); 
-        $model->deleteWorkflowRun($workflow_uri);
+        $workflow_run_uri = urldecode($workflow_run_uri);
+        $model = $this->get('model.provenance');
+        
+        $workflowRun = $model->findWorkflowRun($workflow_run_uri);
+        
+        if ($workflowRun)
+        {
+            $model->deleteWorkflowRun($workflowRun);                       
+
+            $this->get('session')
+                    ->getFlashBag()
+                    ->add('success', 'Workflow Run deleted!')
+                ;
+        }
+        else
+        {
+            $this->get('session')
+                    ->getFlashBag()
+                    ->add('error', 'Workflow Run does not exist!')
+                ;
+        }       
                     
         return $this->redirect($this->generateUrl('provenance-workflows-run'));
     }
@@ -108,8 +130,11 @@ class ProvenanceController extends Controller
         
         $process_uri = $processRun->getProcess()->getUri();
         
-        $model_workflow = $this->get('model.workflow');     
+        $model_workflow = $this->get('model.workflow');
         $process = $model_workflow->findProcess($process_uri);
+        $workflow = $model_workflow->findWorkflow($process->getWorkflow()->getUri());  
+        $process->setWorkflow($workflow);
+        
         $processRun->setProcess($process);        
         
         return $this->render('provenance/process-run.html.twig', array(

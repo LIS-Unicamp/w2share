@@ -2,29 +2,47 @@
 {% block title %}Workflows Run{% endblock %}
 {% block body %}
 <h1>Workflows Run</h1>
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>Action</th>
                 <th>Workflow</th>
+                <th>Workflow Description</th>
                 <th>Time</th>
             </tr>
         </thead>
         <tbody>
-    {% for workflow_run in workflows_run %}
+    {% for workflowRun in workflows_run %}
         <tr>
-            <td>
-                <button class="btn btn-xs copy" data-clipboard-text="{{ workflow_run.uri }}">
+            <td style="min-width: 80px">
+                <button class="btn btn-xs copy" data-clipboard-text="{{ workflowRun.uri }}">
                     <i class="glyphicon glyphicon-copy"></i>
                 </button>
-                <a href="{{ path('provenance-workflow-run', { 'workflow_run_uri': workflow_run.uri|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>
-                <a href="{{ path('provenance-workflow-run-delete', { 'workflow_run_uri': workflow_run.uri|url_encode }) }}" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
+                <a href="{{ path('provenance-workflow-run', { 'workflow_run_uri': workflowRun.uri|url_encode }) }}" title="Go to Workflow Run"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('provenance-workflow-run-delete', { 'workflow_run_uri': workflowRun.uri|url_encode }) }}" class="delete" title="Delete Workflow Run"><i class="glyphicon glyphicon-trash"></i></a>
             </td>
-            <td><a href="{{ path('provenance-workflow', { 'workflow_uri': workflow_run.workflow.uri|url_encode }) }}">{{ workflow_run.label }}</a></td>
             <td>
-                {{ workflow_run.startedAtTime|date('H:i:s.v m-d-Y') }} (<strong>Started</strong>)
-                <br>{{ workflow_run.endedAtTime|date('H:i:s.v m-d-Y') }} (<strong>End</strong>)
+                <a href="{{ path('provenance-workflow', { 'workflow_uri': workflowRun.workflow.uri|url_encode }) }}" title="Go to Workflow Runs belonging to this Workflow">{{ workflowRun.workflow.title }}</a>
+            </td>
+            <td>
+                {{ workflowRun.workflow.description }}
+            </td>
+            <td style="min-width: 250px">
+                {{ workflowRun.startedAtTime|date('H:i:s.v m-d-Y') }} (<strong>Started</strong>)
+                <br>{{ workflowRun.endedAtTime|date('H:i:s.v m-d-Y') }} (<strong>End</strong>)
             </td>
         </tr>
     {% endfor %}

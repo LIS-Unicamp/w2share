@@ -173,7 +173,11 @@ class WorkflowController extends Controller
         // workflow run information
         $processes = $model->findProcessesByWorkflow($workflow_uri);        
         $inputs = $model->findWorkflowInputs($workflow_uri);
-        $outputs = $model->findWorkflowOutputs($workflow_uri);                                        
+        $outputs = $model->findWorkflowOutputs($workflow_uri);
+        
+        $model_provenance = $this->get('model.provenance');             
+        $workflowRuns = $model_provenance->findWorkflowsRunsByWorkflowOrAll($workflow_uri);
+        $workflow->setWorkflowRuns($workflowRuns);
         
         return $this->render('workflow/workflow.html.twig', array(
             'processes' => $processes,

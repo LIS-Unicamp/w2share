@@ -6,6 +6,7 @@
             <button class="btn btn-xs copy" data-clipboard-text="{{ workflow.uri }}">
                 <i class="glyphicon glyphicon-copy"></i>
             </button>
+            <a href="{{ path('workflow-details', { 'workflow_uri': workflow.uri|url_encode() }) }}" class="btn btn-xs" title="Go to workflow"><i class="glyphicon glyphicon-search"></i></a>
         </small>
     </h1>
     <ul>
@@ -30,12 +31,16 @@
                 <button class="btn btn-xs copy" data-clipboard-text="{{ workflowRun.uri }}">
                     <i class="glyphicon glyphicon-copy"></i>
                 </button>
-                <a href="{{ path('provenance-workflow-run', { 'workflow_run_uri': workflowRun.uri|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('provenance-workflow-run', { 'workflow_run_uri': workflowRun.uri|url_encode }) }}" title="Go to workflow run"><i class="glyphicon glyphicon-search"></i></a>
             </td>
             <td>
                     {{ workflowRun.startedAtTime|date('H:i:s.v m-d-Y') }} (<strong>Started</strong>)
                     <br>{{ workflowRun.endedAtTime|date('H:i:s.v m-d-Y') }} (<strong>End</strong>)
             </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="2">No workflow run.</td>
         </tr>
     {% endfor %}
         </tbody>

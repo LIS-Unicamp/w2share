@@ -5,7 +5,7 @@
         <small>
             <button class="btn btn-xs copy" data-clipboard-text="{{ workflow.uri }}">
                 <i class="glyphicon glyphicon-copy"></i>
-            </button>
+            </button>           
         </small>
     </h1>
     <ul>
@@ -19,21 +19,21 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <th style="min-width: 70px">Actions</th>
                 <th>Process</th>
-                <th>Description</th>
-                <th>View</th>
+                <th>Description</th>                
             </tr>
         </thead>
         <tbody>
     {% for process in processes %}
         <tr>
-            <td>{{ process.label }}</td>
-            <td>{{ process.description }}</td>
             <td>
-                <a href="{{ path('workflow-process', { 'process_uri': process.uri|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a>
-                <a href="{{ path('annotatation-form', { 'artefact':'process', 'uri': process.uri|url_encode }) }}"><i class="glyphicon glyphicon-plus-sign"></i></a>
-                <a href="{{ path('annotatation-list', { 'artefact':'process', 'uri': process.uri|url_encode }) }}"><i class="glyphicon glyphicon glyphicon-list-alt"></i></a>
+                <a href="{{ path('workflow-process', { 'process_uri': process.uri|url_encode }) }}" title="View process information"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('annotatation-form', { 'artefact':'process', 'uri': process.uri|url_encode }) }}" title="Annotate process"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                <a href="{{ path('annotatation-list', { 'artefact':'process', 'uri': process.uri|url_encode }) }}" title="Process annotation list"><i class="glyphicon glyphicon glyphicon-list-alt"></i></a>
             </td>
+            <td>{{ process.label }}</td>
+            <td>{{ process.description }}</td>           
         </tr>
     {% endfor %}
         </tbody>
@@ -91,10 +91,42 @@
         </tbody>
     </table>
 </div>
+<h2>Abstract Workflow</h2>
 {% if workflow %}
 <img src="{{ asset('uploads/documents/' ~ workflow.hash ~ '.png')}}">
 {% endif %}
 
+<h2>Workflow Runs</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Workflow Run</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for workflowRun in workflow.workflowRuns %}
+        <tr>
+            <td>
+                <button class="btn btn-xs copy" data-clipboard-text="{{ workflowRun.uri }}">
+                    <i class="glyphicon glyphicon-copy"></i>
+                </button>
+                <a href="{{ path('provenance-workflow-run', { 'workflow_run_uri': workflowRun.uri|url_encode }) }}" title="Go to Workflow Run"><i class="glyphicon glyphicon-search"></i></a>
+            </td>
+            <td>
+                    {{ workflowRun.startedAtTime|date('H:i:s.v m-d-Y') }} (<strong>Started</strong>)
+                    <br>{{ workflowRun.endedAtTime|date('H:i:s.v m-d-Y') }} (<strong>End</strong>)
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="2">No workflow run.</td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}  
 {% block javascripts %}            
 {% endblock %}

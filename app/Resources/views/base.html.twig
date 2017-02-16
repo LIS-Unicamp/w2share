@@ -166,6 +166,7 @@ var clipboard = new Clipboard('.copy');
     
 $(document).ready(function(){
     $('.copy').tooltip({ 'title':'Copy URI' });
+    $('a[title]').tooltip();
     $('a.reset').click(function (e) {
         e.preventDefault();
 

@@ -6,10 +6,25 @@
         2. o tempo de execução de cada processo
         3. as entradas e saídas de cada processo
     -->
-    <h1>Workflow Run <small><button class="btn btn-xs copy" data-clipboard-text="{{ workflowRun.uri }}">
+    <h1>Workflow
+        <small>
+            <button class="btn btn-xs copy" data-clipboard-text="{{ workflowRun.workflow.uri }}">
+                <i class="glyphicon glyphicon-copy"></i>
+            </button>
+            <a href="{{ path('workflow-details', { 'workflow_uri': workflowRun.workflow.uri|url_encode() }) }}" class="btn btn-xs" title="Go to workflow"><i class="glyphicon glyphicon-search"></i></a>
+        </small>
+    </h1>
+    <ul>
+        <li><strong>Title:</strong> {{ workflowRun.workflow.title }}</li>
+        <li><strong>Creator:</strong> {{ workflowRun.workflow.creator }}</li>
+        <li><strong>Description:</strong> {{ workflowRun.workflow.description }}</li>
+        <li><strong>Label:</strong> {{ workflowRun.workflow.label }}</li>
+    </ul>
+    
+    <h2>Workflow Run <small><button class="btn btn-xs copy" data-clipboard-text="{{ workflowRun.uri }}">
                     <i class="glyphicon glyphicon-copy"></i>
-                    </button></small></h1>
-    <h2>Processes Run</h2>
+                    </button></small></h2>
+    <h3>Processes Run</h3>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -26,24 +41,28 @@
                     <button class="btn btn-xs copy" data-clipboard-text="{{ processRun.process.uri }}">
                         <i class="glyphicon glyphicon-copy"></i>
                     </button>
-                    <a href="{{ path('workflow-process', { 'process_uri': processRun.process.uri|url_encode }) }}"><i class="glyphicon glyphicon-search"></i></a></td>
+                    <a href="{{ path('workflow-process', { 'process_uri': processRun.process.uri|url_encode }) }}" title="Go to Process"><i class="glyphicon glyphicon-search"></i></a></td>
                 </td>
                 <td>
                     <button class="btn btn-xs copy" data-clipboard-text="{{ processRun.uri }}">
                         <i class="glyphicon glyphicon-copy"></i>
                     </button>
-                    <a href="{{ path('provenance-process-run', { 'process_run_uri': processRun.uri|url_encode }) }}">{{ processRun.label }}</a></td>
+                    <a href="{{ path('provenance-process-run', { 'process_run_uri': processRun.uri|url_encode }) }}" title="Go to Process Run">{{ processRun.label }}</a></td>
                 <td>
                     {{ processRun.startedAtTime|date('H:i:s.v m-d-Y') }} (<strong>Started</strong>)
                     <br>{{ processRun.endedAtTime|date('H:i:s.v m-d-Y') }} (<strong>End</strong>)
                 </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">No process run.</td>
             </tr>
         {% endfor %}
             </tbody>
         </table>
     </div>
 
-<h2>Inputs</h2>
+<h3>Inputs</h3>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -72,11 +91,15 @@
                     {{ inputRun.content }}
                 </td>
             </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">No input.</td>
+            </tr>
         {% endfor %}
             </tbody>
         </table>
     </div>
-<h2>Outputs</h2>
+<h3>Outputs</h3>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -104,6 +127,10 @@
                 <td>
                     {{ outputRun.content }}
                 </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">No output.</td>
             </tr>
         {% endfor %}
             </tbody>

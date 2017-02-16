@@ -584,7 +584,7 @@ class Workflow
      * @param \AppBundle\Entity\Process $processes
      * @return Workflow
      */
-    public function addProcesse(\AppBundle\Entity\Process $processes)
+    public function addProcess(\AppBundle\Entity\Process $processes)
     {
         $this->processes[] = $processes;
     
@@ -596,7 +596,7 @@ class Workflow
      *
      * @param \AppBundle\Entity\Process $processes
      */
-    public function removeProcesse(\AppBundle\Entity\Process $processes)
+    public function removeProcess(\AppBundle\Entity\Process $processes)
     {
         $this->processes->removeElement($processes);
     }
@@ -688,9 +688,22 @@ class Workflow
      * @param \AppBundle\Entity\WorkflowRun $workflowRuns
      * @return Workflow
      */
-    public function addWorkflowRun(\AppBundle\Entity\WorkflowRun $workflowRuns)
+    public function addWorkflowRun(\AppBundle\Entity\WorkflowRun $workflowRun)
     {
-        $this->workflow_runs[] = $workflowRuns;
+        $this->workflow_runs[] = $workflowRun;
+    
+        return $this;
+    }
+    
+    /**
+     * set workflow_runs
+     *
+     * @param array $workflowRuns
+     * @return Workflow
+     */
+    public function setWorkflowRuns(array $workflowRuns)
+    {
+        $this->workflow_runs = new \Doctrine\Common\Collections\ArrayCollection($workflowRuns);
     
         return $this;
     }
@@ -700,9 +713,9 @@ class Workflow
      *
      * @param \AppBundle\Entity\WorkflowRun $workflowRuns
      */
-    public function removeWorkflowRun(\AppBundle\Entity\WorkflowRun $workflowRuns)
+    public function removeWorkflowRun(\AppBundle\Entity\WorkflowRun $workflowRun)
     {
-        $this->workflow_runs->removeElement($workflowRuns);
+        $this->workflow_runs->removeElement($workflowRun);
     }
 
     /**
