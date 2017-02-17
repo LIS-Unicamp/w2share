@@ -1,0 +1,143 @@
+{% extends 'base.html.twig' %}
+{% block title %}Quality Annotations{% endblock %}
+{% block body %}
+<h1>Quality Annotations</h1>
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+<div class="row">
+    <div class="col-md-1">
+        <a class="btn btn-primary" href="">Add</a>
+    </div>
+    <div class="col-md-5 pull-right" id="filtrar">
+        {{ form_start(form) }}
+            <div class="row">                                
+                <div class="pull-left">
+                    <button class="btn btn-info habilitar">
+                    Filter Options <i class="glyphicon glyphicon-collapse-down"></i>
+                    </button>
+                </div>
+            </div> 
+            <div class="panel panel-info collapse" id="filtrar-avancado">
+                <div class="panel-heading">
+                        <h3 class="panel-title">Search</h3>
+                </div>
+                <div class="panel-body">                                                                      
+                    <div class="row">                           
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                    {{ form_label(form.user)}}
+                                    {{ form_widget(form.user, { 'attr': { 'class':'form-control select' } }) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                                <button class="btn btn-info reset">
+                                    <i class="glyphicon glyphicon-erase"></i> Reset
+                                </button>
+                        </div>
+                        <div class="col-md-2">
+                            {{ form_widget(form.filter) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{ form_end(form) }}
+    </div> 
+</div>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width:100px">Action</th>
+                <th>URI Annotation</th>
+                <th>Element</th>
+                <th>Dimension</th>
+                <th>Value</th>
+                <th>Creator</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for annotation in pagination %}
+        <tr>
+            <td>
+                <a href=""><i class="glyphicon glyphicon-edit"></i></a>
+                <a href="" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
+            </td>
+            <td>{{ annotation.uri }}</td>
+            <td>{{ annotation.workflow.uri }}</td> <!--TO-DO: trocar pelo nome do elemento -->
+            <td>{{ annotation.qualityDimension.name }}</td>
+            <td>{{ annotation.value }}</td>
+            <td>{{ annotation.creator.name }}</td>
+            <td>{{ annotation.createdAtTime|date('H:i:s.v m-d-Y') }} </td>
+            
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="navigation">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        {{ app_pagination_render(pagination) }}
+    </div>
+</div>
+{% endblock %}  
+{% block javascripts %}  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function()   
+        {
+            $('button.habilitar').click(function (e) {
+                e.preventDefault();
+                $('#filtrar-avancado').collapse('toggle');
+                if ($(this).children('i').hasClass('glyphicon-collapse-down'))
+                {
+                    $(this).children('i').removeClass('glyphicon-collapse-down');
+                    $(this).children('i').addClass('glyphicon-collapse-up');
+                }
+                else
+                {
+                    $(this).children('i').removeClass('glyphicon-collapse-up');
+                    $(this).children('i').addClass('glyphicon-collapse-down');
+                }
+            });
+            
+            $('button.reset').click(function(e) {
+                e.preventDefault();
+                $(':input, :button, :hidden')
+                    .val('')
+                    .removeAttr('checked')
+                    .removeAttr('selected');                
+                $('.select').val([]).trigger('change');
+            });
+
+            $('.select').select2(
+            {
+                allowClear: true,
+                width: '100%',
+                placeholder: 'select...'
+            });
+        });
+    </script>
+{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" />  
+{% endblock %}

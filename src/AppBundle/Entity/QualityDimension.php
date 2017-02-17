@@ -159,6 +159,7 @@ class QualityDimension {
     public function __toString() {
         return $this->getName();
     }
+    
     /**
      * @var \Doctrine\Common\Collections\Collection
      */

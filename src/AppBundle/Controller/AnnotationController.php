@@ -63,13 +63,53 @@ class AnnotationController extends Controller
             'uri' => $uri,
             'annotations' => $annotations
         ));
-    }  
+    }
+    
+    /**
+     * @Route("/annotation/qualityannotations", name="quality-annotations") 
+     */
+    public function qualityAnnotationListAction(Request $request)
+    {         
+        $model = $this->get('model.annotation');
+        
+        $users = $model->findUsersWithQualityAnnotations();
+        
+        $form = $this->createForm(new \AppBundle\Form\QualityAnnotationFilterType($users), null, array(
+            'action' => $this->generateUrl('quality-annotations'),
+            'method' => 'GET'
+        ));
+        $form->handleRequest($request);             
+        $user_uri = $form->get('user')->getViewData();
+        
+        if ($form->isSubmitted() && $user_uri) 
+        {                                    
+            $user = new \AppBundle\Entity\Person();
+            $user->setUri($user_uri);
+            $query = $model->findQualityAnnotationsByUser($user);
+        }
+        else
+        {
+            $query = $model->findAllQualityAnnotations();
+        }
+                        
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+        
+        return $this->render('qualityflow/list-qualityannotations.html.twig', array(
+            'pagination' => $pagination,
+            'form' => $form->createView()
+        ));       
+    }
         
     /**
      * 
-     * @Route("/annotation/qualitydimension/workflow/{workflow_uri}", name="workflow-qualitydimension-annotation")
+     * @Route("/annotation/qualitydimension/{workflow_uri}", name="element-qualitydimension-annotation")
      */
-    public function workflowQualityDimensionAnnotationAction(Request $request, $workflow_uri)
+    public function addQualityAnnotationAction(Request $request, $workflow_uri)
     {
         $workflow_uri = urldecode($workflow_uri);
         
@@ -94,7 +134,7 @@ class AnnotationController extends Controller
         
         $form = $this->createForm(new \AppBundle\Form\QualityAnnotationAddType($quality_dimensions), $qualityAnnotation,
                                   array(
-                                  'action' => $this->generateUrl('workflow-qualitydimension-annotation', array('workflow_uri' => urlencode($workflow_uri))),
+                                  'action' => $this->generateUrl('element-qualitydimension-annotation', array('workflow_uri' => urlencode($workflow_uri))),
                                   'method' => 'POST'
                                   ));
         
@@ -105,24 +145,73 @@ class AnnotationController extends Controller
             $value = $form->get('value')->getData();
             $quality_dimension = $form->get('quality_dimension')->getData();
             $user = $this->getUser();
-            //TO-DO: insertQualityAnnotation
-            $model_annotation->insertQualityAnnotation($workflow, $quality_dimensions[$quality_dimension], $value, $user);
+            
+            $quality_annotation = $model_annotation->insertQualityAnnotation($workflow, $quality_dimensions[$quality_dimension], $value, $user);
             
             $this->get('session')
                 ->getFlashBag()
-                ->add('success', 'Workflow annotated with a quality dimension!'); 
+                ->add('success', 'Workflow annotated with a quality dimension!');
+            
         }
-        $workflow_quality_annotations = $model_annotation->findQualityAnnotationByObject($workflow_uri);
-        return $this->render('qualityflow/workflow-qualitydimension-annotation-form.html.twig', array(
+       
+        $query = $model_annotation->findQualityAnnotationByElement($workflow_uri);
+        
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+        
+        return $this->render('qualityflow/qualitydimension-annotation-form.html.twig', array(
+            'pagination' => $pagination,
             'form' => $form->createView(),
             'processes' => $processes,
             'inputs' => $inputs,
             'outputs' => $outputs,
             'workflow' => $workflow,
             'workflow_uri' => $workflow_uri,
-            'quality_dimensions' => $quality_dimensions,
-            'workflow_quality_annotations' => $workflow_quality_annotations
-        ));
+            'quality_dimensions' => $quality_dimensions
+        )); 
+        
+    }
+    
+    /**
+     * 
+     * @Route("/annotation/qualitydimension/edit/{annotation_uri}", name="edit-qualitydimension-annotation")
+     */
+    public function editQualityAnnotationAction(Request $request, $annotation_uri)
+    {
+        $model = $this->get('model.annotation'); 
+        
+        //TO-DO
+       /* $uri = urldecode($qualitydimension_uri);
+        $qualityDimension = $model->findOneQualityDimension($uri);
+              
+        $form = $this->createForm(new \AppBundle\Form\QualityDimensionType(), $qualityDimension);
+        
+        $form->handleRequest($request);
+                
+        if ($form->isValid()) 
+        {           
+            $model->updateQualityDimension($qualityDimension);
+            
+            //Remove qualityDimension from the session variable
+            $qualityDimensions = $this->get('session')->get('qualityDimensions');
+            $session_index = \AppBundle\Utils\Utils::findIndexSession($uri, $qualityDimensions);
+            $qualityDimensions[$session_index] = $qualityDimension;
+            
+            $this->get('session')->set('qualityDimensions',$qualityDimensions);
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Quality dimension edited!')
+            ;
+        }
+        
+        return $this->render('qualityflow/form.html.twig', array(
+            'form' => $form->createView(),
+            'qualityDimension' => $qualityDimension
+        ));*/
         
     }
     

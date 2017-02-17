@@ -24,17 +24,16 @@ class QualityAnnotation {
    */
     private $id;   
     
-  /**
-   * @var integer
-   * Id da qualitydimension
-   */
-    private $id_qd;   
-    
-   
+
    /**
     * @var string
     */
     private $value;
+    
+    /**
+    * @var string
+    */
+    private $creator;
     
     /**
     * get $qualityDimension
@@ -58,15 +57,6 @@ class QualityAnnotation {
     $this->qualityDimension = $qualityDimension;
 
       return $this;
-  }
-  
-  public function setId_Qd($id_qd) {
-      $this->id_qd = $id_qd;
-      return $this;
-  }
-  
-  public function getId_Qd() {
-      return $this->id_qd;
   }
   
   /**
@@ -179,4 +169,29 @@ class QualityAnnotation {
     {
         return $this->workflow;
     }
+    
+    /**
+    * Set creator
+    *
+    * @param Person $creator
+    *
+    * @return Person
+    */
+    public function setCreator(Person $creator)
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
+
+    /**
+     * Get the creator
+     *
+     * @return Person
+     */
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
 }

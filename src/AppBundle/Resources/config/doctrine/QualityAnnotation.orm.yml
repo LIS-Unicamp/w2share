@@ -9,6 +9,8 @@ AppBundle\Entity\QualityAnnotation:
             type: string
         created_at_time:
             type: datetime
+        creator:
+            type: string
     manyToOne:
         quality_dimension:
             targetEntity: QualityDimension
@@ -16,3 +18,5 @@ AppBundle\Entity\QualityAnnotation:
         workflow:
             targetEntity: Workflow
             inversedBy: quality_annotation
+        creator:
+            targetEntity: Person  

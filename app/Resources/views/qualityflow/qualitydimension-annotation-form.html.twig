@@ -64,8 +64,10 @@
             </div>
 
         </div>
+                    
         <div class="form-actions">
-            {{ form_widget(form.save) }}
+            {{ form_widget(form.save) }} 
+            <a href="{{ path('quality-annotations') }}" class="btn btn-info">List</a>
         </div>
 
     {{ form_end(form) }}
@@ -83,20 +85,35 @@
         </thead>
         <tbody>
             <!-- TO-DO: Recuperar só as informacoes do workflow selecionado -->
-            {% for annotations in workflow_quality_annotations %}
+            {% for annotation in pagination %}
                 <tr>
                     <td>
                         <a class="btn btn-xs delete" href="{# path('alguma-rota') #}"> <!-- TO-DO: trocar depois pela funcao Delete -->
                             <i class="glyphicon glyphicon-trash"></i>
                         </a>
+                        
+                        <a href="{{ path('edit-qualitydimension-annotation', { 'annotation_uri':annotation.uri|url_encode() }) }}" 
+                           title="Edit annotations"><i class="glyphicon glyphicon-edit"></i></a> 
                     </td>
-                    <td>{{ annotations.quality_dimension }}</td>
-                    <td>{{ annotations.value }}</td>
+                    <td>{{ annotation.qualityDimension.name }}</td>
+                    <td>{{ annotation.value }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 </div> 
+<div class="row">
+    <div class="col-sm-12">
+        <div class="navigation">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        {{ app_pagination_render(pagination) }}
+    </div>
+</div>
     
 {% endblock %}  
 {% block javascripts %}
