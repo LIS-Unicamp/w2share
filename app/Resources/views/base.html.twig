@@ -2,7 +2,7 @@
 <!--[if IE 8]> <html lang="pt-br" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="pt-br" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
-<html lang="pt-br">
+<html lang="en" {% block html_tag %}{% endblock %}>
 <!--<![endif]-->
 
 <!-- Head BEGIN -->
@@ -49,7 +49,7 @@
 <!-- Head END -->
 
 <!-- Body BEGIN -->
-<body> 
+<body {% block body_tag %}{% endblock %}> 
     <!-- Static navbar -->
     <nav class="navbar navbar-default navbar-static-top">
       <div class="container">
@@ -69,7 +69,15 @@
               </ul>
             </li>
             <li{% if get_controller_name() == 'provenance' %} class="active"{% endif %}><a href="{{ path('provenance-workflows-run') }}">Provenance</a></li>
-            <li{% if get_controller_name() == 'yesworkflow' %} class="active"{% endif %}><a href="{{ path('yesworkflow-form') }}">YesWorkflow</a></li>
+            <li class="dropdown{% if get_controller_name() == 'yesworkflow' %} active{% endif %}">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                  YesWorkflow <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">  
+                    <li><a href="{{ path('yesworkflow-editor') }}">Editor</a></li> 
+                    <li><a href="{{ path('yesworkflow-form') }}">Form</a></li>                        
+                </ul>
+            </li>
             <li class="dropdown{% if get_controller_name() == 'qualitydimension' %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   Quality Flow <span class="caret"></span>

@@ -1,55 +1,9 @@
-<!DOCTYPE html>
-<html ng-app="yw-editor-app" lang="en">
-
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>YesWorkflow Editor</title>
-    <script data-require="angular.js@*" data-semver="1.5.7" src="lib/angular/1.5.7/angular.js"></script>
-    <script src="lib/angular/1.5.7/angular-animate.js"></script>
-    <script src="lib/angular/1.5.7/angular-sanitize.js"></script>
-    <script src="lib/angular-ui/ui-bootstrap-tpls-2.0.2.js"></script>
-    <script src="lib/ace/1.2.4/min/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script src="lib/dragscroll/dragscroll.js"></script>
-    <script src="lib/divider/divider.js"></script>
-    <script src="lib/angular-file-saver.bundle.min.js"></script>
-    <link href="http://localhost/phd-prototype/web/css/bootstrap.css" rel="stylesheet">
-    <link href="lib/angular-ui-select/0.19.4/select.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css" />
-</head>
-
-<body ng-controller="MainController" style="background: {{background}}">
-  
-  <!--
-
-    <div class="styled-option">
-      Data:
-      <select ng-model="dataLabel" ng-change="getGraph()">
-        <option value="name">Show name</option>
-        <option value="uri">Show URI</option>
-        <option value="both">Show both</option>
-      </select>
-    </div>
-
-    <div class="styled-option">
-      Programs:
-      <select ng-model="programLabel" ng-change="getGraph()">
-        <option value="name">Show name</option>
-        <option value="description">Show description</option>
-        <option value="both">Show both</option>
-      </select>
-    </div>
-
-    <div class="styled-option">
-      Edges:
-      <select ng-model="edgeLabels" ng-change="getGraph()">
-        <option value="show">Show labels</option>
-        <option value="hide">Hide labels</option>
-      </select>
-    </div>
-
-  -->
-  
+{% extends 'base.html.twig' %}
+{% block html_tag %}ng-app="yw-editor-app"{% endblock %}
+{% block body_tag %}ng-controller="MainController" style="background: {{ "{{background}}"|raw }}"{% endblock %}
+{% block title %}YesWorkflow{% endblock %}
+{% block body %}
+<h1>YesWorkflow <small>Editor</small></h1>
   <div id="top-toolbar">
 
     <select class="editor-option" ng-model="sampleToLoad" ng-change="onScriptSelect()" title="Select a sample script to load">
@@ -179,8 +133,21 @@
       
   </div>
   
-  <script src="yw-viewer.js"></script>
   
-</body>
+{% endblock %}
+{% block javascripts %} 
+<script data-require="angular.js@*" data-semver="1.5.7" src="{{ app.request.basepath }}/yw-editor/lib/angular/1.5.7/angular.js"></script>
+<script src="{{ app.request.basepath }}/yw-editor/lib/angular/1.5.7/angular-animate.js"></script>
+<script src="{{ app.request.basepath }}/yw-editor/lib/angular/1.5.7/angular-sanitize.js"></script>
+<script src="{{ app.request.basepath }}/yw-editor/lib/angular-ui/ui-bootstrap-tpls-2.0.2.js"></script>
+<script src="{{ app.request.basepath }}/yw-editor/lib/ace/1.2.4/min/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="{{ app.request.basepath }}/yw-editor/lib/dragscroll/dragscroll.js"></script>
+<script src="{{ app.request.basepath }}/yw-editor/lib/divider/divider.js"></script>
+<script src="{{ app.request.basepath }}/yw-editor/lib/angular-file-saver.bundle.min.js"></script>
 
-</html>
+<script src="{{ app.request.basepath }}/yw-editor/yw-viewer.js"></script>
+{% endblock %}
+{% block stylesheets %}
+<link href="{{ app.request.basepath }}/yw-editor/lib/angular-ui-select/0.19.4/select.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ app.request.basepath }}/yw-editor/style.css" />
+{% endblock %} 

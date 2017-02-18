@@ -1,8 +1,8 @@
 (function() {
 
-  var app = angular.module("yw-editor-app", ['ngSanitize', 'yw.divider', 'ngAnimate', 'ui.bootstrap']);
+  var app = angular.module("yw-editor-app", ['ngFileSaver', 'ngSanitize', 'yw.divider', 'ngAnimate', 'ui.bootstrap']);
 
-  var MainController = function($scope, $http, $timeout) {
+  var MainController = function($scope, $http, $timeout, FileSaver, Blob) {
 
     var config;
 
@@ -10,7 +10,7 @@
       config = response.data;
     } 
 
-    $http.get("/yw-editor-service/api/v1/config")
+    $http.get("http://absflow.westus.cloudapp.azure.com/yw-editor-service/api/v1/config")
         .then(onEditorConfigReceived);
 
     var editor = ace.edit("editor");
@@ -46,6 +46,29 @@
       editor.setFontSize(parseInt($scope.fontsize));
       viewer.setFontSize(parseInt($scope.fontsize));
       editor.focus();
+    }
+    
+    $scope.downloadImage = function() {
+        var file = new Blob([graph.svg], {type: "image/svg+xml"});
+        FileSaver.saveAs(file, 'image.svg');
+    }
+    
+    $scope.downloadScript = function() {
+        var file = new Blob([editor.getValue()], {type: "text/plain;charset=utf-8"});
+        var extension = "sh";
+        if ($scope.language == "python")
+        {
+            extension = "py";
+        }
+        else if ($scope.language == "sh")
+        {
+            extension = "sh";
+        }
+        else if ($scope.language == "r")
+        {
+            extension = "R";
+        }
+        FileSaver.saveAs(file, 'script.'+extension);
     }
 
     $scope.themeChange = function() {
@@ -105,7 +128,7 @@
 
       if (config) {
         $http.post(
-          config.graphServiceBaseUrl + "graph",
+          "http://absflow.westus.cloudapp.azure.com" + config.graphServiceBaseUrl + "graph",
           {
               language: $scope.language,
               code: editor.getValue(),
@@ -250,7 +273,7 @@
     }
 
     $scope.loadSample = function(script) {
-        $http.get("samples/" + script)
+        $http.get("http://localhost/phd-prototype/web/yw-editor/samples/" + script)
           .then(onSampleLoaded);
     }
 
@@ -311,6 +334,6 @@
     $timeout(onLoadInitialScript, 100);
   };
 
-  app.controller("MainController", ["$scope", "$http", "$timeout", MainController]);
+  app.controller("MainController", ["$scope", "$http", "$timeout", 'FileSaver', 'Blob', MainController]);
 
 }());

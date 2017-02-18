@@ -20,7 +20,7 @@ body
 #top-toolbar 
 {
     position: absolute;
-    top: 0;
+    top: 130px;
     left: 0;
     width: 100%;
     height: 26px;
@@ -31,7 +31,7 @@ body
 #script 
 {
     position: absolute;
-    top: 26px;
+    top: 156px;
     bottom: 23px;
     left: 0;
     right: 0;

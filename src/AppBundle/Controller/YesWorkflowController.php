@@ -47,6 +47,16 @@ class YesWorkflowController extends Controller
             'script_content' => $script_content,
             'abstract_workflow' => $yesworkflow->getUploadDir()."/wf.png"
         ));
+    }  
+    
+    /**
+     * @Route("/yesworkflow/editor", name="yesworkflow-editor")
+     */
+    public function editorAction(Request $request)
+    {                                                                                   
+        return $this->render('yesworkflow/editor.html.twig', array(
+            
+        ));
     }            
 }
 
