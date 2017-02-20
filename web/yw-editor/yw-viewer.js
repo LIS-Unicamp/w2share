@@ -2,7 +2,7 @@
 
   var app = angular.module("yw-editor-app", ['ngFileSaver', 'ngSanitize', 'yw.divider', 'ngAnimate', 'ui.bootstrap']);
 
-  var MainController = function($scope, $http, $timeout, FileSaver, Blob) {
+  var MainController = function($scope, $http, $timeout, FileSaver, Blob, $window) {
 
     var config;
 
@@ -273,7 +273,7 @@
     }
 
     $scope.loadSample = function(script) {
-        $http.get("http://localhost/phd-prototype/web/yw-editor/samples/" + script)
+        $http.get($window.url+"/yw-editor/samples/" + script)
           .then(onSampleLoaded);
     }
 
@@ -334,6 +334,6 @@
     $timeout(onLoadInitialScript, 100);
   };
 
-  app.controller("MainController", ["$scope", "$http", "$timeout", 'FileSaver', 'Blob', MainController]);
+  app.controller("MainController", ["$scope", "$http", "$timeout", 'FileSaver', 'Blob', '$window', MainController]);
 
 }());
