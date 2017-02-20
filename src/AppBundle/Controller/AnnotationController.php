@@ -104,24 +104,43 @@ class AnnotationController extends Controller
             'form' => $form->createView()
         ));       
     }
-        
+    
     /**
      * 
-     * @Route("/annotation/qualitydimension/{workflow_uri}", name="element-qualitydimension-annotation")
+     * @Route("/annotation/qualitydimension/add/{element_uri}/{type}", name="element-qualitydimension-annotation")
      */
-    public function addQualityAnnotationAction(Request $request, $workflow_uri)
+    public function addQualityAnnotationAction(Request $request, $element_uri, $type)
     {
-        $workflow_uri = urldecode($workflow_uri);
+        $element_uri = urldecode($element_uri);
         
         $model = $this->get('model.workflow');
-                
-        $workflow = $model->findWorkflow($workflow_uri);
-    
-        // workflow run information
-        $processes = $model->findProcessesByWorkflow($workflow_uri);
+        $model_provenance = $this->get('model.provenance');
         
-        $inputs = $model->findWorkflowInputs($workflow_uri);
-        $outputs = $model->findWorkflowOutputs($workflow_uri);
+        $workflow = new \AppBundle\Entity\Workflow();
+        $process_run = new \AppBundle\Entity\ProcessRun();
+        $output_run = new \AppBundle\Entity\OutputRun();
+        
+        $process_uri = null;
+        $process = null;
+        
+        
+        switch ($type) 
+        {
+            case 'workflow': 
+                $workflow = $model->findWorkflow($element_uri);
+                break;
+            case 'process_run':
+                $process_run = $model_provenance->findProcessRun($element_uri);
+                $process_uri = $process_run->getProcess()->getUri();
+                $process = $model->findProcess($process_uri);
+                $workflow_of_process = $model->findWorkflow($process->getWorkflow()->getUri());  
+                $process->setWorkflow($workflow_of_process);
+                $process_run->setProcess($process); 
+                break;
+            case 'output_run':
+                $output_data_run = $model_provenance->findOutputDataByOutputRun($element_uri);
+                break;
+        }
         
         //Info from Quality dimension
         $model_qualitydimension = $this->get('model.qualitydimension'); 
@@ -134,7 +153,9 @@ class AnnotationController extends Controller
         
         $form = $this->createForm(new \AppBundle\Form\QualityAnnotationAddType($quality_dimensions), $qualityAnnotation,
                                   array(
-                                  'action' => $this->generateUrl('element-qualitydimension-annotation', array('workflow_uri' => urlencode($workflow_uri))),
+                                  'action' => $this->generateUrl('element-qualitydimension-annotation', 
+                                                                  array('element_uri' => urlencode($element_uri),
+                                                                        'type' => $type)),
                                   'method' => 'POST'
                                   ));
         
@@ -146,15 +167,15 @@ class AnnotationController extends Controller
             $quality_dimension = $form->get('quality_dimension')->getData();
             $user = $this->getUser();
             
-            $quality_annotation = $model_annotation->insertQualityAnnotation($workflow, $quality_dimensions[$quality_dimension], $value, $user);
+            $quality_annotation = $model_annotation->insertQualityAnnotationToElement($element_uri, $quality_dimensions[$quality_dimension], $value, $user);
             
             $this->get('session')
                 ->getFlashBag()
-                ->add('success', 'Workflow annotated with a quality dimension!');
+                ->add('success', 'Element annotated with a quality dimension!');
             
         }
        
-        $query = $model_annotation->findQualityAnnotationByElement($workflow_uri);
+        $query = $model_annotation->findQualityAnnotationByElement($element_uri, $type);
         
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
@@ -166,15 +187,15 @@ class AnnotationController extends Controller
         return $this->render('qualityflow/qualitydimension-annotation-form.html.twig', array(
             'pagination' => $pagination,
             'form' => $form->createView(),
-            'processes' => $processes,
-            'inputs' => $inputs,
-            'outputs' => $outputs,
             'workflow' => $workflow,
-            'workflow_uri' => $workflow_uri,
+            'process_run' => $process_run,
+            'output_data_run' => $output_data_run,
+            'element_uri' => $element_uri,
             'quality_dimensions' => $quality_dimensions
         )); 
         
     }
+    
     
     /**
      * 

@@ -23,3 +23,6 @@ AppBundle\Entity\ProcessRun:
         inputs_run:
             targetEntity: InputRun
             mappedBy: process_run
+        quality_annotation:
+            targetEntity: QualityAnnotation
+            mappedBy: process_run

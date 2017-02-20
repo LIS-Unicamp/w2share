@@ -150,4 +150,49 @@ class OutputRun
     {
         return $this->output;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $quality_annotation;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->quality_annotation = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add quality_annotation
+     *
+     * @param \AppBundle\Entity\QualityAnnotation $qualityAnnotation
+     * @return OutputRun
+     */
+    public function addQualityAnnotation(\AppBundle\Entity\QualityAnnotation $qualityAnnotation)
+    {
+        $this->quality_annotation[] = $qualityAnnotation;
+    
+        return $this;
+    }
+
+    /**
+     * Remove quality_annotation
+     *
+     * @param \AppBundle\Entity\QualityAnnotation $qualityAnnotation
+     */
+    public function removeQualityAnnotation(\AppBundle\Entity\QualityAnnotation $qualityAnnotation)
+    {
+        $this->quality_annotation->removeElement($qualityAnnotation);
+    }
+
+    /**
+     * Get quality_annotation
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getQualityAnnotation()
+    {
+        return $this->quality_annotation;
+    }
 }

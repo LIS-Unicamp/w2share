@@ -15,3 +15,7 @@ AppBundle\Entity\OutputRun:
         output:
             targetEntity: Output
             inversedBy: outputs_run
+    oneToMany:
+        quality_annotation:
+            targetEntity: QualityAnnotation
+            mappedBy: output_run

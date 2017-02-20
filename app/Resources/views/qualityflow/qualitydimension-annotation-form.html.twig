@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
-{% block title %}Process Quality Annotation{% endblock %}
+{% block title %}Manage Quality Annotation{% endblock %}
 {% block body %}
-<h2>Workflow quality annotations</h2>
+<h2>Manage Quality Annotations</h2>
 
 <div class="table-responsive">
     <table class="table table-striped">
@@ -14,17 +14,24 @@
             </tr>
         </thead>
         <tbody>
-            <!-- TO-DO: Recuperar só as informacoes do workflow selecionado -->
             <tr>
-                <td>{{ workflow.title }}</td>
-                <td>{{ workflow.creator }}</td>
-                <td>{{ workflow.description }}</td>
+                {% if workflow.uri %}
+                    <td>{{ workflow.title }}</td>
+                    <td>{{ workflow.creator }}</td>
+                    <td>{{ workflow.description }}</td>
+                {% elseif process_run.uri %}
+                    <td>{{ process_run.label }}</td>
+                    <td> Workflow creator: {{ process_run.process.workflow.creator }} </td>
+                    <td>{{ process_run.process.description }}</td>
+                {% elseif output_data_run.uri %}  <!--TO-DO: tratar o array de elementos -->
+                    <td>{{ output_data_run.label }}</td>
+                    <td></td>
+                    <td></td>
+                {% endif  %}
             </tr>
         </tbody>
     </table>
 </div> 
-
-
   
 <div>
     {{ form_start(form) }}

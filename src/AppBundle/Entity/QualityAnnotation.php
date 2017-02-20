@@ -194,4 +194,60 @@ class QualityAnnotation {
         return $this->creator;
     }
 
+    /**
+     * @var \AppBundle\Entity\ProcessRun
+     */
+    private $process_run;
+
+    /**
+     * @var \AppBundle\Entity\OutputRun
+     */
+    private $output_run;
+
+
+    /**
+     * Set process_run
+     *
+     * @param \AppBundle\Entity\ProcessRun $processRun
+     * @return QualityAnnotation
+     */
+    public function setProcessRun(\AppBundle\Entity\ProcessRun $processRun = null)
+    {
+        $this->process_run = $processRun;
+    
+        return $this;
+    }
+
+    /**
+     * Get process_run
+     *
+     * @return \AppBundle\Entity\ProcessRun 
+     */
+    public function getProcessRun()
+    {
+        return $this->process_run;
+    }
+
+    /**
+     * Set output_run
+     *
+     * @param \AppBundle\Entity\OutputRun $outputRun
+     * @return QualityAnnotation
+     */
+    public function setOutputRun(\AppBundle\Entity\OutputRun $outputRun = null)
+    {
+        $this->output_run = $outputRun;
+    
+        return $this;
+    }
+
+    /**
+     * Get output_run
+     *
+     * @return \AppBundle\Entity\OutputRun 
+     */
+    public function getOutputRun()
+    {
+        return $this->output_run;
+    }
 }
