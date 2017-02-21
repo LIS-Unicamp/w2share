@@ -18,5 +18,11 @@ AppBundle\Entity\QualityAnnotation:
         workflow:
             targetEntity: Workflow
             inversedBy: quality_annotation
+        process_run:
+            targetEntity: ProcessRun
+            inversedBy: quality_annotation
+        output_run:
+            targetEntity: OutputRun
+            inversedBy: quality_annotation
         creator:
-            targetEntity: Person  
+            targetEntity: Person

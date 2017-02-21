@@ -385,6 +385,46 @@ class Provenance
         return $inputs;  
     }
     
+    
+    public function findOutputDataByOutputRun($output_data_uri)
+    {
+        $query = "
+            SELECT DISTINCT * WHERE 
+            {
+                GRAPH <".$this->driver->getDefaultGraph()."> 
+                { 
+                    <".$output_data_uri."> wfprov:describedByParameter ?output.
+                    ?output a wfdesc:Output.
+                    OPTIONAL { ?output dcterms:description ?description. }
+                    ?output rdfs:label ?label.
+                    <".$output_data_uri."> tavernaprov:content ?content.
+                }
+            }";
+        
+        $outputs_array = $this->driver->getResults($query);
+        
+        $outputs = array();
+        for ($i = 0; $i < count($outputs_array); $i++)
+        {
+            $outputRun = new \AppBundle\Entity\OutputRun();
+            $outputRun->setUri($output_data_uri);
+            $outputRun->setContent($outputs_array[$i]['content']['value']);
+            
+            $output = new \AppBundle\Entity\Output();
+            if (in_array('description', array_keys($outputs_array[$i])))
+            {
+                $output->setDescription($outputs_array[$i]['description']['value']);
+            }
+            $output->setLabel($outputs_array[$i]['label']['value']);
+            $output->setUri($outputs_array[$i]['output']['value']);
+            $outputRun->setOutput($output);
+            
+            $outputs[] = $outputRun;
+        }
+        
+        return $outputs;
+    }
+    
     /**
      * Delete triples related to a workflowRun URI
      * @param type WorkflowRun

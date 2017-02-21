@@ -261,4 +261,42 @@ class ProcessRun
     {
         return $this->inputs_run;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $quality_annotation;
+
+
+    /**
+     * Add quality_annotation
+     *
+     * @param \AppBundle\Entity\QualityAnnotation $qualityAnnotation
+     * @return ProcessRun
+     */
+    public function addQualityAnnotation(\AppBundle\Entity\QualityAnnotation $qualityAnnotation)
+    {
+        $this->quality_annotation[] = $qualityAnnotation;
+    
+        return $this;
+    }
+
+    /**
+     * Remove quality_annotation
+     *
+     * @param \AppBundle\Entity\QualityAnnotation $qualityAnnotation
+     */
+    public function removeQualityAnnotation(\AppBundle\Entity\QualityAnnotation $qualityAnnotation)
+    {
+        $this->quality_annotation->removeElement($qualityAnnotation);
+    }
+
+    /**
+     * Get quality_annotation
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getQualityAnnotation()
+    {
+        return $this->quality_annotation;
+    }
 }

@@ -99,8 +99,10 @@ class Annotation
         return $this->driver->getResults($query);                  
     }
     
-    public function insertQualityAnnotation(\AppBundle\Entity\Workflow $workflow, \AppBundle\Entity\QualityDimension $qualityDimension, $value, $user)
-    {   
+    
+    public function insertQualityAnnotationToElement($element_uri, \AppBundle\Entity\QualityDimension $qualityDimension, $value, $user)
+    {   //$element_uri = $object->getUri();
+       
         $now = new \Datetime();
         $uri = Utils::convertNameToUri("Quality Annotation", $qualityDimension->getName().'/'.$now->format('Ymdhis'));
         
@@ -112,7 +114,7 @@ class Annotation
             GRAPH <".$this->driver->getDefaultGraph('qualitydimension-annotation')."> 
             { 
                 <".$qualityAnnotation->getUri()."> a w2share:QualityAnnotation;
-                oa:hasTarget <".$workflow->getUri().">;
+                oa:hasTarget <".$element_uri.">;
                 w2share:hasQualityDimension <".$qualityDimension->getUri().">;
                 w2share:hasValue '".$value."';
                 oa:annotatedAt \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\";
@@ -125,7 +127,7 @@ class Annotation
         return $qualityAnnotation;
     }
     
-    public function findQualityAnnotationByElement($uri)
+    public function findQualityAnnotationByElement($uri, $type)
     {
         $query = 
         "SELECT * WHERE        
@@ -145,10 +147,27 @@ class Annotation
             $qualityAnnotation = new \AppBundle\Entity\QualityAnnotation();
             $qualityAnnotation->setUri($quality_annotations[$i]['uri']['value']);
             
-            $workflow = new \AppBundle\Entity\Workflow();
-            $workflow->setUri($uri);
-            
-            $qualityAnnotation->setWorkflow($workflow);
+            switch ($type)
+            {
+                case 'workflow':
+                    $workflow = new \AppBundle\Entity\Workflow();
+                    $workflow->setUri($uri);
+
+                    $qualityAnnotation->setWorkflow($workflow);
+                    break;
+                case 'process_run':
+                    $process_run = new \AppBundle\Entity\ProcessRun();
+                    $process_run->setUri($uri);
+                    
+                    $qualityAnnotation->setProcessRun($process_run);
+                    break;
+                case 'output_run':
+                    $output_run = new \AppBundle\Entity\OutputRun();
+                    $output_run->setUri($uri);
+                    
+                    $qualityAnnotation->setOutputRun($output_run);
+                    break;
+            }
             
             $qualityDimension = new \AppBundle\Entity\QualityDimension();
             $qualityDimension->setUri($quality_annotations[$i]['qualityDimension']['value']);
