@@ -53,6 +53,16 @@
         FileSaver.saveAs(file, 'image.svg');
     }
     
+    $scope.saveScript = function() {
+        $http.post(
+          $window.url+"/app_dev.php/yesworkflow/save",
+          {
+                language: $scope.language,
+                code: editor.getValue()                
+          })
+          ;
+    }
+    
     $scope.downloadScript = function() {
         var file = new Blob([editor.getValue()], {type: "text/plain;charset=utf-8"});
         var extension = "sh";
@@ -144,7 +154,7 @@
                           "graph.dotcomments = on\n"
           })
           .then(onGraphComplete);
-      }
+        }
     }
 
     var onGraphComplete = function(response) {

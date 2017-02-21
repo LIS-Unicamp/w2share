@@ -5,14 +5,17 @@
 {% block body %}
 <h1>YesWorkflow <small>Editor</small></h1>
   <div id="top-toolbar">
-
+      <!--
     <select class="editor-option" ng-model="sampleToLoad" ng-change="onScriptSelect()" title="Select a sample script to load">
         <option value="blank.py">blank</option>
         <option value="helloworld.py">Hello</option>
         <option value="greetings.py">Greetings</option>
         <option value="simulate_data_collection.py">Crystals</option>
     </select>
-
+      -->
+    {% if is_granted('ROLE_ADMIN') %}
+    <button class="btn" ng-click="saveScript()"><i class="glyphicon glyphicon-save-file"></i> Save</button>
+    {% endif %}
     <div id="viewer-mode-btn-group" class="btn-group btn-group-xs viewer-option">
         
         <label class="btn btn-default" uib-btn-radio="'skeleton'" 
@@ -43,7 +46,7 @@
       </div>
     </div>
     
-  	<yw.divider id="script-divider" left-panel="editor" right-panel="viewer"
+    <yw.divider id="script-divider" left-panel="editor" right-panel="viewer"
          left-min-width="66" divider-width="8" right-min-width="66" left-panel-fraction="0.50">
     </yw.divider>
 
@@ -52,7 +55,7 @@
   <div id="bottom-toolbar">
 
     <button class="btn btn-default editor-option" ng-click="downloadScript()"
-            title="Download Script"> <i class="glyphicon glyphicon-save-file"></i>Download</button>
+            title="Download Script"> <i class="glyphicon glyphicon-save-file"></i>Script</button>
             
     <select id="language-select" class="editor-option" ng-model="language" ng-change="languageChange()" title="Select programming language">
       <option value="sh">Bash</option>
@@ -129,7 +132,10 @@
             uib-btn-checkbox> Steps </button>
 
     <button class="btn btn-default viewer-option" ng-click="downloadImage()"
-            title="Download Image"> <i class="glyphicon glyphicon-save-file"></i>Download</button>  
+            title="Download Image"> <i class="glyphicon glyphicon-save-file"></i>Image</button>  
+            
+    <a class="btn btn-default viewer-option" href="{{ app.request.basepath }}/yesworkflow/download"
+            title="Download Workflow"> <i class="glyphicon glyphicon-save-file"></i>Workflow</a> 
       
   </div>
   

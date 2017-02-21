@@ -57,7 +57,53 @@ class YesWorkflowController extends Controller
         return $this->render('yesworkflow/editor.html.twig', array(
             
         ));
-    }            
+    }
+    
+    /**
+     * @Route("/yesworkflow/save", name="yesworkflow-save")
+     */
+    public function saveAction(Request $request)
+    {               
+        $data = json_decode($request->getContent(), true);
+        
+        $code = $data['code'];
+        $language = $data['language'];
+        
+        echo $code;
+        
+        $user = $this->getUser();
+        
+        $root_path = $this->get('kernel')->getRootDir();
+        
+        $fs = new Filesystem();           
+        $fs->dumpFile($root_path."/../web/uploads/documents/yesscript/script.sh", $code);
+        
+        $response = new \Symfony\Component\HttpFoundation\Response();        
+        
+        return $response->setContent($request->getContent());
+    }
+    
+    
+    /**
+     * @Route("/yesworkflow/workflow", name="yesworkflow-workflow")
+     */
+    public function downloadWorkflowAction(Request $request)
+    {       
+        $model = $this->get('yesworkflow');
+        $workflow = $model->downloadWorkflow();
+        
+        $response = new \Symfony\Component\HttpFoundation\Response();   
+        
+        // Set headers
+        $response->headers->set('Cache-Control', 'private');
+        //$response->headers->set('Content-type', mime_content_type($filename));
+        $response->headers->set('Content-Disposition', 'attachment; filename="script.sh";');
+        //$response->headers->set('Content-length', filesize($filename));
+
+        // Send headers before outputting anything
+        $response->sendHeaders();
+
+        $response->setContent($workflow);
+        return $response->setContent($workflow);
+    }
 }
-
-
