@@ -127,6 +127,62 @@ class Annotation
         return $qualityAnnotation;
     }
     
+    public function findQualityAnnotationByURI($uri, $type)
+    {
+        $query = 
+        "SELECT * WHERE        
+        { 
+            <".$uri."> a w2share:QualityAnnotation.
+            <".$uri."> oa:hasTarget ?element.
+            <".$uri."> w2share:hasValue ?value.
+            <".$uri."> w2share:hasQualityDimension ?qualityDimension.
+            ?qualityDimension <w2share:qdName> ?qdName.
+            
+        }";
+       
+        $quality_annotation = $this->driver->getResults($query);
+        $qualityAnnotation = new \AppBundle\Entity\QualityAnnotation();
+        
+        if (count($quality_annotation) > 0)
+        {   
+            $qualityAnnotation->setUri($uri);
+            
+            $qualityDimension = new \AppBundle\Entity\QualityDimension();
+            $qualityDimension->setUri($quality_annotation[0]['qualityDimension']['value']);
+            $qualityDimension->setName($quality_annotation[0]['qdName']['value']);
+            
+            $qualityAnnotation->setQualityDimension($qualityDimension);
+            
+            $qualityAnnotation->setValue($quality_annotation[0]['value']['value']);
+            
+            switch ($type)
+            {
+                case 'workflow':
+                    $workflow = new \AppBundle\Entity\Workflow();
+                    $workflow->setUri($quality_annotation[0]['element']['value']);
+
+                    $qualityAnnotation->setWorkflow($workflow);
+                    break;
+                case 'process_run':
+                    $process_run = new \AppBundle\Entity\ProcessRun();
+                    $process_run->setUri($quality_annotation[0]['element']['value']);
+                    
+                    $qualityAnnotation->setProcessRun($process_run);
+                    break;
+                case 'output_run':
+                    $output_run = new \AppBundle\Entity\OutputRun();
+                    $output_run->setUri($quality_annotation[0]['element']['value']);
+                    
+                    $qualityAnnotation->setOutputRun($output_run);
+                    break;
+            }
+            
+            return $qualityAnnotation;  
+        } 
+        
+        return null;
+    }
+    
     public function findQualityAnnotationByElement($uri, $type)
     {
         $query = 
@@ -308,6 +364,59 @@ class Annotation
         }
         
         return $quality_annotation_array;
+    }
+    
+    public function updateQualityAnnotation(\AppBundle\Entity\QualityAnnotation $qualityAnnotation, $type) 
+    {        
+        $uri = $qualityAnnotation->getUri();
+        $element_uri = "";
+        
+        switch ($type)
+        {
+            case 'workflow':
+                $element_uri = $qualityAnnotation->getWorkflow()->getUri();
+                break;
+            case 'process_run':
+                $element_uri = $qualityAnnotation->getProcessRun()->getUri();
+                break;
+            case 'output_run':
+                $element_uri = $qualityAnnotation->getOutputRun()->getUri();
+                break;
+        }
+        
+        $query = 
+        "   MODIFY <".$this->driver->getDefaultGraph('qualitydimension-annotation')."> 
+            DELETE 
+            { 
+                <".$qualityAnnotation->getUri()."> a w2share:QualityAnnotation.
+                <".$qualityAnnotation->getUri()."> oa:hasTarget ?element.
+                <".$qualityAnnotation->getUri()."> w2share:hasValue ?value.    
+                <".$qualityAnnotation->getUri()."> w2share:hasQualityDimension ?qualityDimension.
+                ?qualityDimension <w2share:qdName> ?qdName.
+            }
+            INSERT        
+            { 
+                <".$qualityAnnotation->getUri()."> a w2share:QualityAnnotation.
+                <".$qualityAnnotation->getUri()."> oa:hasTarget <".$element_uri.">.
+                <".$qualityAnnotation->getUri()."> w2share:hasValue ?value.    
+                <".$qualityAnnotation->getUri()."> w2share:hasQualityDimension ?qualityDimension.
+                ?qualityDimension <w2share:qdName> ?qdName.
+            }
+            WHERE 
+            { 
+                <".$qualityAnnotation->getUri()."> a w2share:QualityAnnotation.
+                <".$qualityAnnotation->getUri()."> oa:hasTarget ?element.
+                <".$qualityAnnotation->getUri()."> w2share:hasValue ?value.    
+                <".$qualityAnnotation->getUri()."> w2share:hasQualityDimension ?qualityDimension.
+                ?qualityDimension <w2share:qdName> ?qdName.
+            }";
+        return $this->driver->getResults($query);
+        
+    }
+    //TO-DO
+    public function deleteQualityAnnotation()
+    {
+        return 'something';
     }
     
     public function clearGraphQualityAnnotation()

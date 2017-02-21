@@ -118,7 +118,7 @@ class AnnotationController extends Controller
         
         $workflow = new \AppBundle\Entity\Workflow();
         $process_run = new \AppBundle\Entity\ProcessRun();
-        $output_run = new \AppBundle\Entity\OutputRun();
+        $output_data_run = new \AppBundle\Entity\OutputRun();
         
         $process_uri = null;
         $process = null;
@@ -151,7 +151,7 @@ class AnnotationController extends Controller
         
         $model_annotation = $this->get('model.annotation');
         
-        $form = $this->createForm(new \AppBundle\Form\QualityAnnotationAddType($quality_dimensions), $qualityAnnotation,
+        $form = $this->createForm(new \AppBundle\Form\QualityAnnotationType($quality_dimensions), $qualityAnnotation,
                                   array(
                                   'action' => $this->generateUrl('element-qualitydimension-annotation', 
                                                                   array('element_uri' => urlencode($element_uri),
@@ -189,51 +189,116 @@ class AnnotationController extends Controller
             'form' => $form->createView(),
             'workflow' => $workflow,
             'process_run' => $process_run,
-            'output_data_run' => $output_data_run,
+            'output_data_run' => $output_data_run, 
             'element_uri' => $element_uri,
-            'quality_dimensions' => $quality_dimensions
+            'quality_dimensions' => $quality_dimensions,
+            'qualityAnnotation' => $qualityAnnotation,
+            'type' => $type
         )); 
         
     }
     
-    
     /**
      * 
-     * @Route("/annotation/qualitydimension/edit/{annotation_uri}", name="edit-qualitydimension-annotation")
+     * @Route("/annotation/qualitydimension/edit/{annotation_uri}/{type}", name="edit-qualitydimension-annotation")
      */
-    public function editQualityAnnotationAction(Request $request, $annotation_uri)
+    public function editQualityAnnotationAction(Request $request, $annotation_uri, $type)
     {
         $model = $this->get('model.annotation'); 
+        $model_workflow = $this->get('model.workflow');
+        $model_provenance = $this->get('model.provenance');
         
-        //TO-DO
-       /* $uri = urldecode($qualitydimension_uri);
-        $qualityDimension = $model->findOneQualityDimension($uri);
-              
-        $form = $this->createForm(new \AppBundle\Form\QualityDimensionType(), $qualityDimension);
+        $workflow = new \AppBundle\Entity\Workflow();
+        $process_run = new \AppBundle\Entity\ProcessRun();
+        $output_data_run = new \AppBundle\Entity\OutputRun();
+        
+        $process_uri = null;
+        $process = null;
+        
+        $uri = urldecode($annotation_uri);
+        $qualityAnnotation = $model->findQualityAnnotationByURI($uri, $type);
+        
+        switch ($type) 
+        {
+            case 'workflow': 
+                $element_uri = $qualityAnnotation->getWorkflow()->getUri();
+                $workflow = $model_workflow->findWorkflow($element_uri);
+                break;
+            case 'process_run':
+                $element_uri = $qualityAnnotation->getProcessRun()->getUri();
+                $process_run = $model_provenance->findProcessRun($element_uri);
+                $process_uri = $process_run->getProcess()->getUri();
+                $process = $model_workflow->findProcess($process_uri);
+                $workflow_of_process = $model_workflow->findWorkflow($process->getWorkflow()->getUri());  
+                $process->setWorkflow($workflow_of_process);
+                $process_run->setProcess($process); 
+                break;
+            case 'output_run':
+                $element_uri = $qualityAnnotation->getOutputRun()->getUri();
+                $output_data_run = $model_provenance->findOutputDataByOutputRun($element_uri);
+                break;
+        }
+                
+        //Info from Quality dimension
+        $model_qualitydimension = $this->get('model.qualitydimension'); 
+        $quality_dimensions = $model_qualitydimension->findAllQualityDimensions();
+                
+        $form = $this->createForm(new \AppBundle\Form\QualityAnnotationType($quality_dimensions), $qualityAnnotation);
         
         $form->handleRequest($request);
                 
         if ($form->isValid()) 
-        {           
-            $model->updateQualityDimension($qualityDimension);
+        {   
+            $model->updateQualityAnnotation($qualityAnnotation, $type);
             
-            //Remove qualityDimension from the session variable
-            $qualityDimensions = $this->get('session')->get('qualityDimensions');
-            $session_index = \AppBundle\Utils\Utils::findIndexSession($uri, $qualityDimensions);
-            $qualityDimensions[$session_index] = $qualityDimension;
-            
-            $this->get('session')->set('qualityDimensions',$qualityDimensions);
             $this->get('session')
                 ->getFlashBag()
-                ->add('success', 'Quality dimension edited!')
-            ;
+                ->add('success', 'Quality annotation edited!');
         }
         
-        return $this->render('qualityflow/form.html.twig', array(
-            'form' => $form->createView(),
-            'qualityDimension' => $qualityDimension
-        ));*/
+        $query = $model->findQualityAnnotationByElement($element_uri, $type);
         
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+        
+        return $this->render('qualityflow/qualitydimension-annotation-form.html.twig', array(
+            'pagination' => $pagination,
+            'form' => $form->createView(),
+            'workflow' => $workflow,
+            'process_run' => $process_run,
+            'output_data_run' => $output_data_run,
+            'qualityAnnotation' => $qualityAnnotation,
+            'type' => $type
+        ));
+        
+    }
+    
+    /**
+     * @Route("/annotation/qualitydimension/delete/{annotation_uri}/{type}", name="delete-qualitydimension-annotation")
+     */
+    
+    public function removeAction(Request $request, $annotation_uri, $type)
+    {   
+        $model = $this->get('model.annotation');
+        $uri = urldecode($annotation_uri);
+        
+        $qualityAnnotation = $model->findQualityAnnotationByURI($uri, $type);
+        
+        if ($qualityAnnotation)
+        {                          
+            $model->deleteQualityAnnotation($qualityAnnotation); //TO-DO: deleteQualityAnnotation
+
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Quality annotation deleted!')
+            ;
+        }
+        //TO-DO verificar
+        return $this->redirect($this->generateUrl('element-qualitydimension-annotation'));
     }
     
     /**
