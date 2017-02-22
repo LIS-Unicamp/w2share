@@ -123,7 +123,6 @@ class AnnotationController extends Controller
         $process_uri = null;
         $process = null;
         
-        
         switch ($type) 
         {
             case 'workflow': 
@@ -294,9 +293,13 @@ class AnnotationController extends Controller
         $process_uri = null;
         $process = null;
         
+        //Info from Quality dimensions
+        $model_qualitydimension = $this->get('model.qualitydimension'); 
+        $quality_dimensions = $model_qualitydimension->findAllQualityDimensions();
+        
         $uri = urldecode($annotation_uri);
-        $qualityAnnotation = $model->findQualityAnnotationByURI($uri, $type);
-                
+        $qualityAnnotation = $model->findQualityAnnotationByURI($uri, $type);        
+              
         switch ($type) 
         {
             case 'workflow': 
@@ -317,23 +320,30 @@ class AnnotationController extends Controller
                 $output_data_run = $model_provenance->findOutputDataByOutputRun($element_uri);
                 break;
         }
-                
-        //Info from Quality dimension
-        $model_qualitydimension = $this->get('model.qualitydimension'); 
-        $quality_dimensions = $model_qualitydimension->findAllQualityDimensions();
-                
-        $form = $this->createForm(new \AppBundle\Form\QualityAnnotationType($quality_dimensions), $qualityAnnotation);
-        
-        $form->handleRequest($request);
         
         if ($qualityAnnotation)
         {                   
-            $model->deleteQualityAnnotation($qualityAnnotation, $type); //TO-DO: deleteQualityAnnotation
-
+            $model->deleteQualityAnnotation($qualityAnnotation, $type);
+            
             $this->get('session')
                 ->getFlashBag()
                 ->add('success', 'Quality annotation deleted!');
+            
+            $qualityAnnotation = $model->findQualityAnnotationByURI($uri, $type);
         }
+        
+        if ($qualityAnnotation == null)
+        {
+            $qualityAnnotation = new \AppBundle\Entity\QualityAnnotation();
+        }
+                
+        $form = $this->createForm(new \AppBundle\Form\QualityAnnotationType($quality_dimensions), $qualityAnnotation,
+                                  array(
+                                  'action' => $this->generateUrl('element-qualitydimension-annotation', 
+                                                                  array('element_uri' => urlencode($element_uri),
+                                                                        'type' => $type))));
+        
+        $form->handleRequest($request);
         
         $query = $model->findQualityAnnotationByElement($element_uri, $type);
         
@@ -354,6 +364,17 @@ class AnnotationController extends Controller
             'type' => $type
         ));
     }
+    
+    /**
+     * @Route("/annotation/quality/reset", name="quality-annotation-reset")
+     */
+    public function qualityAnnotationResetAction(Request $request)
+    {                
+        $model = $this->get('model.annotation');
+        $model->clearGraphQualityAnnotation();
+        
+        return $this->redirect($this->generateUrl('homepage'));
+    }  
     
     /**
      * @Route("/annotatation/reset", name="annotation-reset")

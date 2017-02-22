@@ -8,9 +8,19 @@
         <thead>
             <tr>
                 <!--<th style="width:100px">Action</th>-->
-                <th>Title</th>
-                <th>Author</th>
-                <th>Description</th>
+                {% if workflow.uri %}
+                    <th>Workflow Name</th>
+                    <th>Author</th>
+                    <th>Workflow Description</th>
+                {% elseif process_run.uri %}
+                    <th>Process Name</th>
+                    <th>Author</th>
+                    <th>Process Description</th>
+                {% else %}
+                    <th>Output Data</th>
+                    <th>Output Name</th>
+                    <th>Output Description</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -23,7 +33,7 @@
                     <td>{{ process_run.label }}</td>
                     <td> Workflow creator: {{ process_run.process.workflow.creator }} </td>
                     <td>{{ process_run.process.description }}</td>
-                {% else %}  <!--TO-DO: tratar o array de elementos -->
+                {% else %}
                     {% for item in output_data_run %}
                         <td>{{ item.content }}</td>
                         <td>{{ item.output.label }}</td>
