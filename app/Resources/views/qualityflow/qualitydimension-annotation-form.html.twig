@@ -103,10 +103,8 @@
             {% for annotation in pagination %}
                 <tr>
                     <td>
-                        <a href="{{ path('delete-qualitydimension-annotation', { 'annotation_uri':annotation.uri|url_encode, 'type': type }) }}" class="delete"> 
-                            <i class="glyphicon glyphicon-trash"></i>
-                        </a>
-                        
+                        <a href="{{ path('delete-qualitydimension-annotation', { 'annotation_uri':annotation.uri|url_encode(), 'type': type }) }}" 
+                           title="Delete quality annotations" ><i class="glyphicon glyphicon-trash"></i></a> 
                         <a href="{{ path('edit-qualitydimension-annotation', { 'annotation_uri':annotation.uri|url_encode(), 'type': type }) }}" 
                            title="Edit quality annotations"><i class="glyphicon glyphicon-edit"></i></a> 
                     </td>

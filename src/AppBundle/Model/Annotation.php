@@ -414,9 +414,34 @@ class Annotation
         
     }
     //TO-DO
-    public function deleteQualityAnnotation()
-    {
-        return 'something';
+    public function deleteQualityAnnotation(\AppBundle\Entity\QualityAnnotation $qualityAnnotation, $type)
+    { 
+        $element_uri = "";
+        
+        switch ($type)
+        {
+            case 'workflow':
+                $element_uri = $qualityAnnotation->getWorkflow()->getUri();
+                break;
+            case 'process_run':
+                $element_uri = $qualityAnnotation->getProcessRun()->getUri();
+                break;
+            case 'output_run':
+                $element_uri = $qualityAnnotation->getOutputRun()->getUri();
+                break;
+        }
+        
+       $query = 
+        "DELETE data FROM <".$this->driver->getDefaultGraph('qualitydimension-annotation')."> 
+            {
+                <".$qualityAnnotation->getUri()."> a w2share:QualityAnnotation.
+                <".$qualityAnnotation->getUri()."> oa:hasTarget <".$element_uri.">.
+                <".$qualityAnnotation->getUri()."> w2share:hasValue '".$qualityAnnotation->getValue()."'.    
+                <".$qualityAnnotation->getUri()."> w2share:hasQualityDimension <".$qualityAnnotation->getQualityDimension().">.
+                <".$qualityAnnotation->getQualityDimension()."> <w2share:qdName> '".$qualityAnnotation->getQualityDimension()->getName()."'.
+            }";
+        
+        return $this->driver->getResults($query);
     }
     
     public function clearGraphQualityAnnotation()
