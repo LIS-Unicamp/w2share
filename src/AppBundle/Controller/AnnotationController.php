@@ -105,6 +105,54 @@ class AnnotationController extends Controller
         ));       
     }
     
+    //Ongoing:
+    /**
+     * @Route("/annotation/qualityannotationsCopy", name="quality-annotationsCopy") 
+     */
+    public function qualityAnnotationListActionCopy(Request $request)
+    {         
+        $model = $this->get('model.annotation');
+        
+        $users = $model->findUsersWithQualityAnnotations();
+        
+        $form = $this->createForm(new \AppBundle\Form\QualityAnnotationFilterType($users), null, array(
+            'action' => $this->generateUrl('quality-annotations'),
+            'method' => 'GET'
+        ));
+        $form->handleRequest($request);             
+        $user_uri = $form->get('user')->getViewData();
+        
+        if ($form->isSubmitted() && $user_uri) 
+        {                                    
+            $user = new \AppBundle\Entity\Person();
+            $user->setUri($user_uri);
+            $query = $model->findQualityAnnotationsByUser($user);
+        }
+        else
+        {
+            $query = $model->findAllQualityAnnotations();
+        }
+        
+        $qualityAnnotation = new \AppBundle\Entity\QualityAnnotation();
+                
+        for ($i = 0; $i < count($query); $i++)
+        {
+            
+        }
+        
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+        
+        return $this->render('qualityflow/list-qualityannotations.html.twig', array(
+            'pagination' => $pagination,
+            'form' => $form->createView()
+        ));       
+    }
+    
     /**
      * 
      * @Route("/annotation/qualitydimension/add/{element_uri}/{type}", name="element-qualitydimension-annotation")
@@ -166,7 +214,7 @@ class AnnotationController extends Controller
             $quality_dimension = $form->get('quality_dimension')->getData();
             $user = $this->getUser();
             
-            $quality_annotation = $model_annotation->insertQualityAnnotationToElement($element_uri, $quality_dimensions[$quality_dimension], $value, $user);
+            $quality_annotation = $model_annotation->insertQualityAnnotationToElement($element_uri, $type, $quality_dimensions[$quality_dimension], $value, $user);
             
             $this->get('session')
                 ->getFlashBag()
