@@ -85,25 +85,42 @@ class YesWorkflowController extends Controller
     
     
     /**
-     * @Route("/yesworkflow/workflow", name="yesworkflow-workflow")
+     * @Route("/yesworkflow/workflow/download", name="yesworkflow-workflow-download")
      */
     public function downloadWorkflowAction(Request $request)
     {       
-        $model = $this->get('yesworkflow');
-        $workflow = $model->downloadWorkflow();
+        $root_path = $this->get('kernel')->getRootDir();
+        $model = $this->get('model.yesworkflow');
+        $workflow = $model->downloadWorkflow($root_path, "bash");
         
+        $content = file_get_contents($workflow);
         $response = new \Symfony\Component\HttpFoundation\Response();   
         
         // Set headers
         $response->headers->set('Cache-Control', 'private');
-        //$response->headers->set('Content-type', mime_content_type($filename));
-        $response->headers->set('Content-Disposition', 'attachment; filename="script.sh";');
-        //$response->headers->set('Content-length', filesize($filename));
+        $response->headers->set('Content-type', mime_content_type($workflow));
+        $response->headers->set('Content-Disposition', 'attachment; filename="workflow.t2flow";');
+        $response->headers->set('Content-length', filesize($workflow));
 
         // Send headers before outputting anything
         $response->sendHeaders();
 
-        $response->setContent($workflow);
-        return $response->setContent($workflow);
+        return $response->setContent($content);
     }
+    
+    /**
+     * @Route("/yesworkflow/workflow/image", name="yesworkflow-workflow-image")
+     */
+    public function imageWorkflowAction(Request $request)
+    {       
+        $root_path = $this->get('kernel')->getRootDir();
+        $image = $root_path."/../web/uploads/documents/yesscript/workflow.svg";
+        
+        $content = file_get_contents($image);
+        
+        $array = array('svg' => $content);
+        
+        $response = new \Symfony\Component\HttpFoundation\Response();                   
+        return $response->setContent(json_encode($array));
+    }    
 }

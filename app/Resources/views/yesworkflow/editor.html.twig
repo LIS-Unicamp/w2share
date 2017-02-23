@@ -29,6 +29,10 @@
         <label class="btn btn-default" uib-btn-radio="'graph'" 
                ng-model="viewerMode" ng-change="viewerModeChange()"
                title="View graphic representation of program">Graph</label>
+                
+        <label class="btn btn-default" uib-btn-radio="'workflow'" 
+               ng-model="viewerMode" ng-change="viewerModeChange()"
+               title="View workflow representation of program">Workflow</label>
     </div>
 
   </div>
@@ -131,10 +135,13 @@
     <button class="btn btn-default btn-xs viewer-option" ng-model="showProcessNodes" ng-change="showProcessNodesChange()"
             uib-btn-checkbox> Steps </button>
 
-    <button class="btn btn-default viewer-option" ng-click="downloadImage()"
-            title="Download Image"> <i class="glyphicon glyphicon-save-file"></i>Image</button>  
+    <button class="btn btn-default viewer-option" ng-click="downloadGraphImage()"
+            title="Download Graph Image"> <i class="glyphicon glyphicon-save-file"></i>Graph Image</button> 
             
-    <a class="btn btn-default viewer-option" href="{{ app.request.basepath }}/yesworkflow/download"
+    <button class="btn btn-default viewer-option" ng-click="downloadWorkflowImage()"
+            title="Download Workflow Image"> <i class="glyphicon glyphicon-save-file"></i>Workflow Image</button>  
+            
+    <a class="btn btn-default viewer-option" href="{{ path("yesworkflow-workflow-download") }}" 
             title="Download Workflow"> <i class="glyphicon glyphicon-save-file"></i>Workflow</a> 
       
   </div>

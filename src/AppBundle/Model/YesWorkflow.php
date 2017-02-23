@@ -19,20 +19,22 @@ class YesWorkflow
         system($command);        
     }
     
-    public function downloadWorkflow($root_path)
+    public function downloadWorkflow($root_path, $language)
     {        
-        $python = $root_path."../web/uploads/documents/yesscript/conversion.py";
-        $script = $root_path."../web/uploads/documents/yesscript/script.sh";
-        $workflow = $root_path."../web/uploads/documents/yesscript/workflow.t2flow";
-        $image = $root_path."../web/uploads/documents/yesscript/workflow.png";
+        $python = $root_path."/../web/uploads/documents/yesscript/conversion.py";
+        $script = $root_path."/../web/uploads/documents/yesscript/script.sh";
+        $workflow = $root_path."/../web/uploads/documents/yesscript/workflow.t2flow";
+        $image = $root_path."/../web/uploads/documents/yesscript/workflow.svg";
             
-        $command_python = "java -jar src/AppBundle/Utils/yesworkflow2taverna.jar ".$script." ".$python;
+        $command_python = "java -jar ".$root_path."/../src/AppBundle/Utils/yesworkflow2taverna.jar ".$script." ".$language." ".$python;
         system($command_python);
         
-        $command_taverna = "balc ".$python." ".$workflow;
+        $command_taverna = "/usr/local/bin/balc ".$python." ".$workflow;
         system($command_taverna);
         
-        $command_image = "ruby ".$root_path."/../src/AppBundle/Utils/script.rb ".$workflow." ".$image;            
-        system($command_image);
+        $command_image = "ruby ".$root_path."/../src/AppBundle/Utils/script.rb ".$workflow." ".$image;   
+        system($command_image);               
+        
+        return $workflow;
     }
 }
