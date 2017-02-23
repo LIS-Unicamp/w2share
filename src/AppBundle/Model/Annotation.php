@@ -100,7 +100,7 @@ class Annotation
     }
     
     
-    public function insertQualityAnnotationToElement($element_uri, \AppBundle\Entity\QualityDimension $qualityDimension, $value, $user)
+    public function insertQualityAnnotationToElement($element_uri, $type, \AppBundle\Entity\QualityDimension $qualityDimension, $value, $user)
     {   //$element_uri = $object->getUri();
        
         $now = new \Datetime();
@@ -268,6 +268,74 @@ class Annotation
             $workflow->setUri($quality_annotations[$i]['element']['value']);
             
             $qualityAnnotation->setWorkflow($workflow);
+            
+            $qualityDimension = new \AppBundle\Entity\QualityDimension();
+            $qualityDimension->setUri($quality_annotations[$i]['qualityDimension']['value']);
+            $qualityDimension->setName($quality_annotations[$i]['qdName']['value']);
+            
+            $qualityAnnotation->setQualityDimension($qualityDimension);
+            
+            $qualityAnnotation->setValue($quality_annotations[$i]['value']['value']);
+            
+            $creator = new \AppBundle\Entity\Person();
+            $creator->setUri($quality_annotations[$i]['creator']['value']);
+            $creator->setName($quality_annotations[$i]['creator_name']['value']);
+
+            $qualityAnnotation->setCreator($creator);
+            $qualityAnnotation->setCreatedAtTime($quality_annotations[$i]['annotatedAt']['value']);
+            
+            $quality_annotation_array[] = $qualityAnnotation;  
+        }
+       
+        return $quality_annotation_array;
+    }
+    
+    //TO-DO: Modificando este metodo para que armazene elementos segundo o tipo
+    public function findAllQualityAnnotationsCopy() 
+    {
+        $query = 
+        "SELECT * WHERE 
+        {
+           ?uri a w2share:QualityAnnotation;
+           oa:hasTarget ?element;
+           w2share:hasValue ?value;
+           oa:annotatedAt ?annotatedAt;
+           oa:annotatedBy ?creator.
+           ?element rdf:type ?type.
+           ?creator <foaf:name> ?creator_name.
+           ?uri w2share:hasQualityDimension ?qualityDimension.
+           ?qualityDimension <w2share:qdName> ?qdName. 
+        }";
+        
+        $quality_annotation_array = array();
+        $quality_annotations = $this->driver->getResults($query);                
+        
+        for ($i = 0; $i < count($quality_annotations); $i++)
+        {
+            $qualityAnnotation = new \AppBundle\Entity\QualityAnnotation();
+            $qualityAnnotation->setUri($quality_annotations[$i]['uri']['value']);
+            
+            $type = $quality_annotations[$i]['type']['value'];
+            switch ($type)
+            {
+                case 'workflow':                   
+                    $workflow = new \AppBundle\Entity\Workflow();
+                    $workflow->setUri($quality_annotations[$i]['element']['value']);          
+                    
+                    $qualityAnnotation->setWorkflow($workflow);         
+                    break;
+                case 'process_run':                                                     
+                    $process_run = new \AppBundle\Entity\ProcessRun();                  
+                    $process_run->setUri($quality_annotations[$i]['element']['value']);
+                                        
+                    $qualityAnnotation->setProcessRun($process_run);
+                    break;                    
+                case 'output_run':
+                    $output_data_run = new \AppBundle\Entity\OutputRun();
+                    
+                    $qualityAnnotation->setOutputRun($output_data_run);
+                    break;
+            }
             
             $qualityDimension = new \AppBundle\Entity\QualityDimension();
             $qualityDimension->setUri($quality_annotations[$i]['qualityDimension']['value']);
