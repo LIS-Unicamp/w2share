@@ -263,6 +263,7 @@ class AnnotationController extends Controller
             $request->query->getInt('page', 1), /*page number*/
             10 /*limit per page*/
         );
+                
         
         return $this->render('qualityflow/qualitydimension-annotation-form.html.twig', array(
             'pagination' => $pagination,
@@ -271,6 +272,7 @@ class AnnotationController extends Controller
             'process_run' => $process_run,
             'output_data_run' => $output_data_run,
             'qualityAnnotation' => $qualityAnnotation,
+            'qualityDimensions' => $quality_dimensions,
             'type' => $type
         ));
         
