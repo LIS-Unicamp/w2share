@@ -59,7 +59,6 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th style="width:100px">Action</th>
                 <th>URI Annotation</th>
                 <th>Element</th>
                 <th>Dimension</th>
@@ -71,12 +70,14 @@
         <tbody>
     {% for annotation in pagination %}
         <tr>
-            <td>
-                <a href=""><i class="glyphicon glyphicon-edit"></i></a>
-                <a href="" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
-            </td>
             <td>{{ annotation.uri }}</td>
-            <td>{{ annotation.workflow.uri }}</td> <!--TO-DO: trocar pelo nome do elemento -->
+            {% if annotation.workflow.uri %}
+                <td>{{ annotation.workflow.uri }}</td> <!--TO-DO: trocar pelo nome do elemento -->
+            {% elseif annotation.process_run.uri %}
+                <td>{{ annotation.process_run.uri }}
+            {% else %}
+                <td>{{ annotation.output_run.uri }}
+            {% endif %}
             <td>{{ annotation.qualityDimension.name }}</td>
             <td>{{ annotation.value }}</td>
             <td>{{ annotation.creator.name }}</td>

@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class QualityAnnotationAddType extends AbstractType
+class QualityAnnotationType extends AbstractType
 {
     protected $quality_dimensions;
     
@@ -28,6 +28,7 @@ class QualityAnnotationAddType extends AbstractType
             ->add('value', 'text', array('label' => 'Value'))
             ->add('save', 'submit', array(
                     'label' => 'Add',
+                    'icon' => 'glyphicon glyphicon-floppy-disk',
                     'attr' => array('class' => 'btn btn-primary')
                 ))
         ;

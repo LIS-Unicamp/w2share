@@ -101,7 +101,7 @@ class QualityDimension
 
             $qualityDimension->setCreator($creator);
             
-            $quality_dimension_array[] = $qualityDimension;  
+            $quality_dimension_array[$qualityDimension->getUri()] = $qualityDimension;  
         }
         
         return $quality_dimension_array;

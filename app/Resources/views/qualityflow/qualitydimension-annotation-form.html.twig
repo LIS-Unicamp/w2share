@@ -8,9 +8,19 @@
         <thead>
             <tr>
                 <!--<th style="width:100px">Action</th>-->
-                <th>Title</th>
-                <th>Author</th>
-                <th>Description</th>
+                {% if workflow.uri %}
+                    <th>Workflow Name</th>
+                    <th>Author</th>
+                    <th>Workflow Description</th>
+                {% elseif process_run.uri %}
+                    <th>Process Name</th>
+                    <th>Author</th>
+                    <th>Process Description</th>
+                {% else %}
+                    <th>Output Data</th>
+                    <th>Output Name</th>
+                    <th>Output Description</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -23,10 +33,15 @@
                     <td>{{ process_run.label }}</td>
                     <td> Workflow creator: {{ process_run.process.workflow.creator }} </td>
                     <td>{{ process_run.process.description }}</td>
-                {% elseif output_data_run.uri %}  <!--TO-DO: tratar o array de elementos -->
-                    <td>{{ output_data_run.label }}</td>
-                    <td></td>
-                    <td></td>
+                {% else %}
+                    {% for item in output_data_run %}
+                        <td>{{ item.content }}</td>
+                        <td>{{ item.output.label }}</td>
+                        <td>{{ item.output.description }}</td>
+                        {% if not loop.last %}
+                        </tr><tr>
+                        {% endif %}
+                    {% endfor %}
                 {% endif  %}
             </tr>
         </tbody>
@@ -73,7 +88,11 @@
         </div>
                     
         <div class="form-actions">
-            {{ form_widget(form.save) }} 
+            {% if qualityAnnotation.uri %}
+                {{ form_widget(form.save, { 'label':'Edit' }) }} 
+            {% else %}
+                {{ form_widget(form.save) }} 
+            {% endif %}
             <a href="{{ path('quality-annotations') }}" class="btn btn-info">List</a>
         </div>
 
@@ -91,16 +110,13 @@
             </tr>
         </thead>
         <tbody>
-            <!-- TO-DO: Recuperar só as informacoes do workflow selecionado -->
             {% for annotation in pagination %}
                 <tr>
                     <td>
-                        <a class="btn btn-xs delete" href="{# path('alguma-rota') #}"> <!-- TO-DO: trocar depois pela funcao Delete -->
-                            <i class="glyphicon glyphicon-trash"></i>
-                        </a>
-                        
-                        <a href="{{ path('edit-qualitydimension-annotation', { 'annotation_uri':annotation.uri|url_encode() }) }}" 
-                           title="Edit annotations"><i class="glyphicon glyphicon-edit"></i></a> 
+                        <a href="{{ path('delete-qualitydimension-annotation', { 'annotation_uri':annotation.uri|url_encode(), 'type': type }) }}" 
+                           title="Delete quality annotations" ><i class="glyphicon glyphicon-trash"></i></a> 
+                        <a href="{{ path('edit-qualitydimension-annotation', { 'annotation_uri':annotation.uri|url_encode(), 'type': type }) }}" 
+                           title="Edit quality annotations"><i class="glyphicon glyphicon-edit"></i></a> 
                     </td>
                     <td>{{ annotation.qualityDimension.name }}</td>
                     <td>{{ annotation.value }}</td>
