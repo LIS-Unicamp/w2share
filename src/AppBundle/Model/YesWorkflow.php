@@ -29,7 +29,7 @@ class YesWorkflow
         $command_python = "java -jar ".$root_path."/../src/AppBundle/Utils/yesworkflow2taverna.jar ".$script." ".$language." ".$python;
         system($command_python);
         
-        $command_taverna = "/usr/local/bin/balc ".$python." ".$workflow;
+        $command_taverna = $root_path."/../vendor/lucasaugustomcc/balcazapy/bin/balc ".$python." ".$workflow;
         system($command_taverna);
         
         $command_image = "ruby ".$root_path."/../src/AppBundle/Utils/script.rb ".$workflow." ".$image;   
