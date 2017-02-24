@@ -244,57 +244,8 @@ class Annotation
     public function findAllQualityAnnotations() 
     {
         $query = 
-        "SELECT * WHERE 
-        {
-           ?uri a w2share:QualityAnnotation;
-           oa:hasTarget ?element;
-           w2share:hasValue ?value;
-           oa:annotatedAt ?annotatedAt;
-           oa:annotatedBy ?creator.
-           ?creator <foaf:name> ?creator_name.
-           ?uri w2share:hasQualityDimension ?qualityDimension.
-           ?qualityDimension <w2share:qdName> ?qdName. 
-        }";
-        
-        $quality_annotation_array = array();
-        $quality_annotations = $this->driver->getResults($query);                
-        
-        for ($i = 0; $i < count($quality_annotations); $i++)
-        {
-            $qualityAnnotation = new \AppBundle\Entity\QualityAnnotation();
-            $qualityAnnotation->setUri($quality_annotations[$i]['uri']['value']);
-            
-            $workflow = new \AppBundle\Entity\Workflow();
-            $workflow->setUri($quality_annotations[$i]['element']['value']);
-            
-            $qualityAnnotation->setWorkflow($workflow);
-            
-            $qualityDimension = new \AppBundle\Entity\QualityDimension();
-            $qualityDimension->setUri($quality_annotations[$i]['qualityDimension']['value']);
-            $qualityDimension->setName($quality_annotations[$i]['qdName']['value']);
-            
-            $qualityAnnotation->setQualityDimension($qualityDimension);
-            
-            $qualityAnnotation->setValue($quality_annotations[$i]['value']['value']);
-            
-            $creator = new \AppBundle\Entity\Person();
-            $creator->setUri($quality_annotations[$i]['creator']['value']);
-            $creator->setName($quality_annotations[$i]['creator_name']['value']);
-
-            $qualityAnnotation->setCreator($creator);
-            $qualityAnnotation->setCreatedAtTime($quality_annotations[$i]['annotatedAt']['value']);
-            
-            $quality_annotation_array[] = $qualityAnnotation;  
-        }
-       
-        return $quality_annotation_array;
-    }
-    
-    //TO-DO: Modificando este metodo para que armazene elementos segundo o tipo
-    public function findAllQualityAnnotationsCopy() 
-    {
-        $query = 
-        "SELECT * WHERE 
+        "SELECT DISTINCT ?uri ?element ?type ?content ?creator ?creator_name ?annotatedBy
+            ?qualityDimension ?qdName ?annotatedAt ?value WHERE {
         {
            ?uri a w2share:QualityAnnotation;
            oa:hasTarget ?element;
@@ -302,9 +253,38 @@ class Annotation
            oa:annotatedAt ?annotatedAt;
            oa:annotatedBy ?creator.
            ?element rdf:type ?type.
+           FILTER regex(?type, \"Workflow\", \"i\" )
            ?creator <foaf:name> ?creator_name.
            ?uri w2share:hasQualityDimension ?qualityDimension.
            ?qualityDimension <w2share:qdName> ?qdName. 
+        }
+        UNION 
+        {
+           ?uri a w2share:QualityAnnotation;
+           oa:hasTarget ?element;
+           w2share:hasValue ?value;
+           oa:annotatedAt ?annotatedAt;
+           oa:annotatedBy ?creator.
+           ?element rdf:type ?type.
+           FILTER regex(?type, \"ProcessRun\", \"i\" )
+           ?creator <foaf:name> ?creator_name.
+           ?uri w2share:hasQualityDimension ?qualityDimension.
+           ?qualityDimension <w2share:qdName> ?qdName. 
+        }
+        UNION { 
+           ?uri a w2share:QualityAnnotation;
+           oa:hasTarget ?element;
+           w2share:hasValue ?value;
+           oa:annotatedAt ?annotatedAt;
+           oa:annotatedBy ?creator.
+           ?element wfprov:describedByParameter ?output.
+           ?output rdf:type ?type.
+           FILTER regex(?type, \"Output\", \"i\" )
+           OPTIONAL {?output tavernaprov:content ?content.}
+           ?creator <foaf:name> ?creator_name.
+           ?uri w2share:hasQualityDimension ?qualityDimension.
+           ?qualityDimension <w2share:qdName> ?qdName. 
+            }
         }";
         
         $quality_annotation_array = array();
@@ -316,22 +296,24 @@ class Annotation
             $qualityAnnotation->setUri($quality_annotations[$i]['uri']['value']);
             
             $type = $quality_annotations[$i]['type']['value'];
+                       
             switch ($type)
             {
-                case 'workflow':                   
+                case 'http://purl.org/wf4ever/wfdesc#Workflow':                   
                     $workflow = new \AppBundle\Entity\Workflow();
                     $workflow->setUri($quality_annotations[$i]['element']['value']);          
                     
-                    $qualityAnnotation->setWorkflow($workflow);         
+                    $qualityAnnotation->setWorkflow($workflow);  
                     break;
-                case 'process_run':                                                     
+                case 'http://purl.org/wf4ever/wfprov#ProcessRun':                                                     
                     $process_run = new \AppBundle\Entity\ProcessRun();                  
                     $process_run->setUri($quality_annotations[$i]['element']['value']);
                                         
                     $qualityAnnotation->setProcessRun($process_run);
                     break;                    
-                case 'output_run':
+                default:
                     $output_data_run = new \AppBundle\Entity\OutputRun();
+                    $output_data_run->setUri($quality_annotations[$i]['element']['value']);                    
                     
                     $qualityAnnotation->setOutputRun($output_data_run);
                     break;
@@ -354,7 +336,9 @@ class Annotation
             
             $quality_annotation_array[] = $qualityAnnotation;  
         }
-       
+        
+        $this->driver->getResults($query);  
+        
         return $quality_annotation_array;
     }
     
@@ -388,16 +372,47 @@ class Annotation
     public function findQualityAnnotationsByUser($user) 
     {
         $query = 
-        "SELECT * WHERE 
-        {            
+        "SELECT DISTINCT ?uri ?element ?type ?content ?creator ?creator_name ?annotatedBy
+            ?qualityDimension ?qdName ?annotatedAt ?value WHERE {
+        {
            ?uri a w2share:QualityAnnotation;
-           <oa:hasTarget> ?element;
-           <w2share:hasValue> ?value;
-           <oa:annotatedAt> ?annotatedAt;
-           <oa:annotatedBy> <".$user->getUri().">. 
+           oa:hasTarget ?element;
+           w2share:hasValue ?value;
+           oa:annotatedAt ?annotatedAt;
+           oa:annotatedBy <".$user->getUri().">.
+           ?element rdf:type ?type.
+           FILTER regex(?type, \"Workflow\", \"i\" )
            <".$user->getUri()."> <foaf:name> ?creator_name.
-           ?uri <w2share:hasQualityDimension> ?qualityDimension.
-           ?qualityDimension <w2share:qdName> ?qdName.
+           ?uri w2share:hasQualityDimension ?qualityDimension.
+           ?qualityDimension <w2share:qdName> ?qdName. 
+        }
+        UNION 
+        {
+           ?uri a w2share:QualityAnnotation;
+           oa:hasTarget ?element;
+           w2share:hasValue ?value;
+           oa:annotatedAt ?annotatedAt;
+           oa:annotatedBy <".$user->getUri().">.
+           ?element rdf:type ?type.
+           FILTER regex(?type, \"ProcessRun\", \"i\" )
+           <".$user->getUri()."> <foaf:name> ?creator_name.
+           ?uri w2share:hasQualityDimension ?qualityDimension.
+           ?qualityDimension <w2share:qdName> ?qdName. 
+        }
+        UNION { 
+           ?uri a w2share:QualityAnnotation;
+           oa:hasTarget ?element;
+           w2share:hasValue ?value;
+           oa:annotatedAt ?annotatedAt;
+           oa:annotatedBy <".$user->getUri().">.
+           ?element wfprov:describedByParameter ?output.
+           ?output rdf:type ?type.
+           FILTER regex(?type, \"Output\", \"i\" )
+           OPTIONAL {?output tavernaprov:content ?content.}
+           <".$user->getUri()."> <foaf:name> ?creator_name.
+           ?uri w2share:hasQualityDimension ?qualityDimension.
+           ?qualityDimension <w2share:qdName> ?qdName. 
+            }
         }";
         
         $quality_annotation_array = array();
@@ -408,10 +423,30 @@ class Annotation
             $qualityAnnotation = new \AppBundle\Entity\QualityAnnotation();
             $qualityAnnotation->setUri($quality_annotations[$i]['uri']['value']);
             
-            $workflow = new \AppBundle\Entity\Workflow();
-            $workflow->setUri($quality_annotations[$i]['element']['value']);
-            
-            $qualityAnnotation->setWorkflow($workflow);
+            $type = $quality_annotations[$i]['type']['value'];
+                                   
+            switch ($type)
+            {
+                case 'http://purl.org/wf4ever/wfdesc#Workflow':                   
+                    $workflow = new \AppBundle\Entity\Workflow();
+                    $workflow->setUri($quality_annotations[$i]['element']['value']);          
+                    
+                    $qualityAnnotation->setWorkflow($workflow);  
+                    break;
+                case 'http://purl.org/wf4ever/wfprov#ProcessRun':                                                     
+                    $process_run = new \AppBundle\Entity\ProcessRun();                  
+                    $process_run->setUri($quality_annotations[$i]['element']['value']);
+                                        
+                    $qualityAnnotation->setProcessRun($process_run);
+                    break;                    
+                default:
+                    //http://purl.org/wf4ever/wfdesc#Output 
+                    $output_data_run = new \AppBundle\Entity\OutputRun();
+                    $output_data_run->setUri($quality_annotations[$i]['element']['value']);                    
+                    
+                    $qualityAnnotation->setOutputRun($output_data_run);
+                    break;
+            }
             
             $qualityDimension = new \AppBundle\Entity\QualityDimension();
             $qualityDimension->setUri($quality_annotations[$i]['qualityDimension']['value']);
@@ -430,6 +465,8 @@ class Annotation
             
             $quality_annotation_array[] = $qualityAnnotation; 
         }
+        
+        $this->driver->getResults($query); 
         
         return $quality_annotation_array;
     }

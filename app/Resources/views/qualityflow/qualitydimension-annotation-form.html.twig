@@ -34,14 +34,9 @@
                     <td> Workflow creator: {{ process_run.process.workflow.creator }} </td>
                     <td>{{ process_run.process.description }}</td>
                 {% else %}
-                    {% for item in output_data_run %}
-                        <td>{{ item.content }}</td>
-                        <td>{{ item.output.label }}</td>
-                        <td>{{ item.output.description }}</td>
-                        {% if not loop.last %}
-                        </tr><tr>
-                        {% endif %}
-                    {% endfor %}
+                    <td> {{output_data_run.content}} </td>
+                    <td> {{output_data_run.output.label}} </td>
+                    <td> {{output_data_run.output.description}} </td>
                 {% endif  %}
             </tr>
         </tbody>
@@ -71,8 +66,11 @@
                     <div class="form-group">
                         {{ form_label(form.quality_dimension) }}
                         <select id="qualityannotation_quality_dimension" name="qualityannotation[quality_dimension]" required="required" class="form-control select">
-                        {% for qd in qualityDimensions %}
-                            <option value="{{ qd.uri }}" {% if qd.uri == qualityAnnotation.qualityDimension.uri %}selected="selected"{% endif %}>{{ qd.name }}</option>
+                            {% if not qualityAnnotation.qualityDimension %}
+                                <option value=""></option>
+                            {% endif %}
+                        {% for qd in quality_dimensions %}
+                            <option value="{{ qd.uri }}" {% if qualityAnnotation.qualityDimension and qd.uri == qualityAnnotation.qualityDimension.uri %}selected="selected"{% endif %}>{{ qd.name }}</option>
                         {% endfor %}
                         </select>
                         {{ form_errors(form.quality_dimension) }}
@@ -144,12 +142,6 @@
     
 {% endblock %}  
 {% block javascripts %}
-    <script type="text/javascript">
-        $(document).ready(function()   
-        {
-            $('#qualityannotation_quality_dimension').val('{{ form.quality_dimension.vars.value }}')
-        });
-    </script>
 {% endblock %}
 {% block stylesheets %}
 {% endblock %} 
