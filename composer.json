@@ -36,7 +36,8 @@
         "knplabs/knp-paginator-bundle": "~2.3@dev",
         "knplabs/knp-components": "~1.2@dev",
         "excelwebzone/recaptcha-bundle": "v1.4.0",
-        "lucasaugustomcc/balcazapy": "dev-master"
+        "lucasaugustomcc/balcazapy": "dev-master",
+        "easyrdf/easyrdf": "*"
     },
     "require-dev": {
         "sensio/generator-bundle": "2.3"

@@ -2,7 +2,7 @@
 namespace AppBundle\Model;
 
 /**
- * Description of Research Object model
+ * Description of the Research Object model
  *
  * @author lucas
  */
@@ -48,7 +48,8 @@ class ResearchObject
     public function addResearchObject(\AppBundle\Entity\ResearchObject $ro)
     {
         $this->unzip($ro);
-        $this->load($ro->getROAbsolutePath());
+        $this->findManifest($ro);
+        $this->loadFiles($ro);
         $this->saveROHash($ro);        
     }
     
@@ -58,7 +59,7 @@ class ResearchObject
         "        
         INSERT        
         { 
-            GRAPH <".$this->driver->getDefaultGraph()."> 
+            GRAPH <".$this->driver->getDefaultGraph('ro')."> 
             { 
                 <".$ro->getUri()."> <w2share:hash> '".$ro->getHash()."'. 
             }
@@ -67,8 +68,65 @@ class ResearchObject
         return $this->driver->getResults($query);        
     }
     
-    protected function load($file_path)
+    private function findManifest(\AppBundle\Entity\ResearchObject $ro)
+    {
+        if (file_exists($this->getDirPath($ro)."/.ro/manifest.json"))
+        {
+            $str = file_get_contents($this->getDirPath($ro)."/.ro/manifest.json");
+            $manifest_data = json_decode($str, true); // decode the JSON into an associative array
+            
+            foreach ($manifest_data['aggregates'] as $aggregate)
+            {
+                echo $aggregate['folder'].$aggregate['file'].'<br>';
+            }            
+        }
+        else if (file_exists($this->getDirPath($ro)."/.ro/manifest.rdf"))
+        {
+            $env = $this->container->get('kernel')->getEnvironment();
+        
+            $path_url = '';
+            if ($env == 'dev')
+            {
+                $path_url = "http://"
+                    . $this->container->get('request')->getHost();
+            }
+            $path_url .= $this->container->get('templating.helper.assets')
+                    ->getUrl("/uploads/documents/ro/".$ro->getHash()."/.ro/manifest.rdf", null, true, true);
+
+            echo $path_url;
+            $foaf = new \EasyRdf_Graph($path_url);
+            $foaf->load();
+            print_r($foaf);
+            foreach ($aggregates as $aggregate)
+            {
+                echo $aggregate['folder'].$aggregate['file'].'<br>';
+            }
+            exit;
+        }
+
+    }
+    
+    private function unzip(\AppBundle\Entity\ResearchObject $ro)
+    {
+            
+        $zip = new \ZipArchive; 
+        if ($zip->open($ro->getROAbsolutePath()))
+        { 
+            $zip->extractTo($this->getDirPath($ro)); 
+            $zip->close(); 
+        }
+    }
+    
+    private function getDirPath(\AppBundle\Entity\ResearchObject $ro)
+    {
+        $root_path = $this->container->get('kernel')->getRootDir();
+
+        return $root_path."/../web/uploads/documents/ro/".$ro->getHash();
+    }
+    
+    private function load(\AppBundle\Entity\ResearchObject $ro)
     {        
+        $file_path = $ro->getROAbsolutePath();
         $env = $this->container->get('kernel')->getEnvironment();
         
         $path_url = '';
@@ -78,9 +136,9 @@ class ResearchObject
                 . $this->container->get('request')->getHost();
         }
         $path_url .= $this->container->get('templating.helper.assets')
-                ->getUrl("/uploads/documents/".basename($file_path), null, true, true);
+                ->getUrl("/uploads/documents/ro/".basename($file_path), null, true, true);
         
-        $query = "LOAD <".$path_url."> INTO graph <".$this->driver->getDefaultGraph().">";
+        $query = "LOAD <".$path_url."> INTO graph <".$this->driver->getDefaultGraph('ro').">";
         $this->driver->getResults($query);
     }
             

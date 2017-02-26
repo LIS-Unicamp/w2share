@@ -54,8 +54,7 @@ class ResearchObjectController extends Controller
                 ->getFlashBag()
                 ->add('success', 'ResearchObject added!')
             ; 
-            return $this->redirect($this->generateUrl('ros'));
-            //return $this->redirect($this->generateUrl('ro-edit',array('ro_uri' => urlencode($ro->getUri()))));
+            return $this->redirect($this->generateUrl('ro-list'));
         }
         
         return $this->render('ro/form.html.twig', array(
@@ -91,7 +90,7 @@ class ResearchObjectController extends Controller
                 ;
         }
         
-        return $this->redirect($this->generateUrl('ros'));
+        return $this->redirect($this->generateUrl('ro-list'));
     }
     
     /**
@@ -168,20 +167,9 @@ class ResearchObjectController extends Controller
         
         $model = $this->get('model.ro');                                   
         $ro = $model->findResearchObject($ro_uri);
-        
-        // ro run information
-        $processes = $model->findProcessesByResearchObject($ro_uri);        
-        $inputs = $model->findResearchObjectInputs($ro_uri);
-        $outputs = $model->findResearchObjectOutputs($ro_uri);
-        
-        $model_provenance = $this->get('model.provenance');             
-        $roRuns = $model_provenance->findResearchObjectsRunsByResearchObjectOrAll($ro_uri);
-        $ro->setResearchObjectRuns($roRuns);
-        
+                
         return $this->render('ro/ro.html.twig', array(
-            'processes' => $processes,
-            'inputs' => $inputs,
-            'outputs' => $outputs,
+
             'ro' => $ro,
             'ro_uri' => $ro_uri
         ));
@@ -196,7 +184,7 @@ class ResearchObjectController extends Controller
         $model_ro->clearGraph();
         $model_ro->clearUploads();
                     
-        return $this->redirect($this->generateUrl('ros'));
+        return $this->redirect($this->generateUrl('ro-list'));
     }   
 }
 
