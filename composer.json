@@ -7,6 +7,20 @@
             "": "src/"
         }
     },
+    "repositories": [
+    {
+        "type":"package",
+        "package": {
+          "name": "lucasaugustomcc/balcazapy",
+          "version":"master",
+          "source": {
+              "url": "https://github.com/lucasaugustomcc/balcazapy.git",
+              "type": "git",
+              "reference":"master"
+            }
+        }
+    }
+    ],
     "require": {
         "php": ">=5.3.9",
         "symfony/symfony": "2.7.*",
@@ -21,7 +35,8 @@
         "symfony/filesystem": "^3.0",
         "knplabs/knp-paginator-bundle": "~2.3@dev",
         "knplabs/knp-components": "~1.2@dev",
-        "excelwebzone/recaptcha-bundle": "v1.4.0"
+        "excelwebzone/recaptcha-bundle": "v1.4.0",
+        "lucasaugustomcc/balcazapy": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "2.3"
@@ -29,14 +44,16 @@
     "scripts": {
         "post-install-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "cd /var/www/phd-prototype/vendor/lucasaugustomcc/balcazapy/; sh /var/www/phd-prototype/vendor/lucasaugustomcc/balcazapy/setup.sh",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"          
         ],
         "post-update-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "cd /var/www/phd-prototype/vendor/lucasaugustomcc/balcazapy/; sh /var/www/phd-prototype/vendor/lucasaugustomcc/balcazapy/setup.sh",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",

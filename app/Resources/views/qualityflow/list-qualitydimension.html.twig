@@ -96,7 +96,6 @@
 </div>
 {% endblock %}  
 {% block javascripts %}  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function()   
         {
@@ -122,17 +121,9 @@
                     .removeAttr('checked')
                     .removeAttr('selected');                
                 $('.select').val([]).trigger('change');
-            });
-
-            $('.select').select2(
-            {
-                allowClear: true,
-                width: '100%',
-                placeholder: 'select...'
-            });
+            });            
         });
     </script>
 {% endblock %}
 {% block stylesheets %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" />  
 {% endblock %}

@@ -15,9 +15,6 @@
     </div>            
 {% endfor %}
 <div class="row">
-    <div class="col-md-1">
-        <a class="btn btn-primary" href="">Add</a>
-    </div>
     <div class="col-md-5 pull-right" id="filtrar">
         {{ form_start(form) }}
             <div class="row">                                
@@ -71,18 +68,17 @@
     {% for annotation in pagination %}
         <tr>
             <td>{{ annotation.uri }}</td>
-            {% if annotation.workflow.uri %}
-                <td>{{ annotation.workflow.uri }}</td> <!--TO-DO: trocar pelo nome do elemento -->
-            {% elseif annotation.process_run.uri %}
-                <td>{{ annotation.process_run.uri }}
+            {% if annotation.workflow %}
+                <td>Workflow: {{ annotation.workflow.title }}</td>                
+            {% elseif annotation.processRun %}
+                <td>Process: {{ annotation.processRun.label }}</td>
             {% else %}
-                <td>{{ annotation.output_run.uri }}
+                <td>Output: {{ annotation.outputRun.uri }}</td> 
             {% endif %}
             <td>{{ annotation.qualityDimension.name }}</td>
             <td>{{ annotation.value }}</td>
             <td>{{ annotation.creator.name }}</td>
-            <td>{{ annotation.createdAtTime|date('H:i:s.v m-d-Y') }} </td>
-            
+            <td>{{ annotation.createdAtTime|date('H:i:s.v m-d-Y') }} </td> 
         </tr>
     {% endfor %}
         </tbody>

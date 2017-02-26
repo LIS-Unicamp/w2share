@@ -19,7 +19,8 @@
     var viewer = ace.edit("text-viewer");
     viewer.$blockScrolling = Infinity;
 
-    var graph = {};    
+    var graph = {}; 
+    var workflow_image = {}
     var svg_native_width = 1;
     var svg_native_height = 1;
 
@@ -48,9 +49,24 @@
       editor.focus();
     }
     
-    $scope.downloadImage = function() {
+    $scope.downloadGraphImage = function() {
         var file = new Blob([graph.svg], {type: "image/svg+xml"});
-        FileSaver.saveAs(file, 'image.svg');
+        FileSaver.saveAs(file, 'abstract-workflow.svg');
+    }
+    
+    $scope.downloadWorkflowImage = function() {
+        var file = new Blob([workflow_image.svg], {type: "image/svg+xml"});
+        FileSaver.saveAs(file, 'concrete-workflow.svg');
+    }
+    
+    $scope.saveScript = function() {
+        $http.post(
+          $window.url+"/app_dev.php/yesworkflow/save",
+          {
+                language: $scope.language,
+                code: editor.getValue()                
+          })
+          ;
     }
     
     $scope.downloadScript = function() {
@@ -144,7 +160,7 @@
                           "graph.dotcomments = on\n"
           })
           .then(onGraphComplete);
-      }
+        }
     }
 
     var onGraphComplete = function(response) {
@@ -193,6 +209,19 @@
               viewer.setValue("Graph service error");
             }
           }
+          break;
+          
+        case "workflow":
+          $scope.showGraphViewer = true;
+          $http.get(
+                $window.url + "/app_dev.php/yesworkflow/workflow/image"
+          )
+          .then(function(response) {
+            workflow_image = response.data;
+            var svgElementStart = workflow_image.svg.search("<svg");
+            var svgElement = workflow_image.svg.substring(svgElementStart);
+            graphViewer.innerHTML = svgElement;          
+          });                  
           break;
       }
       

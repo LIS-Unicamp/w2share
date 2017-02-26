@@ -386,7 +386,7 @@ class Provenance
     }
     
     
-    public function findOutputDataByOutputRun($output_data_uri)
+    public function findOutputData($output_data_uri)
     {
         $query = "
             SELECT DISTINCT * WHERE 
@@ -401,28 +401,27 @@ class Provenance
                 }
             }";
         
-        $outputs_array = $this->driver->getResults($query);
+        $outputs = $this->driver->getResults($query);
         
-        $outputs = array();
-        for ($i = 0; $i < count($outputs_array); $i++)
+        if (count($outputs) > 0)
         {
             $outputRun = new \AppBundle\Entity\OutputRun();
             $outputRun->setUri($output_data_uri);
-            $outputRun->setContent($outputs_array[$i]['content']['value']);
+            $outputRun->setContent($outputs[0]['content']['value']);
             
             $output = new \AppBundle\Entity\Output();
-            if (in_array('description', array_keys($outputs_array[$i])))
+            if (in_array('description', array_keys($outputs[0])))
             {
-                $output->setDescription($outputs_array[$i]['description']['value']);
+                $output->setDescription($outputs[0]['description']['value']);
             }
-            $output->setLabel($outputs_array[$i]['label']['value']);
-            $output->setUri($outputs_array[$i]['output']['value']);
+            $output->setLabel($outputs[0]['label']['value']);
+            $output->setUri($outputs[0]['output']['value']);
             $outputRun->setOutput($output);
-            
-            $outputs[] = $outputRun;
+           
+            return $outputRun;
         }
         
-        return $outputs;
+        return null;
     }
     
     /**

@@ -34,14 +34,9 @@
                     <td> Workflow creator: {{ process_run.process.workflow.creator }} </td>
                     <td>{{ process_run.process.description }}</td>
                 {% else %}
-                    {% for item in output_data_run %}
-                        <td>{{ item.content }}</td>
-                        <td>{{ item.output.label }}</td>
-                        <td>{{ item.output.description }}</td>
-                        {% if not loop.last %}
-                        </tr><tr>
-                        {% endif %}
-                    {% endfor %}
+                    <td> {{output_data_run.content}} </td>
+                    <td> {{output_data_run.output.label}} </td>
+                    <td> {{output_data_run.output.description}} </td>
                 {% endif  %}
             </tr>
         </tbody>
@@ -70,7 +65,14 @@
                 <div class="col-md-2">
                     <div class="form-group">
                         {{ form_label(form.quality_dimension) }}
-                        {{ form_widget(form.quality_dimension, { 'attr': { 'class':'form-control' } }) }}
+                        <select id="qualityannotation_quality_dimension" name="qualityannotation[quality_dimension]" required="required" class="form-control select">
+                            {% if not qualityAnnotation.qualityDimension %}
+                                <option value=""></option>
+                            {% endif %}
+                        {% for qd in quality_dimensions %}
+                            <option value="{{ qd.uri }}" {% if qualityAnnotation.qualityDimension and qd.uri == qualityAnnotation.qualityDimension.uri %}selected="selected"{% endif %}>{{ qd.name }}</option>
+                        {% endfor %}
+                        </select>
                         {{ form_errors(form.quality_dimension) }}
                     </div>
                 </div>
@@ -95,8 +97,8 @@
             {% endif %}
             <a href="{{ path('quality-annotations') }}" class="btn btn-info">List</a>
         </div>
-
-    {{ form_end(form) }}
+        {{ form_widget(form._token) }}
+    </form>
 </div>
 
 <div class="table-responsive">

@@ -64,13 +64,15 @@ class AnnotationController extends Controller
             'annotations' => $annotations
         ));
     }
-    
+   
     /**
      * @Route("/annotation/qualityannotations", name="quality-annotations") 
      */
     public function qualityAnnotationListAction(Request $request)
     {         
         $model = $this->get('model.annotation');
+        $model_provenance = $this->get('model.provenance');
+        $model_workflow = $this->get('model.workflow');
         
         $users = $model->findUsersWithQualityAnnotations();
         
@@ -81,7 +83,7 @@ class AnnotationController extends Controller
         $form->handleRequest($request);             
         $user_uri = $form->get('user')->getViewData();
         
-        if ($form->isSubmitted() && $user_uri) 
+       if ($form->isSubmitted() && $user_uri) 
         {                                    
             $user = new \AppBundle\Entity\Person();
             $user->setUri($user_uri);
@@ -91,10 +93,47 @@ class AnnotationController extends Controller
         {
             $query = $model->findAllQualityAnnotations();
         }
+        
+        $quality_annotation_array = array();
                         
+        for ($i = 0; $i < count($query); $i++)
+        {
+            $qualityAnnotation = $query[$i];
+            
+            if ($qualityAnnotation->getWorkflow())
+            {   
+                $workflow = $model_workflow->findWorkflow($qualityAnnotation->getWorkflow()->getUri());
+                
+                $qualityAnnotation->setWorkflow($workflow);      
+                                
+            }
+            elseif($qualityAnnotation->getProcessRun())
+            {   
+                $process_run = $model_provenance->findProcessRun($qualityAnnotation->getProcessRun()->getUri());  
+                $process_uri = $process_run->getProcess()->getUri();
+                $process = $model_workflow->findProcess($process_uri);
+                $workflow_of_process = $model_workflow->findWorkflow($process->getWorkflow()->getUri());  
+                $process->setWorkflow($workflow_of_process);
+                
+                $process_run->setProcess($process); 
+                
+                $qualityAnnotation->setProcessRun($process_run);
+            }
+            else
+            {                 
+                $output_data_run = $model_provenance->findOutputData($qualityAnnotation->getOutputRun()->getUri());
+                
+                $qualityAnnotation->setOutputRun($output_data_run);                
+            }
+            
+            $quality_annotation_array[] = $qualityAnnotation;
+            
+        }
+        
+                
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-            $query, /* query NOT result */
+            $quality_annotation_array, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
             10 /*limit per page*/
         );
@@ -103,7 +142,7 @@ class AnnotationController extends Controller
             'pagination' => $pagination,
             'form' => $form->createView()
         ));       
-    }
+    }    
     
     /**
      * 
@@ -137,7 +176,7 @@ class AnnotationController extends Controller
                 $process_run->setProcess($process); 
                 break;
             case 'output_run':
-                $output_data_run = $model_provenance->findOutputDataByOutputRun($element_uri);
+                $output_data_run = $model_provenance->findOutputData($element_uri);
                 break;
         }
         
@@ -166,7 +205,7 @@ class AnnotationController extends Controller
             $quality_dimension = $form->get('quality_dimension')->getData();
             $user = $this->getUser();
             
-            $quality_annotation = $model_annotation->insertQualityAnnotationToElement($element_uri, $quality_dimensions[$quality_dimension], $value, $user);
+            $quality_annotation = $model_annotation->insertQualityAnnotationToElement($element_uri, $type, $quality_dimensions[$quality_dimension], $value, $user);
             
             $this->get('session')
                 ->getFlashBag()
@@ -234,7 +273,7 @@ class AnnotationController extends Controller
                 break;
             case 'output_run':
                 $element_uri = $qualityAnnotation->getOutputRun()->getUri();
-                $output_data_run = $model_provenance->findOutputDataByOutputRun($element_uri);
+                $output_data_run = $model_provenance->findOutputData($element_uri);
                 break;
         }
                 
@@ -263,6 +302,7 @@ class AnnotationController extends Controller
             $request->query->getInt('page', 1), /*page number*/
             10 /*limit per page*/
         );
+                
         
         return $this->render('qualityflow/qualitydimension-annotation-form.html.twig', array(
             'pagination' => $pagination,
@@ -271,6 +311,7 @@ class AnnotationController extends Controller
             'process_run' => $process_run,
             'output_data_run' => $output_data_run,
             'qualityAnnotation' => $qualityAnnotation,
+            'quality_dimensions' => $quality_dimensions,
             'type' => $type
         ));
         
@@ -317,7 +358,7 @@ class AnnotationController extends Controller
                 break;
             case 'output_run':
                 $element_uri = $qualityAnnotation->getOutputRun()->getUri();
-                $output_data_run = $model_provenance->findOutputDataByOutputRun($element_uri);
+                $output_data_run = $model_provenance->findOutputData($element_uri);
                 break;
         }
         
@@ -361,6 +402,7 @@ class AnnotationController extends Controller
             'process_run' => $process_run,
             'output_data_run' => $output_data_run,
             'qualityAnnotation' => $qualityAnnotation,
+            'quality_dimensions' => $quality_dimensions,
             'type' => $type
         ));
     }
