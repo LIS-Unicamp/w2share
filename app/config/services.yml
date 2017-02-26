@@ -44,7 +44,7 @@ services:
         
     model.ro:
         class: AppBundle\Model\ResearchObject
-        arguments: ["@app.rest_api"]
+        arguments: [@app.rest_api, @service_container]
         
     model.search:
         class: AppBundle\Model\Search

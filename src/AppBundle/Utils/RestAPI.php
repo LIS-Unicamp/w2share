@@ -33,8 +33,8 @@ class RestAPI
     prefix dep: <http://scape.keep.pt/vocab/dependencies#>
     prefix wf4ever: <http://purl.org/wf4ever/wf4ever#>
     prefix biocat: <http://biocatalogue.org/attribute/>
-    prefix ro: http://purl.org/wf4ever/ro#
-    prefix ore: http://www.openarchives.org/ore/terms/
+    prefix ro: <http://purl.org/wf4ever/ro#>
+    prefix ore: <http://www.openarchives.org/ore/terms/>
     prefix w2share: <http://www.lis.ic.unicamp.br/w2share/qualityflow#>";
     
     public function __construct(\Symfony\Component\DependencyInjection\ContainerInterface $container)

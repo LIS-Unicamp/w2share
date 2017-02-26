@@ -7,6 +7,8 @@ AppBundle\Entity\ResearchObject:
             type: string
         title:
             type: string
+        hash:
+            type: string
         created_at:
             type: datetime
         
