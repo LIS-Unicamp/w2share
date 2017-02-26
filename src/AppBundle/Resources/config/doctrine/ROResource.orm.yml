@@ -1,0 +1,18 @@
+AppBundle\Entity\ROResource: 
+    type: entity
+    fields: 
+        uri:
+            type: string
+        type:
+            type: string
+        created_at:
+            type: datetime
+        
+    manyToOne:
+        resources:
+            targetEntity: ResearchObject
+            invertedBy: resources
+    oneToMany:
+        annotations:
+            targetEntity: ROAnnotation
+            mappedBy: resource         

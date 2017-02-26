@@ -1,6 +1,8 @@
 AppBundle\Entity\Workflow: 
     type: entity
-    fields:   
+    fields: 
+        uri:
+            type: string
         description:
             type: string
         label:

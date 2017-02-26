@@ -1,0 +1,20 @@
+AppBundle\Entity\ROAnnotation: 
+    type: entity
+    fields: 
+        uri:
+            type: string
+        description:
+            type: string        
+        created_at:
+            type: datetime
+        
+    manyToOne:
+        resource:
+            targetEntity: ROResource
+            inversedBy: annotations
+        research_object:
+            targetEntity: ResearchObject
+            inversedBy: annotations    
+    manyToOne:
+        creator:
+            targetEntity: Person  

@@ -24,5 +24,3 @@ AppBundle\Entity\QualityAnnotation:
         output_run:
             targetEntity: OutputRun
             inversedBy: quality_annotation
-        creator:
-            targetEntity: Person

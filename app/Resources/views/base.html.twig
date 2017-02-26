@@ -59,6 +59,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li{% if get_controller_name() == 'default' and get_action_name() == 'homepage' %} class="active"{% endif %}><a href="{{ path('homepage') }}">Home</a></li>
+            <li{% if get_controller_name() == 'researchobject' %} class="active"{% endif %}><a href="{{ path('ro-list') }}">Research Object</a></li>
             <li class="dropdown{% if get_controller_name() == 'workflow' %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   Workflows <span class="caret"></span>

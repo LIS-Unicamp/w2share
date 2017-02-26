@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+{% block title %}{% if ro.uri %}Edit{% else %}Add{% endif %} Research Object{% endblock %}
+{% block body %}
+<h1>Research Object <small>{% if ro.uri %}<button class="btn btn-xs copy" data-clipboard-text="{{ ro.uri }}">
+                <i class="glyphicon glyphicon-copy"></i>
+            </button> Edit{% else %}Add{% endif %}</small></h1>
+    {% if ro.uri %}
+    <ul>
+        <li><strong>Title:</strong> {{ ro.title }}</li>
+        <li><strong>Creator:</strong> {{ ro.creator }}</li>
+        <li><strong>Description:</strong> {{ ro.description }}</li>
+        <li><strong>Label:</strong> {{ ro.label }}</li>
+    </ul>
+    {% endif %}
+{{ form_start(form) }}
+    <div class="form-body">
+        {% for flashMessage in app.session.flashbag.get('success') %}
+            <div class="alert alert-success">
+                    <button class="close" data-dismiss="alert"></button>
+                    {{ flashMessage }}
+            </div>            
+        {% endfor %}
+        {% for flashMessage in app.session.flashbag.get('error') %}
+            <div class="alert alert-danger">
+                    <button class="close" data-dismiss="alert"></button>
+                    {{ flashMessage }}
+            </div>            
+        {% endfor %}
+        {{ form_errors(form) }}
+        <div class="row">
+            <div class="col-md-12">                                
+                <div class="row">
+                    <div class="form-group">
+                        {{ form_label(form.ro_file) }}
+                        {{ form_widget(form.ro_file, { 'attr': { 'class':'form-control' } }) }}
+                        {{ form_errors(form.ro_file) }}
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+    <div class="form-actions">
+            {% if ro.uri %}
+                {{ form_widget(form.save, { 'label':'Edit' }) }} 
+            {% else %}
+                {{ form_widget(form.save) }} 
+            {% endif %}
+            <a href="{{ path('ro-list') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
+            {% if ro.uri %}
+                <a href="{{ path('ro-details', { 'ro_uri':ro.uri|url_encode() }) }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-search"></i></a>                
+            {% endif %}
+    </div>
+    {{ form_end(form) }}                
+
+{% endblock %}  
+{% block javascripts %}            
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 

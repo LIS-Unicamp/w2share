@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+{% block title %}Research Objects{% endblock %}
+{% block body %}
+<h1>Research Objects</h1>
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+<a class="btn btn-success" href="{{ path('ro-add') }}"><i class="glyphicon glyphicon-plus"></i> Add</a>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width:100px">Action</th>
+                <th>Title</th>
+                <th>Creator</th>
+                <th>Description</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+    {% for ro in pagination %}
+        <tr>
+            <td style="width:150px">
+                <a href="{{ path('ro-details', { 'workflow_uri':ro.uri|url_encode() }) }}" title="Go to RO details"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('ro-edit', { 'workflow_uri':ro.uri|url_encode() }) }}" title="Edit RO"><i class="glyphicon glyphicon-edit"></i></a>
+                <a href="{{ path('ro-delete', { 'workflow_uri':ro.uri|url_encode() }) }}" title="Delete RO"><i class="glyphicon glyphicon-trash delete"></i></a>
+            </td> 
+            <td>{{ ro.title }}</td>
+            <td>{{ ro.creator }}</a></td>
+            <td>{{ ro.description }}</td> 
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="navigation">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        {{ app_pagination_render(pagination) }}
+    </div>
+</div>
+{% endblock %}  
+{% block javascripts %}            
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 

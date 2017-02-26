@@ -1,0 +1,22 @@
+AppBundle\Entity\ResearchObject: 
+    type: entity
+    fields: 
+        uri:
+            type: string
+        description:
+            type: string
+        title:
+            type: string
+        created_at:
+            type: datetime
+        
+    oneToMany:
+        resources:
+            targetEntity: ROResource
+            mappedBy: research_object
+        annotations:
+            targetEntity: ROAnnotation
+            mappedBy: research_object        
+    manyToOne:
+        creator:
+            targetEntity: Person  
