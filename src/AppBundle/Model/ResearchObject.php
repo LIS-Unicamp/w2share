@@ -72,13 +72,7 @@ class ResearchObject
     {
         if (file_exists($this->getDirPath($ro)."/.ro/manifest.json"))
         {
-            $str = file_get_contents($this->getDirPath($ro)."/.ro/manifest.json");
-            $manifest_data = json_decode($str, true); // decode the JSON into an associative array
-            
-            foreach ($manifest_data['aggregates'] as $aggregate)
-            {
-                echo $aggregate['folder'].$aggregate['file'].'<br>';
-            }            
+            $this->loadManifestJSON($ro); 
         }
         else if (file_exists($this->getDirPath($ro)."/.ro/manifest.rdf"))
         {
@@ -92,18 +86,57 @@ class ResearchObject
             }
             $path_url .= $this->container->get('templating.helper.assets')
                     ->getUrl("/uploads/documents/ro/".$ro->getHash()."/.ro/manifest.rdf", null, true, true);
-
-            echo $path_url;
-            $foaf = new \EasyRdf_Graph($path_url);
-            $foaf->load();
-            print_r($foaf);
-            foreach ($aggregates as $aggregate)
-            {
-                echo $aggregate['folder'].$aggregate['file'].'<br>';
-            }
-            exit;
+            
+            $this->loadManifestRDF($path_url);
         }
+    }
+    
+    private function loadManifestJSON(\AppBundle\Entity\ResearchObject $ro)
+    {
+        $str = file_get_contents($this->getDirPath($ro)."/.ro/manifest.json");
+        $manifest_data = json_decode($str, true); // decode the JSON into an associative array
 
+        foreach ($manifest_data['aggregates'] as $aggregate)
+        {
+            echo $aggregate['folder'].$aggregate['file'];
+            if (in_array('mediatype', $aggregate))
+            {
+                echo $aggregate['mediatype'];
+            }
+            echo '<br>';
+        }    
+        
+        foreach ($manifest_data['annotations'] as $aggregate)
+        {
+            echo $aggregate['about'].$aggregate['content'];
+            if (in_array('annotation', $aggregate))
+            {
+                echo $aggregate['annotation'];
+            }
+            echo '<br>';
+        } 
+    }
+    
+    private function loadManifestRDF(\AppBundle\Entity\ResearchObject $ro)
+    {
+        $path_url = $this->getDirPath($ro)."/.ro/manifest.rdf";
+        
+        \EasyRdf_Namespace::set('ro', 'http://purl.org/wf4ever/ro#');
+        \EasyRdf_Namespace::set('dc', 'http://purl.org/dc/elements/1.1/');
+        \EasyRdf_Namespace::set('ore', 'http://www.openarchives.org/ore/terms/');
+
+        $graph = new \EasyRdf_Graph($path_url);
+        $graph->load();
+        //print_r($graph);
+        $resource = $graph->resourcesMatching('ore:aggregates');
+        $aggregates = $graph->AllResources($resource[0],'ore:aggregates');
+        //echo($resource);
+        foreach ($aggregates as $aggregate)
+        {
+            echo $aggregate.' - '.$aggregate->type()
+                    .'<br>';
+        }
+        exit;
     }
     
     private function unzip(\AppBundle\Entity\ResearchObject $ro)
@@ -124,9 +157,8 @@ class ResearchObject
         return $root_path."/../web/uploads/documents/ro/".$ro->getHash();
     }
     
-    private function load(\AppBundle\Entity\ResearchObject $ro)
+    private function loadIntoDB(\AppBundle\Entity\ResearchObject $ro, $file_path)
     {        
-        $file_path = $ro->getROAbsolutePath();
         $env = $this->container->get('kernel')->getEnvironment();
         
         $path_url = '';
@@ -136,7 +168,7 @@ class ResearchObject
                 . $this->container->get('request')->getHost();
         }
         $path_url .= $this->container->get('templating.helper.assets')
-                ->getUrl("/uploads/documents/ro/".basename($file_path), null, true, true);
+                ->getUrl("/uploads/documents/ro/".$ro->getHash()."/".$file_path, null, true, true);
         
         $query = "LOAD <".$path_url."> INTO graph <".$this->driver->getDefaultGraph('ro').">";
         $this->driver->getResults($query);
