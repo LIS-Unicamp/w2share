@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * YesScript
  */
-class YesWorkflow
+class ScriptConverter
 {
     private $script_file;
 

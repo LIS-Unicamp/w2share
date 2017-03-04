@@ -2,20 +2,20 @@
 namespace AppBundle\Model;
 
 /**
- * Description of YesWorkflow
+ * Description of ScriptConverter
  *
  * @author lucas
  */
-class YesWorkflow
+class ScriptConverter
 {    
     
     public function __construct()
     {
     }
     
-    public function createGraph($yesworkflow)
+    public function createGraph($converter)
     {        
-        $command = "java -jar ".$yesworkflow->getUploadRootDir() . "/../../../../src/AppBundle/Utils/yesworkflow-0.2.1.1-jar-with-dependencies.jar graph -c extract.comment='#' -c graph.layout=TB -c graph.view=COMBINED -c model.factsfile=" . $yesworkflow->getUploadRootDir()."/modelfacts.txt " . $yesworkflow->getScriptAbsolutePath() . " > " . $yesworkflow->getUploadRootDir() . "/wf.gv; /usr/local/bin/dot -Tpng " . $yesworkflow->getUploadRootDir() . "/wf.gv -o " . $yesworkflow->getUploadRootDir()."/wf.png";                              
+        $command = "java -jar ".$converter->getUploadRootDir() . "/../../../../src/AppBundle/Utils/yesworkflow-0.2.1.1-jar-with-dependencies.jar graph -c extract.comment='#' -c graph.layout=TB -c graph.view=COMBINED -c model.factsfile=" . $yesworkflow->getUploadRootDir()."/modelfacts.txt " . $yesworkflow->getScriptAbsolutePath() . " > " . $yesworkflow->getUploadRootDir() . "/wf.gv; /usr/local/bin/dot -Tpng " . $yesworkflow->getUploadRootDir() . "/wf.gv -o " . $yesworkflow->getUploadRootDir()."/wf.png";                              
         system($command);        
     }
     

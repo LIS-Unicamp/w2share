@@ -72,13 +72,13 @@
               </ul>
             </li>
             <li{% if get_controller_name() == 'provenance' %} class="active"{% endif %}><a href="{{ path('provenance-workflows-run') }}">Provenance</a></li>
-            <li class="dropdown{% if get_controller_name() == 'yesworkflow' %} active{% endif %}">
+            <li class="dropdown{% if get_controller_name() == 'script-converter' %} active{% endif %}">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                  YesWorkflow <span class="caret"></span>
+                  Script Converter <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">  
-                    <li><a href="{{ path('yesworkflow-editor') }}">Editor</a></li> 
-                    <li><a href="{{ path('yesworkflow-form') }}">Form</a></li>                        
+                    <li><a href="{{ path('script-converter-editor') }}">Editor</a></li> 
+                    <li><a href="{{ path('script-converter-form') }}">Form</a></li>                        
                 </ul>
             </li>
             <li class="dropdown{% if get_controller_name() == 'qualitydimension' %} active{% endif %}">

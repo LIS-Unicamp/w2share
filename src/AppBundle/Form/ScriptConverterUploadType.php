@@ -5,7 +5,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class YesWorkflowUploadType extends AbstractType
+class ScriptConverterUploadType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -21,12 +21,12 @@ class YesWorkflowUploadType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\YesWorkflow',
+            'data_class' => 'AppBundle\Entity\ScriptConverter',
         ));
     }
 
     public function getName()
     {
-        return 'workflow';
+        return 'script_converter';
     }
 }

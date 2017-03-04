@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 {% block html_tag %}ng-app="yw-editor-app"{% endblock %}
 {% block body_tag %}ng-controller="MainController" style="background: {{ "{{background}}"|raw }}"{% endblock %}
-{% block title %}YesWorkflow{% endblock %}
+{% block title %}Script Converter{% endblock %}
 {% block body %}
-<h1>YesWorkflow <small>Editor</small></h1>
+<h1>Script Converter <small>Editor</small></h1>
   <div id="top-toolbar">
       <!--
     <select class="editor-option" ng-model="sampleToLoad" ng-change="onScriptSelect()" title="Select a sample script to load">
@@ -59,7 +59,7 @@
   <div id="bottom-toolbar">
 
     <button class="btn btn-default editor-option" ng-click="downloadScript()"
-            title="Download Script"> <i class="glyphicon glyphicon-save-file"></i>Script</button>
+            title="Download Script"> <i class="glyphicon glyphicon-download-alt"></i>Script</button>
             
     <select id="language-select" class="editor-option" ng-model="language" ng-change="languageChange()" title="Select programming language">
       <option value="sh">Bash</option>
@@ -136,13 +136,13 @@
             uib-btn-checkbox> Steps </button>
 
     <button class="btn btn-default viewer-option" ng-click="downloadGraphImage()"
-            title="Download Graph Image"> <i class="glyphicon glyphicon-save-file"></i>Graph Image</button> 
+            title="Download Graph Image"> <i class="glyphicon glyphicon-download-alt"></i>Graph Image</button> 
             
     <button class="btn btn-default viewer-option" ng-click="downloadWorkflowImage()"
-            title="Download Workflow Image"> <i class="glyphicon glyphicon-save-file"></i>Workflow Image</button>  
+            title="Download Workflow Image"> <i class="glyphicon glyphicon-download-alt"></i>Workflow Image</button>  
             
-    <a class="btn btn-default viewer-option" href="{{ path("yesworkflow-workflow-download") }}" 
-            title="Download Workflow"> <i class="glyphicon glyphicon-save-file"></i>Workflow</a> 
+    <a class="btn btn-default viewer-option" href="{{ path("script-converter-workflow-download") }}" 
+            title="Download Workflow"> <i class="glyphicon glyphicon-download-alt"></i>Workflow</a> 
       
   </div>
   

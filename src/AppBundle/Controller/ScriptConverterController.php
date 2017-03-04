@@ -7,16 +7,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Filesystem\Filesystem;
 
-class YesWorkflowController extends Controller
+class ScriptConverterController extends Controller
 {                
     /**
-     * @Route("/yesworkflow/form", name="yesworkflow-form")
+     * @Route("/script-converter/form", name="script-converter-form")
      */
     public function uploadAction(Request $request)
     {        
-        $yesworkflow = new \AppBundle\Entity\YesWorkflow();
-        $form = $this->createForm(new \AppBundle\Form\YesWorkflowUploadType(), $yesworkflow, array(
-            'action' => $this->generateUrl('yesworkflow-form'),
+        $converter = new \AppBundle\Entity\ScriptConverter();
+        $form = $this->createForm(new \AppBundle\Form\ScriptConverterUploadType(), $converter, array(
+            'action' => $this->generateUrl('script-converter-form'),
             'method' => 'POST'
         ));
         
@@ -30,37 +30,37 @@ class YesWorkflowController extends Controller
                 throw $this->createAccessDeniedException();
             }
             
-            $model = $this->get('model.yesworkflow'); 
-            $model->createGraph($yesworkflow);
+            $model = $this->get('model.script-converter'); 
+            $model->createGraph($converter);
             
             $this->get('session')
                 ->getFlashBag()
                 ->add('success', 'Abstract Workflow created!')
             ; 
             $fs = new Filesystem();            
-            $script_content = file_get_contents($yesworkflow->getScriptAbsolutePath());
-            //$fs->remove($yesworkflow->getScriptAbsolutePath());            
+            $script_content = file_get_contents($converter->getScriptAbsolutePath());
+            //$fs->remove($script-converter->getScriptAbsolutePath());            
         }                                                
                     
-        return $this->render('yesworkflow/form.html.twig', array(
+        return $this->render('script-converter/form.html.twig', array(
             'form' => $form->createView(),
             'script_content' => $script_content,
-            'abstract_workflow' => $yesworkflow->getUploadDir()."/wf.png"
+            'abstract_workflow' => $converter->getUploadDir()."/wf.png"
         ));
     }  
     
     /**
-     * @Route("/yesworkflow/editor", name="yesworkflow-editor")
+     * @Route("/script-converter/editor", name="script-converter-editor")
      */
     public function editorAction(Request $request)
     {                                                                                   
-        return $this->render('yesworkflow/editor.html.twig', array(
+        return $this->render('script-converter/editor.html.twig', array(
             
         ));
     }
     
     /**
-     * @Route("/yesworkflow/save", name="yesworkflow-save")
+     * @Route("/script-converter/save", name="script-converter-save")
      */
     public function saveAction(Request $request)
     {               
@@ -85,12 +85,12 @@ class YesWorkflowController extends Controller
     
     
     /**
-     * @Route("/yesworkflow/workflow/download", name="yesworkflow-workflow-download")
+     * @Route("/script-converter/workflow/download", name="script-converter-workflow-download")
      */
     public function downloadWorkflowAction(Request $request)
     {       
         $root_path = $this->get('kernel')->getRootDir();
-        $model = $this->get('model.yesworkflow');
+        $model = $this->get('model.script-converter');
         $workflow = $model->downloadWorkflow($root_path, "bash");
         
         $content = file_get_contents($workflow);
@@ -109,7 +109,7 @@ class YesWorkflowController extends Controller
     }
     
     /**
-     * @Route("/yesworkflow/workflow/image", name="yesworkflow-workflow-image")
+     * @Route("/script-converter/workflow/image", name="script-converter-workflow-image")
      */
     public function imageWorkflowAction(Request $request)
     {       
