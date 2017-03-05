@@ -148,6 +148,8 @@ class ScriptConverter
     public function __construct() 
     {
         $this->hash = sha1(uniqid(mt_rand(), true));
+        $this->created_at = new \Datetime();
+        $this->updated_at = new \Datetime();
     }
 
 
@@ -411,5 +413,75 @@ class ScriptConverter
             case 'perl': return 'pl';
             case 'java': return 'java';
         }
+    }
+    /**
+     * @var \DateTime
+     */
+    private $updated_at;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $workflows;
+
+
+    /**
+     * Set updated_at
+     *
+     * @param \DateTime $updatedAt
+     * @return ScriptConverter
+     */
+    public function setUpdatedAt($updatedAt = null)
+    {
+        if (null == $updatedAt)
+        {
+            $this->updated_at = new \Datetime();
+        }
+        $this->updated_at = $updatedAt;
+    
+        return $this;
+    }
+
+    /**
+     * Get updated_at
+     *
+     * @return \DateTime 
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * Add workflows
+     *
+     * @param \AppBundle\Entity\Workflow $workflows
+     * @return ScriptConverter
+     */
+    public function addWorkflow(\AppBundle\Entity\Workflow $workflows)
+    {
+        $this->workflows[] = $workflows;
+    
+        return $this;
+    }
+
+    /**
+     * Remove workflows
+     *
+     * @param \AppBundle\Entity\Workflow $workflows
+     */
+    public function removeWorkflow(\AppBundle\Entity\Workflow $workflows)
+    {
+        $this->workflows->removeElement($workflows);
+    }
+
+    /**
+     * Get workflows
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getWorkflows()
+    {
+        return $this->workflows;
     }
 }

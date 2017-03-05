@@ -13,8 +13,7 @@ class ScriptConverterController extends Controller
      * @Route("/script-converter", name="script-converter")
      */
     public function indexAction(Request $request)
-    {  
-        
+    {                          
         return $this->render('script-converter/index.html.twig', array(
         ));
     }
@@ -24,6 +23,15 @@ class ScriptConverterController extends Controller
      */
     public function listAction(Request $request)
     {  
+        $model = $this->get('model.scriptconverter');
+        $conversions = $model->findScriptConversions();
+        
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $conversions, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
         
         return $this->render('script-converter/list.html.twig', array(
             'pagination' => $pagination            
@@ -113,9 +121,12 @@ class ScriptConverterController extends Controller
         $converter->setScriptCode($code);  
         $converter->createWorkflow();
         
+        $model = $this->get('model.scriptconverter');
+        $model->insertScriptConversion($converter, $user);
+        
         $response = new \Symfony\Component\HttpFoundation\Response();        
         
-        return $response->setContent($request->getContent());
+        return $response->setContent('ok');
     }
     
     /**
@@ -125,6 +136,17 @@ class ScriptConverterController extends Controller
     {               
         $this->get('session')->set('hash', null);    
         $this->get('session')->set('language', null); 
+        return $this->redirect($this->generateUrl('script-converter-editor'));
+    }
+    
+    /**
+     * @Route("/script-converter/delete", name="script-converter-delete")
+     */
+    public function deleteAction(Request $request)
+    {               
+        $hash = $request->get('hash');    
+
+
         return $this->redirect($this->generateUrl('script-converter-editor'));
     }
     

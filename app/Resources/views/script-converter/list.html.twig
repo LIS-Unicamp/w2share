@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+{% block title %}Script Conversions{% endblock %}
+{% block body %}
+<h1>Script Conversions</h1>
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+<a class="btn btn-success" href="{{ path('script-converter-editor') }}"><i class="glyphicon glyphicon-plus"></i> Add</a>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width:100px">Action</th>
+                <th>Language</th>
+                <th>Workflow(s)</th>
+                <th>Creator</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for row in pagination %}
+        <tr>
+            <td style="width:150px">
+                <a href="{{ path('script-converter-editor', { 'hash':row.hash }) }}" title="Open editor"><i class="glyphicon glyphicon-edit"></i></a>
+                <a href="{{ path('script-converter-upload', { 'hash':row.hash }) }}" title="Upload Workflow"><i class="glyphicon glyphicon-upload"></i></a>
+                <a href="{{ path('script-converter-delete', { 'hash':row.hash }) }}" title="Delete Conversion"><i class="glyphicon glyphicon-trash delete"></i></a>
+            </td> 
+            <td>{{ row.scriptLanguage }}</td>
+            <td>
+                {% if row.workflows %}
+                    <a href="{{ path('workflow-details', { 'workflow-uri':row.workflow.uri|url_encode() }) }}">{{ row.workflow.title }}</a>
+                {% endif %}
+            </td>
+            <td>{{ row.creator }}</a></td>
+            <td>{{ row.createdAt|date('H:i Y-m-d') }}</td>
+            <td>{{ row.updatedAt|date('H:i Y-m-d') }}</td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="navigation">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        {{ app_pagination_render(pagination) }}
+    </div>
+</div>
+{% endblock %}  
+{% block javascripts %}            
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 

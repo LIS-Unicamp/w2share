@@ -13,8 +13,9 @@ class ScriptConverterUploadType extends AbstractType
             ->add('provenance_file', 'file', array('label' => 'Provenance File', 'required' => false))
             ->add('workflow_file', 'file', array('label' => 'Workflow Spec (T2Flow) File', 'required' => false))
             ->add('send', 'submit', array(
-                    'label' => 'Send',
-                    'attr' => array('class' => 'btn blue')
+                    'label' => 'Send',                    
+                    'icon' => 'upload',
+                    'attr' => array('class' => 'btn btn-primary')
                 ))
         ;
     }
