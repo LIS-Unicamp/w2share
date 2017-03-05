@@ -93,7 +93,14 @@ class ScriptConverterController extends Controller
             $this->get('session')->set('hash', $converter->getHash());    
         }
         
-        $language = $this->get('session')->get('language');
+        if ($request->get('language'))
+        {
+            $language = $request->get('language');
+        }
+        else {
+            $language = $this->get('session')->get('language');
+        }
+                
         $converter->setScriptLanguage($language);
         
         return $this->render('script-converter/editor.html.twig', array(
@@ -140,14 +147,29 @@ class ScriptConverterController extends Controller
     }
     
     /**
+     * @Route("/script-converter/create-ro", name="script-converter-create-ro")
+     */
+    public function createROAction(Request $request)
+    {        
+        $this->get('session')
+                ->getFlashBag()
+                ->add('error', 'Feature Not implemented yet!')
+            ; 
+        return $this->redirect($this->generateUrl('script-converter-list'));
+    }
+    
+    /**
      * @Route("/script-converter/delete", name="script-converter-delete")
      */
     public function deleteAction(Request $request)
     {               
         $hash = $request->get('hash');    
-
-
-        return $this->redirect($this->generateUrl('script-converter-editor'));
+        $this->get('session')
+                ->getFlashBag()
+                ->add('error', 'Feature Not implemented yet!')
+            ; 
+        
+        return $this->redirect($this->generateUrl('script-converter-list'));
     }
     
     
@@ -192,5 +214,16 @@ class ScriptConverterController extends Controller
         
         $response = new \Symfony\Component\HttpFoundation\Response();                   
         return $response->setContent(json_encode($array));
-    }    
+    } 
+    
+    /**
+     * @Route("/script-converter/reset", name="script-converter-reset")
+     */
+    public function resetAction()
+    {         
+        $model = $this->get('model.scriptconverter');
+        $model->clearGraph();
+        $model->clearUploads();
+        return $this->redirect($this->generateUrl('script-converter-list'));
+    }
 }

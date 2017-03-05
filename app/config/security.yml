@@ -42,7 +42,7 @@ security:
                 domain:   ~  #Defaults to the current domain from $_SERVER                
 
     access_control:
-        - { path: ^/(.*)/(add|reset|upload|delete|form), roles: IS_AUTHENTICATED_FULLY, requires_channel: http }
+        - { path: ^/(.*)/(add|reset|upload|delete|form|save|restart), roles: IS_AUTHENTICATED_FULLY, requires_channel: http }
         - { path: ^/(.*)/edit/, roles: IS_AUTHENTICATED_FULLY, requires_channel: http }
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http }

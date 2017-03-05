@@ -32,7 +32,7 @@
             <td style="width:150px">
                 <a href="{{ path('ro-details', { 'workflow_uri':ro.uri|url_encode() }) }}" title="Go to RO details"><i class="glyphicon glyphicon-search"></i></a>
                 <a href="{{ path('ro-edit', { 'workflow_uri':ro.uri|url_encode() }) }}" title="Edit RO"><i class="glyphicon glyphicon-edit"></i></a>
-                <a href="{{ path('ro-delete', { 'workflow_uri':ro.uri|url_encode() }) }}" title="Delete RO"><i class="glyphicon glyphicon-trash delete"></i></a>
+                <a href="{{ path('ro-delete', { 'workflow_uri':ro.uri|url_encode() }) }}" title="Delete RO" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
             </td> 
             <td>{{ ro.title }}</td>
             <td>{{ ro.creator }}</a></td>
