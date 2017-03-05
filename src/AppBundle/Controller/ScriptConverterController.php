@@ -5,10 +5,20 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Filesystem\Filesystem;
 
 class ScriptConverterController extends Controller
-{                
+{     
+    
+    /**
+     * @Route("/script-converter/list", name="script-converter-list")
+     */
+    public function listAction(Request $request)
+    {  
+        
+        return $this->render('script-converter/list.html.twig', array(
+            'pagination' => $pagination            
+        ));
+    }
     /**
      * @Route("/script-converter/form", name="script-converter-form")
      */
@@ -30,16 +40,14 @@ class ScriptConverterController extends Controller
                 throw $this->createAccessDeniedException();
             }
             
-            $model = $this->get('model.script-converter'); 
-            $model->createGraph($converter);
+            $converter->createGraph();
             
             $this->get('session')
                 ->getFlashBag()
                 ->add('success', 'Abstract Workflow created!')
             ; 
-            $fs = new Filesystem();            
-            $script_content = file_get_contents($converter->getScriptAbsolutePath());
-            //$fs->remove($script-converter->getScriptAbsolutePath());            
+
+            $script_content = $converter->getScriptCode();         
         }                                                
                     
         return $this->render('script-converter/form.html.twig', array(
@@ -53,30 +61,31 @@ class ScriptConverterController extends Controller
      * @Route("/script-converter/editor", name="script-converter-editor")
      */
     public function editorAction(Request $request)
-    {                                                                                   
+    {      
+        $converter = new \AppBundle\Entity\ScriptConverter();
         return $this->render('script-converter/editor.html.twig', array(
-            
+            'converter' => $converter
         ));
     }
     
     /**
-     * @Route("/script-converter/save", name="script-converter-save")
+     * @Route("/script-converter/save", options={"expose"=true}, name="script-converter-save")
      */
     public function saveAction(Request $request)
     {               
         $data = json_decode($request->getContent(), true);
-        
+        $root_path = $this->get('kernel')->getRootDir();
+
         $code = $data['code'];
         $language = $data['language'];
-        
-        echo $code;
-        
+        $hash = $data['hash'];
+              
         $user = $this->getUser();
-        
-        $root_path = $this->get('kernel')->getRootDir();
-        
-        $fs = new Filesystem();           
-        $fs->dumpFile($root_path."/../web/uploads/documents/yesscript/script.sh", $code);
+        $converter = new \AppBundle\Entity\ScriptConverter();
+        $converter->setHash($hash);
+        $converter->setCreator($user);
+        $converter->setScriptLanguage($language);                
+        $converter->setScriptCode($code, $root_path);                        
         
         $response = new \Symfony\Component\HttpFoundation\Response();        
         
@@ -85,7 +94,7 @@ class ScriptConverterController extends Controller
     
     
     /**
-     * @Route("/script-converter/workflow/download", name="script-converter-workflow-download")
+     * @Route("/script-converter/workflow/download", options={"expose"=true}, name="script-converter-workflow-download")
      */
     public function downloadWorkflowAction(Request $request)
     {       
@@ -109,14 +118,14 @@ class ScriptConverterController extends Controller
     }
     
     /**
-     * @Route("/script-converter/workflow/image", name="script-converter-workflow-image")
+     * @Route("/script-converter/workflow/image", options={"expose"=true}, name="script-converter-workflow-image")
      */
     public function imageWorkflowAction(Request $request)
     {       
-        $root_path = $this->get('kernel')->getRootDir();
-        $image = $root_path."/../web/uploads/documents/yesscript/workflow.svg";
-        
-        $content = file_get_contents($image);
+        $hash = $request->get('hash');
+        $converter = new \AppBundle\Entity\ScriptConverter();
+        $converter->setHash($hash);
+        $content = $converter->getWorkflowImage();
         
         $array = array('svg' => $content);
         

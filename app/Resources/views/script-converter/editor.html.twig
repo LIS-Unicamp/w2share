@@ -3,7 +3,7 @@
 {% block body_tag %}ng-controller="MainController" style="background: {{ "{{background}}"|raw }}"{% endblock %}
 {% block title %}Script Converter{% endblock %}
 {% block body %}
-<h1>Script Converter <small>Editor</small></h1>
+<h1>Script Converter <small>Step 1</small></h1>
   <div id="top-toolbar">
       <!--
     <select class="editor-option" ng-model="sampleToLoad" ng-change="onScriptSelect()" title="Select a sample script to load">
@@ -16,15 +16,7 @@
     {% if is_granted('ROLE_ADMIN') %}
     <button class="btn" ng-click="saveScript()"><i class="glyphicon glyphicon-save-file"></i> Save</button>
     {% endif %}
-    <div id="viewer-mode-btn-group" class="btn-group btn-group-xs viewer-option">
-        
-        <label class="btn btn-default" uib-btn-radio="'skeleton'" 
-               ng-model="viewerMode" ng-change="viewerModeChange()" 
-               title="View YW-defined outline of program">Outline</label>
-    
-        <label class="btn btn-default"  uib-btn-radio="'dot'" 
-               ng-model="viewerMode" ng-change="viewerModeChange()"
-               title="View dot source for graphic representation">Dot</label>
+    <div id="viewer-mode-btn-group" class="btn-group btn-group-xs viewer-option">                
         
         <label class="btn btn-default" uib-btn-radio="'graph'" 
                ng-model="viewerMode" ng-change="viewerModeChange()"
@@ -120,8 +112,8 @@
     <button class="btn btn-default btn-xs viewer-option" ng-model="graphWorkflowBox" ng-change="getGraph()"
             uib-btn-checkbox btn-checkbox-true="'show'" btn-checkbox-false="'hide'"> Box </button>
 
-    <button class="btn btn-default btn-xs viewer-option" ng-model="edgeLabels" ng-change="getGraph()"
-            uib-btn-checkbox btn-checkbox-true="'show'" btn-checkbox-false="'hide'"> Arrows </button>
+    {#<button class="btn btn-default btn-xs viewer-option" ng-model="edgeLabels" ng-change="getGraph()"
+            uib-btn-checkbox btn-checkbox-true="'show'" btn-checkbox-false="'hide'"> Arrows </button>#}
 
     <button class="btn btn-default btn-xs viewer-option" ng-model="graphPorts" ng-change="getGraph()"
             uib-btn-checkbox btn-checkbox-true="'relax'" btn-checkbox-false="'hide'"> Ports </button>
@@ -149,6 +141,8 @@
   
 {% endblock %}
 {% block javascripts %} 
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 <script data-require="angular.js@*" data-semver="1.5.7" src="{{ app.request.basepath }}/yw-editor/lib/angular/1.5.7/angular.js"></script>
 <script src="{{ app.request.basepath }}/yw-editor/lib/angular/1.5.7/angular-animate.js"></script>
 <script src="{{ app.request.basepath }}/yw-editor/lib/angular/1.5.7/angular-sanitize.js"></script>
@@ -157,10 +151,10 @@
 <script src="{{ app.request.basepath }}/yw-editor/lib/dragscroll/dragscroll.js"></script>
 <script src="{{ app.request.basepath }}/yw-editor/lib/divider/divider.js"></script>
 <script src="{{ app.request.basepath }}/yw-editor/lib/angular-file-saver.bundle.min.js"></script>
-
 <script src="{{ app.request.basepath }}/yw-editor/yw-viewer.js"></script>
 <script type="text/javascript">
-    var url = '{{ app.request.basepath }}';        
+    var url = '{{ app.request.basepath }}';  
+    var hash = '{{ converter.hash }}';   
 </script>
 {% endblock %}
 {% block stylesheets %}

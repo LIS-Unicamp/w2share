@@ -47,7 +47,7 @@ class ResearchObject
     
     public function addResearchObject(\AppBundle\Entity\ResearchObject $ro)
     {
-        $this->unzip($ro);
+        $this->unzipROBundle($ro);
         $this->findManifest($ro);
         $this->loadFiles($ro);
         $this->saveROHash($ro);        
@@ -70,11 +70,11 @@ class ResearchObject
     
     private function findManifest(\AppBundle\Entity\ResearchObject $ro)
     {
-        if (file_exists($this->getDirPath($ro)."/.ro/manifest.json"))
+        if (file_exists($this->getRODirPath($ro)."/.ro/manifest.json"))
         {
             $this->loadManifestJSON($ro); 
         }
-        else if (file_exists($this->getDirPath($ro)."/.ro/manifest.rdf"))
+        else if (file_exists($this->getRODirPath($ro)."/.ro/manifest.rdf"))
         {
             $env = $this->container->get('kernel')->getEnvironment();
         
@@ -93,33 +93,36 @@ class ResearchObject
     
     private function loadManifestJSON(\AppBundle\Entity\ResearchObject $ro)
     {
-        $str = file_get_contents($this->getDirPath($ro)."/.ro/manifest.json");
+        $str = file_get_contents($this->getRODirPath($ro)."/.ro/manifest.json");
         $manifest_data = json_decode($str, true); // decode the JSON into an associative array
 
         foreach ($manifest_data['aggregates'] as $aggregate)
         {
-            echo $aggregate['folder'].$aggregate['file'];
+            $aggregate['folder'].$aggregate['file'];
             if (in_array('mediatype', $aggregate))
             {
-                echo $aggregate['mediatype'];
+                $aggregate['mediatype'];
             }
-            echo '<br>';
         }    
         
         foreach ($manifest_data['annotations'] as $aggregate)
         {
-            echo $aggregate['about'].$aggregate['content'];
+            $aggregate['about'].$aggregate['content'];
             if (in_array('annotation', $aggregate))
             {
-                echo $aggregate['annotation'];
+                $aggregate['annotation'];
             }
-            echo '<br>';
+            
+            if ($aggregate['content'] == '/workflow.wfbundle')
+            {
+                $this->unzipWFBundle($ro, $aggregate['content']);
+            }
         } 
     }
     
     private function loadManifestRDF(\AppBundle\Entity\ResearchObject $ro)
     {
-        $path_url = $this->getDirPath($ro)."/.ro/manifest.rdf";
+        $path_url = $this->getRODirPath($ro)."/.ro/manifest.rdf";
         
         \EasyRdf_Namespace::set('ro', 'http://purl.org/wf4ever/ro#');
         \EasyRdf_Namespace::set('dc', 'http://purl.org/dc/elements/1.1/');
@@ -133,24 +136,44 @@ class ResearchObject
         //echo($resource);
         foreach ($aggregates as $aggregate)
         {
-            echo $aggregate.' - '.$aggregate->type()
-                    .'<br>';
+            $aggregate.$aggregate->type();
         }
         exit;
     }
     
-    private function unzip(\AppBundle\Entity\ResearchObject $ro)
+    private function unzipWFBundle(\AppBundle\Entity\ResearchObject $ro, $wfbundle_filename)
+    {            
+        $wfbundle_path = $this->getRODirPath($ro).$wfbundle_filename;
+        $zip = new \ZipArchive; 
+        if ($zip->open($wfbundle_path))
+        { 
+            try 
+            {
+                $zip->extractTo($this->getRODirPath($ro)); 
+                $zip->close(); 
+            }
+            catch(\Symfony\Component\Debug\Exception\ContextErrorException $e)
+            {
+                $e->getMessage();
+            }
+            
+        }
+        @unlink($wfbundle_path);
+    }
+    
+    private function unzipROBundle(\AppBundle\Entity\ResearchObject $ro)
     {
             
         $zip = new \ZipArchive; 
         if ($zip->open($ro->getROAbsolutePath()))
         { 
-            $zip->extractTo($this->getDirPath($ro)); 
+            $zip->extractTo($this->getRODirPath($ro)); 
             $zip->close(); 
         }
+        unlink($ro->getROAbsolutePath());
     }
     
-    private function getDirPath(\AppBundle\Entity\ResearchObject $ro)
+    private function getRODirPath(\AppBundle\Entity\ResearchObject $ro)
     {
         $root_path = $this->container->get('kernel')->getRootDir();
 

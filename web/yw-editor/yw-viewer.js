@@ -61,10 +61,11 @@
     
     $scope.saveScript = function() {
         $http.post(
-          $window.url+"/app_dev.php/yesworkflow/save",
+          $window.Routing.generate('script-converter-save',{},'true'),
           {
                 language: $scope.language,
-                code: editor.getValue()                
+                code: editor.getValue(),
+                hash: $window.hash
           })
           ;
     }
@@ -214,7 +215,7 @@
         case "workflow":
           $scope.showGraphViewer = true;
           $http.get(
-                $window.url + "/app_dev.php/yesworkflow/workflow/image"
+            $window.Routing.generate('script-converter-workflow-image',{},'true')
           )
           .then(function(response) {
             workflow_image = response.data;

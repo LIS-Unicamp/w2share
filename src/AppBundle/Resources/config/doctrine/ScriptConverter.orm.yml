@@ -1,0 +1,22 @@
+AppBundle\Entity\ScriptConverter: 
+    type: entity
+    fields: 
+        uri:
+            type: string
+        description:
+            type: string
+        title:
+            type: string
+        hash:
+            type: string
+        script_language:
+            type: string
+        created_at:
+            type: datetime
+        
+    oneToOne:
+        ro:
+            targetEntity: ResearchObject
+    manyToOne:
+        creator:
+            targetEntity: Person  
