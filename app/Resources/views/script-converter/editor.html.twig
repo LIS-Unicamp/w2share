@@ -4,27 +4,32 @@
 {% block title %}Script Converter{% endblock %}
 {% block body %}
 <h1>Script Converter <small>Step 1</small></h1>
-  <div id="top-toolbar">
-      <!--
-    <select class="editor-option" ng-model="sampleToLoad" ng-change="onScriptSelect()" title="Select a sample script to load">
-        <option value="blank.py">blank</option>
-        <option value="helloworld.py">Hello</option>
-        <option value="greetings.py">Greetings</option>
-        <option value="simulate_data_collection.py">Crystals</option>
-    </select>
-      -->
+  <div id="top-toolbar">    
     {% if is_granted('ROLE_ADMIN') %}
-    <button class="btn" ng-click="saveScript()"><i class="glyphicon glyphicon-save-file"></i> Save</button>
+    <label class="btn btn-default" ng-click="saveScript()"><i class="fa fa-save"></i> Save</label>    
+    <label class="dropdown">
+        <label class="btn btn-default dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <i class="glyphicon glyphicon-download-alt"></i> Download
+          <span class="caret"></span>
+        </label>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <li><a ng-click="downloadScript()" title="Download Script">Script</a></li>
+          <li><a ng-click="downloadGraphImage()" title="Download Graph Image">Graph Image</a></li>
+          <li><a ng-click="downloadWorkflowImage()" title="Download Workflow Image">Workflow Image</a></li>
+          <li><a ng-click="downloadWorkflow()" title="Download Workflow">Workflow</a></li>
+        </ul>
+    </label>
+    <a class="btn btn-default" href="{{ path("script-converter-upload") }}"><i class="fa fa-upload"></i> Upload</a>    
+    <a class="btn btn-default" href="{{ path("script-converter-restart") }}"><i class="fa fa-refresh"></i> Restart</a>    
     {% endif %}
-    <div id="viewer-mode-btn-group" class="btn-group btn-group-xs viewer-option">                
-        
+    <div id="viewer-mode-btn-group" class="btn-group btn-group-xs viewer-option">                        
         <label class="btn btn-default" uib-btn-radio="'graph'" 
                ng-model="viewerMode" ng-change="viewerModeChange()"
                title="View graphic representation of program">Graph</label>
                 
         <label class="btn btn-default" uib-btn-radio="'workflow'" 
                ng-model="viewerMode" ng-change="viewerModeChange()"
-               title="View workflow representation of program">Workflow</label>
+               title="View workflow representation of program">Workflow</label>                
     </div>
 
   </div>
@@ -49,10 +54,7 @@
   </div>
   
   <div id="bottom-toolbar">
-
-    <button class="btn btn-default editor-option" ng-click="downloadScript()"
-            title="Download Script"> <i class="glyphicon glyphicon-download-alt"></i>Script</button>
-            
+                
     <select id="language-select" class="editor-option" ng-model="language" ng-change="languageChange()" title="Select programming language">
       <option value="sh">Bash</option>
       <option value="c_cpp">C/C++</option>
@@ -60,13 +62,7 @@
       <option value="matlab">MATLAB</option>
       <option value="python">Python</option>
       <option value="r">R</option>
-    </select>
-
-    <select class="editor-option" ng-model="keybinding" ng-change="keybindingeChange()" title="Select key binding mode">
-      <option value="ace">Ace</option>
-      <option value="emacs">Emacs</option>
-      <option value="vim">Vim</option>
-    </select>
+    </select>   
 
     <select class="editor-option" ng-model="fontsize" ng-change="fontsizeChange()" title="Set font size">
       <option value="8">8</option>
@@ -79,14 +75,7 @@
       <option value="18">18</option>
       <option value="20">20</option>
       <option value="24">24</option>
-    </select>            
-    
-    <div class="btn-group btn-group-xs editor-option">        
-        <label class="btn btn-default" uib-btn-radio="'light'" ng-model="theme" ng-change="themeChange()"
-               title="Apply the light editor theme">Light</label>
-        <label class="btn btn-default"  uib-btn-radio="'dark'" ng-model="theme" ng-change="themeChange()"
-               title="Apply the dark editor theme">Dark</label>
-    </div>
+    </select>                    
 
     <select class="viewer-option" ng-model="viewerZoom" ng-change="onZoomSelect()" title="Select graphics zoom level">
       <option value="fit">Fit</option>
@@ -126,16 +115,7 @@
 
     <button class="btn btn-default btn-xs viewer-option" ng-model="showProcessNodes" ng-change="showProcessNodesChange()"
             uib-btn-checkbox> Steps </button>
-
-    <button class="btn btn-default viewer-option" ng-click="downloadGraphImage()"
-            title="Download Graph Image"> <i class="glyphicon glyphicon-download-alt"></i>Graph Image</button> 
-            
-    <button class="btn btn-default viewer-option" ng-click="downloadWorkflowImage()"
-            title="Download Workflow Image"> <i class="glyphicon glyphicon-download-alt"></i>Workflow Image</button>  
-            
-    <a class="btn btn-default viewer-option" href="{{ path("script-converter-workflow-download") }}" 
-            title="Download Workflow"> <i class="glyphicon glyphicon-download-alt"></i>Workflow</a> 
-      
+          
   </div>
   
   
@@ -154,7 +134,13 @@
 <script src="{{ app.request.basepath }}/yw-editor/yw-viewer.js"></script>
 <script type="text/javascript">
     var url = '{{ app.request.basepath }}';  
-    var hash = '{{ converter.hash }}';   
+    {% if converter.scriptLanguage %}
+        var language = '{{ app.session.get('language') }}';
+        var sample = url+'/{{ converter.scriptWebFilePath }}';
+    {% else %}
+        var language = 'python';
+        var sample = url+'/yw-editor/samples/helloworld.py';
+    {% endif %}
 </script>
 {% endblock %}
 {% block stylesheets %}

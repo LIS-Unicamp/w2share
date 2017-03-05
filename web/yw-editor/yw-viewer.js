@@ -59,13 +59,17 @@
         FileSaver.saveAs(file, 'concrete-workflow.svg');
     }
     
+    $scope.downloadWorkflow = function() 
+    {        
+        window.location = $window.Routing.generate('script-converter-workflow-download',{},'true');
+    }
+    
     $scope.saveScript = function() {
         $http.post(
           $window.Routing.generate('script-converter-save',{},'true'),
           {
                 language: $scope.language,
                 code: editor.getValue(),
-                hash: $window.hash
           })
           ;
     }
@@ -303,7 +307,7 @@
     }
 
     $scope.loadSample = function(script) {
-        $http.get($window.url+"/yw-editor/samples/" + script)
+        $http.get(script)
           .then(onSampleLoaded);
     }
 
@@ -323,7 +327,7 @@
 
     $scope.theme = "light";
     $scope.keybinding = "ace";
-    $scope.language = "python";
+    $scope.language = $window.language;
 
     $scope.fontsize="12";
     $scope.fontsizeChange();
@@ -331,7 +335,7 @@
     $scope.viewerMode = "graph";
     $scope.showGraphViewer = false;
     $scope.viewerZoom="fit";
-    $scope.sampleToLoad="helloworld.py";
+    $scope.sampleToLoad=$window.sample;
     $scope.languageChange();
     $scope.graphSvg = '';
 
@@ -358,8 +362,6 @@
     editor.setKeyboardHandler(null);
 
     var graphViewer = document.getElementById("graph-viewer");
-
-    $scope.language = 'python';
 
     $timeout(onLoadInitialScript, 100);
   };

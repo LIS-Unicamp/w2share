@@ -94,9 +94,7 @@ class ScriptConverter
     
     public function getWebPath()
     {
-        return null === $this->path
-            ? null
-            : $this->getUploadDir().'/'.$this->path;
+        return $this->getUploadDir()."/".$this->getHash();
     }
 
     public function getUploadRootDir()
@@ -360,11 +358,31 @@ class ScriptConverter
         system($command);        
     }
     
-    public function downloadWorkflow()
-    {        
+    public function getWorkflowT2FlowFilepath()
+    {
+        return $this->getUploadRootDir()."/workflow.t2flow";
+    }
+    
+    public function getWorkflowT2FlowFile()
+    {                                 
+        return file_get_contents($this->getWorkflowT2FlowFilepath());
+    }
+    
+    public function getScriptFilepath()
+    {
+        return $this->getUploadRootDir()."/script.".$this->getScriptExtension();
+    }
+    
+    public function getScriptWebFilepath()
+    {
+        return $this->getWebPath()."/script.".$this->getScriptExtension();
+    }
+    
+    public function createWorkflow()
+    {
         $python = $this->getUploadRootDir()."/conversion.py";
-        $script = $this->getUploadRootDir()."/script".$this->getScriptExtension();
-        $workflow = $this->getUploadRootDir()."/workflow.t2flow";
+        $script = $this->getScriptFilepath();
+        $workflow = $this->getWorkflowT2FlowFilepath();
         $image = $this->getUploadRootDir()."/workflow.svg";
             
         $command_python = "java -jar ".__DIR__."/../../../src/AppBundle/Utils/yesworkflow2taverna.jar ".$script." ".$this->getScriptLanguage()." ".$python;
@@ -374,9 +392,7 @@ class ScriptConverter
         system($command_taverna);
         
         $command_image = "ruby ".__DIR__."/../../../src/AppBundle/Utils/script.rb ".$workflow." ".$image;   
-        system($command_image);               
-        
-        return $workflow;
+        system($command_image);      
     }
     
     public function getWorkflowImage()
@@ -391,7 +407,7 @@ class ScriptConverter
         {
             case 'python': return 'py';
             case 'bash': return 'sh';
-            case 'R': return 'R';
+            case 'r': return 'R';
             case 'perl': return 'pl';
             case 'java': return 'java';
         }

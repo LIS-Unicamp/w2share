@@ -2,6 +2,12 @@
 {% block title %}Script Converter{% endblock %}
 {% block body %}
 <h1>Script Converter <small>Upload</small></h1>
+<div class="alert alert-info"><p>After editing the initial workflow provided by W2Share in the SWfMS, please upload the workflow specification into the system.</p></div>
+<p>
+    <a class="btn btn-xs btn-success" href="{{ path('script-converter-editor') }}"><i class="glyphicon glyphicon-plus"></i> Editor</a>
+    <a class="btn btn-xs btn-info" href="{{ path('script-converter-list') }}"><i class="glyphicon glyphicon-list-alt"></i> List</a>
+</p>
+
 {{ form_start(form) }}
     <div class="form-body">
         {% for flashMessage in app.session.flashbag.get('success') %}
@@ -21,9 +27,16 @@
             <div class="col-md-12">               
                 <div class="row">
                     <div class="form-group">
-                        {{ form_label(form.script_file) }}
-                        {{ form_widget(form.script_file, { 'attr': { 'class':'form-control' } }) }}
-                        {{ form_errors(form.script_file) }}
+                        {{ form_label(form.workflow_file) }}
+                        {{ form_widget(form.workflow_file, { 'attr': { 'class':'form-control' } }) }}
+                        {{ form_errors(form.workflow_file) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        {{ form_label(form.provenance_file) }}
+                        {{ form_widget(form.provenance_file, { 'attr': { 'class':'form-control' } }) }}
+                        {{ form_errors(form.provenance_file) }}
                     </div>
                 </div>
             </div>
@@ -33,28 +46,8 @@
             {{ form_widget(form.send) }}             
     </div>
     {{ form_end(form) }}
-</form>
-{% if script_content %}
-<h2>Abstract Workflow</h2>
-<a href="{{ app.request.basepath }}/{{ abstract_workflow }}"><img src="{{ app.request.basepath }}/{{ abstract_workflow }}" style="max-width: 1300px"></a>
-
-<h2>Uploaded Script</h2>
-<pre class="brush: bash">
-{{ script_content }}
-</pre>
-{% endif %}
 {% endblock %}  
 {% block javascripts %}  
-    <!-- Include required JS files -->
-<script src="http://agorbatchev.typepad.com/pub/sh/3_0_83/scripts/shCore.js" type="text/javascript"></script>
-<script src="http://agorbatchev.typepad.com/pub/sh/3_0_83/scripts/shBrushBash.js" type="text/javascript"></script>
-<!-- Finally, to actually run the highlighter, you need to include this JS on your page -->
-<script type="text/javascript">
-     SyntaxHighlighter.all()
-</script>
 {% endblock %}
 {% block stylesheets %}
-<!-- Include *at least* the core style and default theme -->
-<link href="http://alexgorbatchev.com/pub/sh/current/styles/shCore.css" rel="stylesheet" type="text/css" />
-<link href="http://alexgorbatchev.com/pub/sh/current/styles/shThemeDefault.css" rel="stylesheet" type="text/css" />
 {% endblock %} 

@@ -227,28 +227,26 @@ class Workflow
     
     public function fileNames()
     {
-        $filename = $this->getHash();
-        $this->provenance_path = $filename.'.prov.ttl';
-        $this->workflow_path = $filename.'.t2flow';
-        $this->wfdesc_path = $filename.'.wfdesc.ttl';
+        $this->provenance_path = 'workflow.prov.ttl';
+        $this->workflow_path = 'workflow.t2flow';
+        $this->wfdesc_path = 'workflow.wfdesc.ttl';
     }
 
     public function preUpload()
     {
-        $filename = $this->getHash();
         if (null !== $this->getWorkflowFile()) 
         {
-            $this->workflow_path = $filename.'.'.$this->getWorkflowFile()->getClientOriginalExtension();
+            $this->workflow_path = 'workflow.t2flow';
         }
         
         if (null !== $this->getProvenanceFile()) 
         {
-            $this->provenance_path = $filename.'.prov.'.$this->getProvenanceFile()->getClientOriginalExtension();
+            $this->provenance_path = 'workflow.prov.ttl';
         }
         
         if (null !== $this->getWfdescFile()) 
         {
-            $this->wfdesc_path = $filename.'.wfdesc.'.$this->getWfdescFile()->getClientOriginalExtension();
+            $this->wfdesc_path = 'workflow.wfdesc.ttl';
         }
     }
 
@@ -385,16 +383,14 @@ class Workflow
 
     public function getWebPath()
     {
-        return null === $this->path
-            ? null
-            : $this->getUploadDir().'/'.$this->path;
+        return $this->getUploadDir()."/".$this->getHash();
     }
 
-    protected function getUploadRootDir()
+    public function getUploadRootDir()
     {
         // the absolute directory path where uploaded
         // documents should be saved
-        return __DIR__.'/../../../web/'.$this->getUploadDir();
+        return __DIR__.'/../../../web/'.$this->getUploadDir()."/".$this->getHash();
     }
 
     protected function getUploadDir()

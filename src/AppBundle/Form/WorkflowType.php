@@ -12,7 +12,7 @@ class WorkflowType extends AbstractType
         $builder
             ->add('uri', 'text', array('label' => 'URI'))
             ->add('provenance_file', 'file', array('label' => 'Provenance File', 'required' => false))
-            ->add('workflow_file', 'file', array('label' => 'Workflow Spec (Sculf) File', 'required' => false))
+            ->add('workflow_file', 'file', array('label' => 'Workflow Spec (T2Flow) File', 'required' => false))
             ->add('wfdesc_file', 'file', array('label' => 'Workflow Desc (ttl) File', 'required' => false))
             ->add('save', 'submit', array(
                     'label' => 'Add',

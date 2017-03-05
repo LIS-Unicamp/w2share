@@ -293,12 +293,11 @@ class Workflow
     
     public function addWorkflow(\AppBundle\Entity\Workflow $workflow)
     {
-        $root_path = $this->container->get('kernel')->getRootDir();
-        $this->load($workflow->getProvenanceAbsolutePath());
-        $this->load($workflow->getWfdescAbsolutePath());
+        $this->load($workflow, $workflow->getProvenanceAbsolutePath());
+        $this->load($workflow, $workflow->getWfdescAbsolutePath());
         $this->saveWorkflowHash($workflow);
         
-        $this->createWorkflowPNG($workflow, $root_path);
+        $this->createWorkflowPNG($workflow);
     }
     
     public function editWorkflow(\AppBundle\Entity\Workflow $workflow)
@@ -321,9 +320,9 @@ class Workflow
         }
     }
     
-    private function createWorkflowPNG($workflow, $root_path)
+    private function createWorkflowPNG(\AppBundle\Entity\Workflow $workflow)
     {
-        $command = "ruby ".$root_path."/../src/AppBundle/Utils/script.rb ".$workflow->getWorkflowAbsolutePath()." ".$root_path."/../web/uploads/documents/".$workflow->getHash().".png";            
+        $command = "ruby ".__DIR__."/../../../src/AppBundle/Utils/script.rb ".$workflow->getWorkflowAbsolutePath()." ".$workflow->getUploadRootDir()."/workflow.png";            
         system($command);
     }
     
@@ -342,10 +341,9 @@ class Workflow
         return $this->driver->getResults($query);        
     }
     
-    protected function load($file_path)
+    protected function load(\AppBundle\Entity\Workflow $workflow, $file_path)
     {        
         $env = $this->container->get('kernel')->getEnvironment();
-        
         $path_url = '';
         if ($env == 'dev')
         {
@@ -353,7 +351,7 @@ class Workflow
                 . $this->container->get('request')->getHost();
         }
         $path_url .= $this->container->get('templating.helper.assets')
-                ->getUrl("/uploads/documents/".basename($file_path), null, true, true);
+                ->getUrl("/".$workflow->getWebPath()."/".basename($file_path), null, true, true);
         
         $query = "LOAD <".$path_url."> INTO graph <".$this->driver->getDefaultGraph().">";
         $this->driver->getResults($query);

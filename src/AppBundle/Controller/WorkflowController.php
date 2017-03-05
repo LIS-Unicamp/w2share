@@ -56,7 +56,6 @@ class WorkflowController extends Controller
                 ->add('success', 'Workflow added!')
             ; 
             return $this->redirect($this->generateUrl('workflows'));
-            //return $this->redirect($this->generateUrl('workflow-edit',array('workflow_uri' => urlencode($workflow->getUri()))));
         }
         
         return $this->render('workflow/form.html.twig', array(

@@ -10,7 +10,8 @@ class ScriptConverterUploadType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder            
-            ->add('script_file', 'file', array('label' => 'Script File'))
+            ->add('provenance_file', 'file', array('label' => 'Provenance File', 'required' => false))
+            ->add('workflow_file', 'file', array('label' => 'Workflow Spec (T2Flow) File', 'required' => false))
             ->add('send', 'submit', array(
                     'label' => 'Send',
                     'attr' => array('class' => 'btn blue')
@@ -21,7 +22,7 @@ class ScriptConverterUploadType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\ScriptConverter',
+            'data_class' => 'AppBundle\Entity\Workflow',
         ));
     }
 

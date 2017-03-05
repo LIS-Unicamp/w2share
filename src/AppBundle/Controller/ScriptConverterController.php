@@ -10,6 +10,16 @@ class ScriptConverterController extends Controller
 {     
     
     /**
+     * @Route("/script-converter", name="script-converter")
+     */
+    public function indexAction(Request $request)
+    {  
+        
+        return $this->render('script-converter/index.html.twig', array(
+        ));
+    }
+    
+    /**
      * @Route("/script-converter/list", name="script-converter-list")
      */
     public function listAction(Request $request)
@@ -19,41 +29,37 @@ class ScriptConverterController extends Controller
             'pagination' => $pagination            
         ));
     }
+    
     /**
-     * @Route("/script-converter/form", name="script-converter-form")
+     * @Route("/script-converter/upload", name="script-converter-upload")
      */
     public function uploadAction(Request $request)
     {        
-        $converter = new \AppBundle\Entity\ScriptConverter();
-        $form = $this->createForm(new \AppBundle\Form\ScriptConverterUploadType(), $converter, array(
-            'action' => $this->generateUrl('script-converter-form'),
+        $hash = $request->get('hash');
+        $workflow = new \AppBundle\Entity\Workflow();
+        $form = $this->createForm(new \AppBundle\Form\ScriptConverterUploadType(), $workflow, array(
             'method' => 'POST'
         ));
         
         $form->handleRequest($request);
-        
-        $script_content = '';
-                
+                        
         if ($form->isValid()) 
-        {  
-            if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
-                throw $this->createAccessDeniedException();
-            }
+        {       
+            $workflow->setHash($hash);
+            $workflow->preUpload();
+            $workflow->upload();
             
-            $converter->createGraph();
+            $model = $this->get('model.workflow');             
+            $model->addWorkflow($workflow);
             
             $this->get('session')
                 ->getFlashBag()
-                ->add('success', 'Abstract Workflow created!')
+                ->add('success', 'Workflow added!')
             ; 
-
-            $script_content = $converter->getScriptCode();         
         }                                                
                     
-        return $this->render('script-converter/form.html.twig', array(
+        return $this->render('script-converter/upload.html.twig', array(
             'form' => $form->createView(),
-            'script_content' => $script_content,
-            'abstract_workflow' => $converter->getUploadDir()."/wf.png"
         ));
     }  
     
@@ -63,6 +69,25 @@ class ScriptConverterController extends Controller
     public function editorAction(Request $request)
     {      
         $converter = new \AppBundle\Entity\ScriptConverter();
+        if ($request->get("hash"))
+        {
+            $hash = $request->get('hash');
+            $this->get('session')->set('hash', $hash);  
+            $converter->setHash($hash);
+        }
+        else if ($this->get('session')->get('hash'))
+        {
+            $hash = $this->get('session')->get('hash'); 
+            $converter->setHash($hash);
+        }
+        else
+        {            
+            $this->get('session')->set('hash', $converter->getHash());    
+        }
+        
+        $language = $this->get('session')->get('language');
+        $converter->setScriptLanguage($language);
+        
         return $this->render('script-converter/editor.html.twig', array(
             'converter' => $converter
         ));
@@ -74,22 +99,33 @@ class ScriptConverterController extends Controller
     public function saveAction(Request $request)
     {               
         $data = json_decode($request->getContent(), true);
-        $root_path = $this->get('kernel')->getRootDir();
 
         $code = $data['code'];
         $language = $data['language'];
-        $hash = $data['hash'];
-              
+        $hash = $this->get('session')->get('hash');
+        $this->get('session')->set('language', $language);
+        
         $user = $this->getUser();
         $converter = new \AppBundle\Entity\ScriptConverter();
         $converter->setHash($hash);
         $converter->setCreator($user);
         $converter->setScriptLanguage($language);                
-        $converter->setScriptCode($code, $root_path);                        
+        $converter->setScriptCode($code);  
+        $converter->createWorkflow();
         
         $response = new \Symfony\Component\HttpFoundation\Response();        
         
         return $response->setContent($request->getContent());
+    }
+    
+    /**
+     * @Route("/script-converter/restart", name="script-converter-restart")
+     */
+    public function restartAction(Request $request)
+    {               
+        $this->get('session')->set('hash', null);    
+        $this->get('session')->set('language', null); 
+        return $this->redirect($this->generateUrl('script-converter-editor'));
     }
     
     
@@ -98,18 +134,21 @@ class ScriptConverterController extends Controller
      */
     public function downloadWorkflowAction(Request $request)
     {       
-        $root_path = $this->get('kernel')->getRootDir();
-        $model = $this->get('model.script-converter');
-        $workflow = $model->downloadWorkflow($root_path, "bash");
-        
-        $content = file_get_contents($workflow);
+        $language = $this->get('session')->get('language');        
+        $hash = $this->get('session')->get('hash');
+        $converter = new \AppBundle\Entity\ScriptConverter();
+        $converter->setScriptLanguage($language);
+        $converter->setHash($hash);
+        $content = $converter->getWorkflowT2FlowFile();
+        $file_path = $converter->getWorkflowT2FlowFilepath();
+                
         $response = new \Symfony\Component\HttpFoundation\Response();   
         
         // Set headers
         $response->headers->set('Cache-Control', 'private');
-        $response->headers->set('Content-type', mime_content_type($workflow));
+        $response->headers->set('Content-type', mime_content_type($file_path));
         $response->headers->set('Content-Disposition', 'attachment; filename="workflow.t2flow";');
-        $response->headers->set('Content-length', filesize($workflow));
+        $response->headers->set('Content-length', filesize($file_path));
 
         // Send headers before outputting anything
         $response->sendHeaders();
@@ -122,7 +161,7 @@ class ScriptConverterController extends Controller
      */
     public function imageWorkflowAction(Request $request)
     {       
-        $hash = $request->get('hash');
+        $hash = $this->get('session')->get('hash');        
         $converter = new \AppBundle\Entity\ScriptConverter();
         $converter->setHash($hash);
         $content = $converter->getWorkflowImage();
