@@ -10,10 +10,13 @@ class ScriptConverter
 {    
     private $driver;
         
-    public function __construct($driver)
+    private $container;
+    
+    public function __construct($driver, \Symfony\Component\DependencyInjection\ContainerInterface $container)
     {
+        $this->container = $container;
         $this->driver = $driver;
-    }      
+    }       
     
     public function insertScriptConversion(\AppBundle\Entity\ScriptConverter $converter, $user) 
     { 
@@ -47,7 +50,7 @@ class ScriptConverter
             <".$uri."> <w2share:createdAt> ?createdAt.
             <".$uri."> <w2share:updatedAt> ?updatedAt.
             <".$uri."> <dc:creator> ?creator. 
-            ?creator <foaf:name> ?name.
+            ?creator <foaf:name> ?name.            
         }";   
         
         $result_array = $this->driver->getResults($query);
@@ -193,6 +196,37 @@ class ScriptConverter
         
         $this->unlinkr(__DIR__."/../../../web/uploads/documents/w2share/".$conversion->getHash());
         rmdir(__DIR__."/../../../web/uploads/documents/w2share/".$conversion->getHash());        
+    }
+    
+    public function addWorkflow(\AppBundle\Entity\Workflow $workflow)
+    {             
+        $command = "java -jar ". __DIR__ . "/../../../src/AppBundle/Utils/scufl2-wfdesc-0.3.7-standalone.jar ".$workflow->getWorkflowAbsolutePath();                              
+        exec($command);  
+        
+        $env = $this->container->get('kernel')->getEnvironment();
+        
+        $path_url = '';
+        
+        if ($env == 'dev')
+        {
+            $path_url = "http://"
+                . $this->container->get('request')->getHost();
+        }
+        $path_url .= $this->container->get('templating.helper.assets')
+                ->getUrl("/".$workflow->getWebPath()."/workflow.wfdesc.ttl", null, true, true);
+        
+        \EasyRdf_Namespace::set('ro', 'http://purl.org/wf4ever/ro#');
+        \EasyRdf_Namespace::set('dc', 'http://purl.org/dc/elements/1.1/');
+        \EasyRdf_Namespace::set('ore', 'http://www.openarchives.org/ore/terms/');
+        
+        $graph = new \EasyRdf_Graph($path_url);
+        $graph->load();
+        //print_r($graph);
+        $resources = $graph->allOfType('http://purl.org/wf4ever/wfdesc#Workflow');
+        foreach ($resources as $resource)
+        {
+            echo $resource->getUri();
+        }
     }
     
     public function clearGraph()

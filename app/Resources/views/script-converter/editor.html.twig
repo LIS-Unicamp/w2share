@@ -136,7 +136,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script type="text/javascript">
     var url = '{{ app.request.basepath }}';  
-    {% if converter.scriptLanguage %}
+    {% if converter.scriptLanguage != '' %}
         var language = '{{ app.session.get('language') }}';
         var sample = url+'/{{ converter.scriptWebFilePath }}';
     {% else %}

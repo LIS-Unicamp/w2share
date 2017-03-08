@@ -362,7 +362,7 @@ class ScriptConverter
     
     public function getWorkflowT2FlowFilepath()
     {
-        return $this->getUploadRootDir()."/workflow.t2flow";
+        return $this->getUploadRootDir()."/draft-workflow.t2flow";
     }
     
     public function getWorkflowT2FlowFile()

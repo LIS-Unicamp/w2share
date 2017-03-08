@@ -15,7 +15,6 @@
     </div>            
 {% endfor %}
 <a class="btn btn-success" href="{{ path('script-converter-restart') }}"><i class="glyphicon glyphicon-plus"></i> Add</a>
-<div class="table-responsive">
     <table class="table table-striped">
         <thead>
             <tr>
@@ -33,14 +32,27 @@
             <td style="width:150px">
                 <a href="{{ path('script-converter-editor', { 'hash':row.hash, 'language':row.scriptLanguage }) }}" title="Open editor"><i class="glyphicon glyphicon-edit"></i></a>
                 <a href="{{ path('script-converter-upload', { 'hash':row.hash }) }}" title="Upload Workflow"><i class="glyphicon glyphicon-upload"></i></a>
-                <a href="{{ path('script-converter-create-ro', { 'hash':row.hash }) }}" title="Create Workflow Research Object"><i class="fa fa-flask"></i></a>
+                <a href="{{ path('script-converter-create-ro', { 'hash':row.hash }) }}" title="Create Workflow Research Object"><i class="fa fa-flask"></i></a>                
                 <a href="{{ path('script-converter-delete', { 'hash':row.hash }) }}" title="Delete Conversion" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
             </td> 
             <td>{{ row.scriptLanguage }}</td>
             <td>
-                {% if row.workflows %}
-                    <a href="{{ path('workflow-details', { 'workflow-uri':row.workflow.uri|url_encode() }) }}">{{ row.workflow.title }}</a>
-                {% endif %}
+                <label class="dropdown">
+                    <label class="btn btn-default dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <i class="glyphicon glyphicon-download-alt"></i>
+                      <span class="caret"></span>
+                    </label>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                      <li><a href="{{ path("script-converter-workflow-download") }}" title="Download Script">Script</a></li>
+                      <li><a href="{{ path("script-converter-workflow-download") }}" title="Download Graph Image">Abstract Workflow Image</a></li>
+                      <li><a href="{{ path("script-converter-workflow-download") }}" title="Download Workflow Image">Draft Workflow Image</a></li>
+                      <li><a href="{{ path("script-converter-workflow-download") }}" title="Download Draft Workflow">Draft Workflow</a></li>
+                    </ul>
+                </label>
+                {% for workflow in row.workflows %}                    
+                    <a href="{{ path('script-converter-workflow-download', { 'hash':workflow.hash }) }}" title="Download workflow"><i class="glyphicon glyphicon-download"></i></a>
+                    <a href="{{ path('workflow-details', { 'workflow-uri':workflow.uri|url_encode() }) }}"><i class="glyphicon glyphicon-search"></a> &nbsp;{{ workflow.title }}
+                {% endfor %}
             </td>
             <td>{{ row.creator }}</a></td>
             <td>{{ row.createdAt|date('H:i Y-m-d') }}</td>
@@ -49,7 +61,6 @@
     {% endfor %}
         </tbody>
     </table>
-</div>
 <div class="row">
     <div class="col-sm-12">
         <div class="navigation">

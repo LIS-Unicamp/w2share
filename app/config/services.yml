@@ -68,7 +68,7 @@ services:
         
     model.scriptconverter:
         class: AppBundle\Model\ScriptConverter
-        arguments: ["@app.rest_api"]
+        arguments: ["@app.rest_api", @service_container]
                     
     app.user_provider:
         class: AppBundle\Security\UserProvider

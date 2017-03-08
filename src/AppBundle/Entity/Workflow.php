@@ -166,10 +166,6 @@ class Workflow
     private $provenance_file;
 
     private $provenance_temp;
-    
-    private $wfdesc_file;
-
-    private $wfdesc_temp;
 
     /**
      * Sets file.
@@ -207,29 +203,12 @@ class Workflow
         }
     }
     
-    /**
-     * Sets file.
-     *
-     * @param UploadedFile $file
-     */
-    public function setWfdescFile(UploadedFile $file = null)
-    {
-        $this->wfdesc_file = $file;
-        // check if we have an old image path
-        if (isset($this->wfdesc_path)) {
-            // store the old name to delete after the update
-            $this->wfdesc_temp = $this->wfdesc_path;
-            $this->wfdesc_path = null;
-        } else {
-            $this->wfdesc_path = sha1(uniqid(mt_rand(), true));
-        }
-    }
+    
     
     public function fileNames()
     {
         $this->provenance_path = 'workflow.prov.ttl';
         $this->workflow_path = 'workflow.t2flow';
-        $this->wfdesc_path = 'workflow.wfdesc.ttl';
     }
 
     public function preUpload()
@@ -242,12 +221,7 @@ class Workflow
         if (null !== $this->getProvenanceFile()) 
         {
             $this->provenance_path = 'workflow.prov.ttl';
-        }
-        
-        if (null !== $this->getWfdescFile()) 
-        {
-            $this->wfdesc_path = 'workflow.wfdesc.ttl';
-        }
+        }                
     }
 
     public function upload()
@@ -290,24 +264,7 @@ class Workflow
                 $this->provenance_temp = null;
             }
             $this->provenance_file = null;
-        }
-        
-        if (null !== $this->getWfdescFile())
-        {
-            // if there is an error when moving the file, an exception will
-            // be automatically thrown by move(). This will properly prevent
-            // the entity from being persisted to the database on error
-            $this->getWfdescFile()->move($this->getUploadRootDir(), $this->wfdesc_path);
-
-            // check if we have an old image
-            if (isset($this->wfdesc_temp) && $this->wfdesc_temp != '') {
-                // delete the old image
-                @unlink($this->getUploadRootDir().'/'.$this->wfdesc_temp);
-                // clear the temp image path
-                $this->wfdesc_temp = null;
-            }
-            $this->wfdesc_file = null;
-        }
+        }                
         
     }
 
@@ -322,12 +279,7 @@ class Workflow
         $provenance_file = $this->getProvenanceAbsolutePath();
         if ($provenance_file) {
             unlink($provenance_file);
-        }
-        
-        $wfdesc_file = $this->getWfdescAbsolutePath();
-        if ($wfdesc_file) {
-            unlink($wfdesc_file);
-        }
+        }                
     }
 
     /**
@@ -338,17 +290,7 @@ class Workflow
     public function getWorkflowFile()
     {
         return $this->workflow_file;
-    }
-    
-    /**
-     * Get file.
-     *
-     * @return UploadedFile
-     */
-    public function getWfdescFile()
-    {
-        return $this->wfdesc_file;
-    }
+    }       
     
     /**
      * Get file.
@@ -372,14 +314,7 @@ class Workflow
         return null === $this->workflow_path && $this->workflow_path != ''
             ? null
             : $this->getUploadRootDir().'/'.$this->workflow_path;
-    }
-    
-    public function getWfdescAbsolutePath()
-    {
-        return null === $this->wfdesc_path && $this->wfdesc_path != ''
-            ? null
-            : $this->getUploadRootDir().'/'.$this->wfdesc_path;
-    }
+    }        
 
     public function getWebPath()
     {
@@ -397,7 +332,7 @@ class Workflow
     {
         // get rid of the __DIR__ so it doesn't screw up
         // when displaying uploaded doc/image in the view.
-        return 'uploads/documents';
+        return 'uploads/documents/w2share';
     }
         
     /**
@@ -486,36 +421,7 @@ class Workflow
     public function getProvenancePath()
     {
         return $this->provenance_path;
-    }
-    /**
-     * @var string
-     */
-    private $wfdesc_path;
-
-
-    /**
-     * Set wfdescPath
-     *
-     * @param string $wfdescPath
-     *
-     * @return Workflow
-     */
-    public function setWfdescPath($wfdescPath)
-    {
-        $this->wfdesc_path = $wfdescPath;
-
-        return $this;
-    }
-
-    /**
-     * Get wfdescPath
-     *
-     * @return string
-     */
-    public function getWfdescPath()
-    {
-        return $this->wfdesc_path;
-    }
+    }    
     
     public function __toString() {
         return $this->title ? $this->title : $this->label;

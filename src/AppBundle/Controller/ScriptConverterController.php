@@ -55,9 +55,9 @@ class ScriptConverterController extends Controller
         {       
             $workflow->setHash($hash);
             $workflow->preUpload();
-            $workflow->upload();
+            $workflow->upload();            
             
-            $model = $this->get('model.workflow');             
+            $model = $this->get('model.scriptconverter');             
             $model->addWorkflow($workflow);
             
             $this->get('session')

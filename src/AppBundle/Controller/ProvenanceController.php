@@ -152,7 +152,7 @@ class ProvenanceController extends Controller
         $model_provenance = $this->get('model.provenance');         
         $model_provenance->clearGraph();                
                     
-        return $this->redirect($this->generateUrl('provenance-workflows'));
+        return $this->redirect($this->generateUrl('provenance-workflows-run'));
     }  
 }
 
