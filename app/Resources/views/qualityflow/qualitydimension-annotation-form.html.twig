@@ -14,8 +14,8 @@
                     <th>Workflow Description</th>
                 {% elseif process_run.uri %}
                     <th>Process Name</th>
-                    <th>Author</th>
                     <th>Process Description</th>
+                    <th>Workflow</th>
                 {% else %}
                     <th>Output Data</th>
                     <th>Output Name</th>
@@ -31,8 +31,8 @@
                     <td>{{ workflow.description }}</td>
                 {% elseif process_run.uri %}
                     <td>{{ process_run.label }}</td>
-                    <td> Workflow creator: {{ process_run.process.workflow.creator }} </td>
                     <td>{{ process_run.process.description }}</td>
+                    <td>{{ process_run.process.workflow.title }} </td>
                 {% else %}
                     <td> {{output_data_run.content}} </td>
                     <td> {{output_data_run.output.label}} </td>
@@ -62,7 +62,7 @@
             {% endfor %}
             {{ form_errors(form) }}
              <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group">
                         {{ form_label(form.quality_dimension) }}
                         <select id="qualityannotation_quality_dimension" name="qualityannotation[quality_dimension]" required="required" class="form-control select">
@@ -76,9 +76,8 @@
                         {{ form_errors(form.quality_dimension) }}
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-2">
+            
+                <div class="col-md-3">
                     <div class="form-group">
                         {{ form_label(form.value) }}
                         {{ form_widget(form.value, { 'attr': { 'class':'form-control' } }) }}
@@ -105,10 +104,10 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <!--<th style="width:100px">Action</th>-->
-                <th>Delete</th>
+                <th>Actions</th>
                 <th>Dimension</th>
                 <th>Value</th>
+                <th>Author</th>
             </tr>
         </thead>
         <tbody>
@@ -122,6 +121,7 @@
                     </td>
                     <td>{{ annotation.qualityDimension.name }}</td>
                     <td>{{ annotation.value }}</td>
+                    <td>{{ annotation.creator }}</td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -119,7 +119,7 @@ class ScriptConverterController extends Controller
         $language = $data['language'];
         $hash = $this->get('session')->get('hash');
         $this->get('session')->set('language', $language);
-        
+                
         $user = $this->getUser();
         $converter = new \AppBundle\Entity\ScriptConverter();
         $converter->setHash($hash);
@@ -129,7 +129,18 @@ class ScriptConverterController extends Controller
         $converter->createWorkflow();
         
         $model = $this->get('model.scriptconverter');
-        $model->insertScriptConversion($converter, $user);
+        
+        $previous = $model->findOneScriptConversionByHash($hash);
+        if ($previous)
+        {
+            $converter->setUri($previous->getUri());
+            $converter->setCreatedAt($previous->getCreatedAt());
+            $model->updateScriptConversion($converter);
+        }
+        else {
+            $model->insertScriptConversion($converter, $user);
+        }
+        
         
         $response = new \Symfony\Component\HttpFoundation\Response();        
         
@@ -163,12 +174,28 @@ class ScriptConverterController extends Controller
      */
     public function deleteAction(Request $request)
     {               
-        $hash = $request->get('hash');    
-        $this->get('session')
-                ->getFlashBag()
-                ->add('error', 'Feature Not implemented yet!')
-            ; 
+        $hash = $request->get('hash');
         
+        $model = $this->get('model.scriptconverter');
+        $conversion = $model->findOneScriptConversionByHash($hash);
+        
+        if (null == $conversion)
+        {
+            $this->get('session')
+                ->getFlashBag()
+                ->add('error', 'Conversion does not exist!')
+            ; 
+        }
+        else
+        {
+            $model->deleteScriptConversion($conversion);
+            
+            $this->get('session')
+                ->getFlashBag()
+                ->add('error', 'Conversion deleted!')
+            ; 
+        }
+                       
         return $this->redirect($this->generateUrl('script-converter-list'));
     }
     

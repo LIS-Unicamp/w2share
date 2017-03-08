@@ -70,8 +70,11 @@
           {
                 language: $scope.language,
                 code: editor.getValue(),
+          }).then(function (data)
+          {
+              $window.toastr.success('Script saved sucessfully!', 'Notification');
           })
-          ;
+        ;
     }
     
     $scope.downloadScript = function() {

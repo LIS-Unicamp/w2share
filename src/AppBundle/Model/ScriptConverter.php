@@ -36,7 +36,7 @@ class ScriptConverter
         return $this->driver->getResults($query);        
     }
     
-    public function findOneScriptConversion($uri) 
+    public function findOneScriptConversionByURI($uri) 
     { 
         $query = 
         "SELECT * WHERE        
@@ -55,15 +55,50 @@ class ScriptConverter
         if (count($result_array) > 0)
         {
             $converter = new \AppBundle\Entity\ScriptConverter();
-            $converter->setUri($result_array[0]['uri']['value']);
+            $converter->setUri($uri);
             $converter->setHash($result_array[0]['hash']['value']);
-            $converter->setCreatedAt($result_array[0]['createdAt']['value']);
-            $converter->setUpdatedAt($result_array[0]['updatedAt']['value']);
+            $converter->setCreatedAt(new \Datetime($result_array[0]['createdAt']['value']));
+            $converter->setUpdatedAt(new \Datetime($result_array[0]['updatedAt']['value']));
             $converter->setScriptLanguage($result_array[0]['scriptLanguage']['value']);
             
             $creator = new \AppBundle\Entity\Person();
-            $creator->setUri($result_array[$i]['creator']['value']);
-            $creator->setName($result_array[$i]['name']['value']);
+            $creator->setUri($result_array[0]['creator']['value']);
+            $creator->setName($result_array[0]['name']['value']);
+            $converter->setCreator($creator);
+                
+            return $converter;    
+        }
+        return null;
+    }
+    
+    public function findOneScriptConversionByHash($hash) 
+    { 
+        $query = 
+        "SELECT * WHERE        
+        { 
+            ?uri a <w2share:ScriptConversion>.
+            ?uri <w2share:hash> '".$hash."'.
+            ?uri <w2share:scriptLanguage> ?scriptLanguage.
+            ?uri <w2share:createdAt> ?createdAt.
+            ?uri <w2share:updatedAt> ?updatedAt.
+            ?uri <dc:creator> ?creator. 
+            ?creator <foaf:name> ?name.
+        }";   
+        
+        $result_array = $this->driver->getResults($query);
+        
+        if (count($result_array) > 0)
+        {
+            $converter = new \AppBundle\Entity\ScriptConverter();
+            $converter->setUri($result_array[0]['uri']['value']);
+            $converter->setHash($hash);
+            $converter->setCreatedAt(new \Datetime($result_array[0]['createdAt']['value']));
+            $converter->setUpdatedAt(new \Datetime($result_array[0]['updatedAt']['value']));
+            $converter->setScriptLanguage($result_array[0]['scriptLanguage']['value']);
+            
+            $creator = new \AppBundle\Entity\Person();
+            $creator->setUri($result_array[0]['creator']['value']);
+            $creator->setName($result_array[0]['name']['value']);
             $converter->setCreator($creator);
                 
             return $converter;    
@@ -93,8 +128,8 @@ class ScriptConverter
             $converter = new \AppBundle\Entity\ScriptConverter();
             $converter->setHash($result_array[$i]['hash']['value']);
             $converter->setUri($result_array[$i]['uri']['value']);
-            $converter->setCreatedAt($result_array[$i]['createdAt']['value']);
-            $converter->setUpdatedAt($result_array[$i]['updatedAt']['value']);
+            $converter->setCreatedAt(new \Datetime($result_array[$i]['createdAt']['value']));
+            $converter->setUpdatedAt(new \Datetime($result_array[$i]['updatedAt']['value']));
             $converter->setScriptLanguage($result_array[$i]['scriptLanguage']['value']);
             
             $creator = new \AppBundle\Entity\Person();
@@ -105,6 +140,59 @@ class ScriptConverter
             $conversion[] = $converter;    
         }
         return $conversion;
+    }
+    
+    public function updateScriptConversion(\AppBundle\Entity\ScriptConverter $conversion)
+    {
+        $query = 
+        "MODIFY <".$this->driver->getDefaultGraph('scriptconverter').">
+        DELETE 
+        { 
+            <".$conversion->getUri()."> a <w2share:ScriptConversion>.
+            <".$conversion->getUri()."> <w2share:hash> ?hash.
+            <".$conversion->getUri()."> <w2share:scriptLanguage> ?scriptLanguage.
+            <".$conversion->getUri()."> <w2share:createdAt> ?createdAt.
+            <".$conversion->getUri()."> <w2share:updatedAt> ?updatedAt.
+            <".$conversion->getUri()."> <dc:creator> ?creator. 
+        }
+        INSERT
+        {
+            <".$conversion->getUri()."> a <w2share:ScriptConversion>.
+            <".$conversion->getUri()."> <w2share:hash> '".$conversion->getHash()."'.
+            <".$conversion->getUri()."> <w2share:scriptLanguage> '".$conversion->getScriptLanguage()."'.
+            <".$conversion->getUri()."> <w2share:createdAt> '".$conversion->getCreatedAt()->format(\DateTime::ISO8601)."'.
+            <".$conversion->getUri()."> <w2share:updatedAt> '".$conversion->getUpdatedAt()->format(\DateTime::ISO8601)."'.
+            <".$conversion->getUri()."> <dc:creator> <".$conversion->getCreator()->getUri().">. 
+        }
+        WHERE 
+        { 
+            <".$conversion->getUri()."> a <w2share:ScriptConversion>.
+            <".$conversion->getUri()."> <w2share:hash> ?hash.
+            <".$conversion->getUri()."> <w2share:scriptLanguage> ?scriptLanguage.
+            <".$conversion->getUri()."> <w2share:createdAt> ?createdAt.
+            <".$conversion->getUri()."> <w2share:updatedAt> ?updatedAt.
+            <".$conversion->getUri()."> <dc:creator> ?creator. 
+        }"; 
+        
+        return $this->driver->getResults($query);
+    }
+    
+    public function deleteScriptConversion(\AppBundle\Entity\ScriptConverter $conversion)
+    {
+        $query = 
+        "DELETE data FROM <".$this->driver->getDefaultGraph('scriptconverter')."> { 
+            <".$conversion->getUri()."> a <w2share:ScriptConversion>.
+            <".$conversion->getUri()."> <w2share:hash> '".$conversion->getHash()."'.
+            <".$conversion->getUri()."> <w2share:scriptLanguage> '".$conversion->getScriptLanguage()."'.
+            <".$conversion->getUri()."> <w2share:createdAt> '".$conversion->getCreatedAt()->format(\DateTime::ISO8601)."'.
+            <".$conversion->getUri()."> <w2share:updatedAt> '".$conversion->getUpdatedAt()->format(\DateTime::ISO8601)."'.
+            <".$conversion->getUri()."> <dc:creator> <".$conversion->getCreator()->getUri().">. 
+        }"; 
+        
+        $this->driver->getResults($query);
+        
+        $this->unlinkr(__DIR__."/../../../web/uploads/documents/w2share/".$conversion->getHash());
+        rmdir(__DIR__."/../../../web/uploads/documents/w2share/".$conversion->getHash());        
     }
     
     public function clearGraph()
