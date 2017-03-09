@@ -156,7 +156,11 @@ class Workflow
      */
     public function getTitle()
     {
-        return $this->title;
+        if ($this->title)
+        {
+            return $this->title;
+        }
+        return $this->label;
     }
             
     private $workflow_file;
@@ -227,7 +231,6 @@ class Workflow
     public function upload()
     {
         if (null === $this->getWorkflowFile() 
-                && null === $this->getWfdescFile() 
                 && null === $this->getProvenanceFile()) {
             return;
         }
@@ -307,6 +310,13 @@ class Workflow
         return null === $this->provenance_path && $this->provenance_path != ''
             ? null
             : $this->getUploadRootDir().'/'.$this->provenance_path;
+    }
+    
+    public function getWfdescAbsolutePath()
+    {
+        return null === $this->provenance_path && $this->provenance_path != ''
+            ? null
+            : $this->getUploadRootDir().'/workflow.wfdesc.ttl';
     }
     
     public function getWorkflowAbsolutePath()

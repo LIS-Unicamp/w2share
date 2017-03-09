@@ -23,7 +23,7 @@ class Workflow
         $query = "
             SELECT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 ?uri a wfdesc:Workflow.
-                ?uri dc:creator ?creator.
+                OPTIONAL { ?uri dc:creator ?creator. }
                 ?uri <w2share:hash> ?hash.
                 OPTIONAL { ?uri rdfs:label ?label. }
                 OPTIONAL { ?uri dcterms:description ?description. }
@@ -38,15 +38,24 @@ class Workflow
         {
             $workflow = new \AppBundle\Entity\Workflow();
             $workflow->setUri($workflows[$i]['uri']['value']);
-            $workflow->setTitle($workflows[$i]['title']['value']);
-            $workflow->setDescription($workflows[$i]['description']['value']);
+            if (array_key_exists('title', $workflows[$i]))
+            {
+                $workflow->setTitle($workflows[$i]['title']['value']);
+            }
+            if (array_key_exists('description', $workflows[$i]))
+            {
+                $workflow->setDescription($workflows[$i]['description']['value']);
+            }
             $workflow->setLabel($workflows[$i]['label']['value']);
             
 //            $creator = new \AppBundle\Entity\Person();
 //            $creator->setName($workflows[$i]['creator_name']['value']);
 //            $creator->setUri($workflows[$i]['creator']['value']);
 
-            $workflow->setCreator($workflows[$i]['creator']['value']);
+            if (array_key_exists('creator', $workflows[$i]))
+            {
+                $workflow->setCreator($workflows[$i]['creator']['value']);
+            }
             
             $workflow_array[] = $workflow;  
         }
@@ -59,7 +68,7 @@ class Workflow
         $query = "
             SELECT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <".$workflow_uri."> a wfdesc:Workflow.
-                <".$workflow_uri."> dc:creator ?creator.
+                OPTIONAL { <".$workflow_uri."> dc:creator ?creator. }
                 <".$workflow_uri."> <w2share:hash> ?hash.
                 OPTIONAL { <".$workflow_uri."> rdfs:label ?label. }
                 OPTIONAL { <".$workflow_uri."> dcterms:description ?description. }
@@ -73,10 +82,19 @@ class Workflow
         {
             $workflow = new \AppBundle\Entity\Workflow();
             $workflow->setUri($workflow_uri);
-            $workflow->setTitle($workflow_array[0]['title']['value']);
-            $workflow->setDescription($workflow_array[0]['description']['value']);
-            $workflow->setLabel($workflow_array[0]['label']['value']);            
-            $workflow->setCreator($workflow_array[0]['creator']['value']); 
+            if (array_key_exists('title', $workflow_array[0]))
+            {
+                $workflow->setTitle($workflow_array[0]['title']['value']);
+            }
+            if (array_key_exists('description', $workflow_array[0]))
+            {
+                $workflow->setDescription($workflow_array[0]['description']['value']);
+            }
+            $workflow->setLabel($workflow_array[0]['label']['value']); 
+            if (array_key_exists('creator', $workflow_array[0]))
+            {
+                $workflow->setCreator($workflow_array[0]['creator']['value']); 
+            }
             $workflow->setHash($workflow_array[0]['hash']['value']);
             return $workflow;
         }
@@ -293,8 +311,25 @@ class Workflow
     
     public function addWorkflow(\AppBundle\Entity\Workflow $workflow)
     {
+        $command = "java -jar ". __DIR__ . "/../../../src/AppBundle/Utils/scufl2-wfdesc-0.3.7-standalone.jar ".$workflow->getWorkflowAbsolutePath();                              
+        exec($command);                 
+        
         $this->load($workflow, $workflow->getProvenanceAbsolutePath());
         $this->load($workflow, $workflow->getWfdescAbsolutePath());
+        
+        \EasyRdf_Namespace::set('ro', 'http://purl.org/wf4ever/ro#');
+        \EasyRdf_Namespace::set('dc', 'http://purl.org/dc/elements/1.1/');
+        \EasyRdf_Namespace::set('ore', 'http://www.openarchives.org/ore/terms/');
+        
+        $graph = new \EasyRdf_Graph();
+        $graph->parseFile($workflow->getWfdescAbsolutePath());
+        //print_r($graph);
+        $resources = $graph->allOfType('http://purl.org/wf4ever/wfdesc#Workflow');
+        foreach ($resources as $resource)
+        {
+            $workflow->setUri($resource->getUri());
+        }
+        
         $this->saveWorkflowHash($workflow);
         
         $this->createWorkflowPNG($workflow);
@@ -322,8 +357,8 @@ class Workflow
     
     private function createWorkflowPNG(\AppBundle\Entity\Workflow $workflow)
     {
-        $command = "ruby ".__DIR__."/../../../src/AppBundle/Utils/script.rb ".$workflow->getWorkflowAbsolutePath()." ".$workflow->getUploadRootDir()."/workflow.png";            
-        system($command);
+        $command = "ruby ".__DIR__."/../../../src/AppBundle/Utils/script.rb ".$workflow->getWorkflowAbsolutePath()." ".$workflow->getUploadRootDir()."/workflow.svg";            
+        exec($command);
     }
     
     private function saveWorkflowHash(\AppBundle\Entity\Workflow $workflow) 
@@ -337,8 +372,7 @@ class Workflow
                 <".$workflow->getUri()."> <w2share:hash> '".$workflow->getHash()."'. 
             }
         }"; 
-
-        return $this->driver->getResults($query);        
+        $this->driver->getResults($query);       
     }
     
     protected function load(\AppBundle\Entity\Workflow $workflow, $file_path)
