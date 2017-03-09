@@ -207,7 +207,11 @@ class Workflow
         }
     }
     
-    
+    public function createWfdescFile()
+    {
+        $command = "java -jar ". __DIR__ . "/../../../src/AppBundle/Utils/scufl2-wfdesc-0.3.7-standalone.jar ".$this->getWorkflowAbsolutePath();                              
+        exec($command);  
+    }
     
     public function fileNames()
     {
@@ -314,16 +318,12 @@ class Workflow
     
     public function getWfdescAbsolutePath()
     {
-        return null === $this->provenance_path && $this->provenance_path != ''
-            ? null
-            : $this->getUploadRootDir().'/workflow.wfdesc.ttl';
+        return $this->getUploadRootDir().'/workflow.wfdesc.ttl';
     }
     
     public function getWorkflowAbsolutePath()
     {
-        return null === $this->workflow_path && $this->workflow_path != ''
-            ? null
-            : $this->getUploadRootDir().'/'.$this->workflow_path;
+        return $this->getUploadRootDir().'/workflow.t2flow';
     }        
 
     public function getWebPath()

@@ -200,32 +200,20 @@ class ScriptConverter
     
     public function addWorkflow(\AppBundle\Entity\Workflow $workflow)
     {             
-        $command = "java -jar ". __DIR__ . "/../../../src/AppBundle/Utils/scufl2-wfdesc-0.3.7-standalone.jar ".$workflow->getWorkflowAbsolutePath();                              
-        exec($command);  
-        
-        $env = $this->container->get('kernel')->getEnvironment();
-        
-        $path_url = '';
-        
-        if ($env == 'dev')
-        {
-            $path_url = "http://"
-                . $this->container->get('request')->getHost();
-        }
-        $path_url .= $this->container->get('templating.helper.assets')
-                ->getUrl("/".$workflow->getWebPath()."/workflow.wfdesc.ttl", null, true, true);
+        $workflow->createWfdescFile();
+                
+        $path_url = $workflow->getWfdescAbsolutePath();
         
         \EasyRdf_Namespace::set('ro', 'http://purl.org/wf4ever/ro#');
         \EasyRdf_Namespace::set('dc', 'http://purl.org/dc/elements/1.1/');
         \EasyRdf_Namespace::set('ore', 'http://www.openarchives.org/ore/terms/');
         
-        $graph = new \EasyRdf_Graph($path_url);
-        $graph->load();
-        //print_r($graph);
+        $graph = new \EasyRdf_Graph();
+        $graph->parseFile($path_url);
         $resources = $graph->allOfType('http://purl.org/wf4ever/wfdesc#Workflow');
         foreach ($resources as $resource)
         {
-            echo $resource->getUri();
+            $workflow->setUri($resource->getUri());
         }
     }
     

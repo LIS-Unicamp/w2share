@@ -199,14 +199,73 @@ class ScriptConverterController extends Controller
         return $this->redirect($this->generateUrl('script-converter-list'));
     }
     
+    /**
+     * @Route("/script-converter/abstract-workflow/download/{hash}/{language}", name="script-converter-abstract-workflow-download")
+     */
+    public function downloadAbstractWorkflowAction($hash, $language)
+    {     
+        $converter = new \AppBundle\Entity\ScriptConverter();
+        $converter->setScriptLanguage($language);
+        $converter->setHash($hash);
+        
+        $file_path = $converter->getAbstractWorkflowFilepath();
+        $content = $converter->getAbstractWorkflowFile();
+                
+        $response = new \Symfony\Component\HttpFoundation\Response();   
+        
+        // Set headers
+        $response->headers->set('Cache-Control', 'private');
+        $response->headers->set('Content-type', mime_content_type($file_path));
+        $response->headers->set('Content-Disposition', 'attachment; filename="'.basename($file_path).'";');
+        $response->headers->set('Content-length', filesize($file_path));
+
+        // Send headers before outputting anything
+        $response->sendHeaders();
+
+        return $response->setContent($content);
+    }
+    
+    /**
+     * @Route("/script-converter/script/download/{hash}/{language}", name="script-converter-script-download")
+     */
+    public function downloadScriptAction($hash, $language)
+    {                 
+        $converter = new \AppBundle\Entity\ScriptConverter();
+        $converter->setScriptLanguage($language);
+        $converter->setHash($hash);
+        
+        $file_path = $converter->getScriptFilepath();
+        $content = $converter->getScriptCode();
+                
+        $response = new \Symfony\Component\HttpFoundation\Response();   
+        
+        // Set headers
+        $response->headers->set('Cache-Control', 'private');
+        $response->headers->set('Content-type', mime_content_type($file_path));
+        $response->headers->set('Content-Disposition', 'attachment; filename="'.basename($file_path).'";');
+        $response->headers->set('Content-length', filesize($file_path));
+
+        // Send headers before outputting anything
+        $response->sendHeaders();
+
+        return $response->setContent($content);
+    }
     
     /**
      * @Route("/script-converter/workflow/download", options={"expose"=true}, name="script-converter-workflow-download")
      */
     public function downloadWorkflowAction(Request $request)
-    {       
-        $language = $this->get('session')->get('language');        
-        $hash = $this->get('session')->get('hash');
+    {      
+        if ($request->get('hash') && $request->get('language'))
+        {
+            $language = $request->get('language');        
+            $hash = $request->get('hash');
+        }
+        else
+        {
+            $language = $this->get('session')->get('language');        
+            $hash = $this->get('session')->get('hash');
+        }
         $converter = new \AppBundle\Entity\ScriptConverter();
         $converter->setScriptLanguage($language);
         $converter->setHash($hash);
@@ -228,9 +287,33 @@ class ScriptConverterController extends Controller
     }
     
     /**
+     * @Route("/script-converter/workflow/image/download", options={"expose"=true}, name="script-converter-workflow-image-download")
+     */
+    public function workflowImageDownloadAction(Request $request)
+    {       
+        $hash = $this->get('session')->get('hash');        
+        $converter = new \AppBundle\Entity\ScriptConverter();
+        $converter->setHash($hash);
+        $content = $converter->getWorkflowImage();
+        
+        $response = new \Symfony\Component\HttpFoundation\Response();   
+        
+        // Set headers
+        $response->headers->set('Cache-Control', 'private');
+        $response->headers->set('Content-type', mime_content_type($converter->getWorkflowImageFilePath()));
+        $response->headers->set('Content-Disposition', 'attachment; filename="workflow.svg";');
+        $response->headers->set('Content-length', filesize($converter->getWorkflowImageFilePath()));
+
+        // Send headers before outputting anything
+        $response->sendHeaders();
+
+        return $response->setContent($content);
+    }
+    
+    /**
      * @Route("/script-converter/workflow/image", options={"expose"=true}, name="script-converter-workflow-image")
      */
-    public function imageWorkflowAction(Request $request)
+    public function workflowImageJsonAction(Request $request)
     {       
         $hash = $this->get('session')->get('hash');        
         $converter = new \AppBundle\Entity\ScriptConverter();

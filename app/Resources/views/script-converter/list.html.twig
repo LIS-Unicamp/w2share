@@ -38,15 +38,15 @@
             <td>{{ row.scriptLanguage }}</td>
             <td>
                 <label class="dropdown">
-                    <label class="btn btn-default dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <label class="btn btn-xs btn-default dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         <i class="glyphicon glyphicon-download-alt"></i>
                       <span class="caret"></span>
                     </label>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                      <li><a href="{{ path("script-converter-workflow-download") }}" title="Download Script">Script</a></li>
-                      <li><a href="{{ path("script-converter-workflow-download") }}" title="Download Graph Image">Abstract Workflow Image</a></li>
-                      <li><a href="{{ path("script-converter-workflow-download") }}" title="Download Workflow Image">Draft Workflow Image</a></li>
-                      <li><a href="{{ path("script-converter-workflow-download") }}" title="Download Draft Workflow">Draft Workflow</a></li>
+                      <li><a href="{{ path("script-converter-script-download", { 'hash': row.hash, 'language': row.scriptLanguage }) }}" title="Download Script">Script</a></li>
+                      <li><a href="{{ path("script-converter-abstract-workflow-download", { 'hash': row.hash, 'language': row.scriptLanguage }) }}" title="Download Graph Image">Abstract Workflow Image</a></li>
+                      <li><a href="{{ path("script-converter-workflow-image-download", { 'hash': row.hash, 'language': row.scriptLanguage }) }}" title="Download Draft Workflow Image">Preliminary Workflow Image</a></li>
+                      <li><a href="{{ path("script-converter-workflow-download", { 'hash': row.hash, 'language': row.scriptLanguage }) }}" title="Download Draft Workflow">Preliminary Workflow</a></li>
                     </ul>
                 </label>
                 {% for workflow in row.workflows %}                    

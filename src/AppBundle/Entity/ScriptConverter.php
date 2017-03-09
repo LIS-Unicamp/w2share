@@ -322,7 +322,7 @@ class ScriptConverter
     
     public function getScriptCode()
     {        
-        return file_get_contents($this->getScriptAbsolutePath());
+        return file_get_contents($this->getScriptFilepath());
     }
     
     /**
@@ -356,7 +356,7 @@ class ScriptConverter
     
     public function createGraph()
     {        
-        $command = "java -jar ". __DIR__ . "/../../../src/AppBundle/Utils/yesworkflow-0.2.1.1-jar-with-dependencies.jar graph -c extract.comment='#' -c graph.layout=TB -c graph.view=COMBINED -c model.factsfile=" . $this->getUploadRootDir()."/modelfacts.txt " . $this->getScriptAbsolutePath() . " > " . $this->getUploadRootDir() . "/wf.gv; /usr/local/bin/dot -Tpng " . $this->getUploadRootDir() . "/wf.gv -o " . $this->getUploadRootDir()."/workflow.png";                              
+        $command = "java -jar ". __DIR__ . "/../../../src/AppBundle/Utils/yesworkflow-0.2.1.1-jar-with-dependencies.jar graph -c extract.comment='#' -c graph.layout=TB -c graph.view=COMBINED -c model.factsfile=" . $this->getUploadRootDir()."/modelfacts.txt " . $this->getScriptFilepath() . " > " . $this->getUploadRootDir() . "/wf.gv; /usr/bin/dot -Tsvg " . $this->getUploadRootDir() . "/wf.gv -o " . $this->getAbstractWorkflowFilepath();                              
         system($command);        
     }
     
@@ -380,6 +380,17 @@ class ScriptConverter
         return $this->getWebPath()."/script.".$this->getScriptExtension();
     }
     
+    public function getAbstractWorkflowFilepath()
+    {
+        return $this->getUploadRootDir()."/abstract-workflow.svg";
+    }
+    
+    public function getAbstractWorkflowFile()
+    {
+        $this->createGraph();
+        return file_get_contents($this->getAbstractWorkflowFilepath());
+    }
+    
     public function createWorkflow()
     {
         $python = $this->getUploadRootDir()."/conversion.py";
@@ -399,8 +410,13 @@ class ScriptConverter
     
     public function getWorkflowImage()
     {
-        $image = $this->getUploadRootDir()."/workflow.svg";        
+        $image = $this->getWorkflowImageFilePath();
         return file_get_contents($image);
+    }
+    
+    public function getWorkflowImageFilePath()
+    {        
+        return $this->getUploadRootDir()."/workflow.svg";;
     }
     
     public function getScriptExtension()
