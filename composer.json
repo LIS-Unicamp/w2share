@@ -46,7 +46,7 @@
     "scripts": {
         "post-install-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
-            "cd /var/www/phd-prototype/vendor/lucasaugustomcc/balcazapy/; sh /var/www/phd-prototype/vendor/lucasaugustomcc/balcazapy/setup.sh",
+            "cd ./vendor/lucasaugustomcc/balcazapy/; sh setup.sh",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
@@ -55,7 +55,7 @@
         ],
         "post-update-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
-            "cd /var/www/phd-prototype/vendor/lucasaugustomcc/balcazapy/; sh /var/www/phd-prototype/vendor/lucasaugustomcc/balcazapy/setup.sh",
+            "cd ./vendor/lucasaugustomcc/balcazapy/; sh setup.sh",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
