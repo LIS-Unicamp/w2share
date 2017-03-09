@@ -110,6 +110,23 @@ class SecurityController extends Controller
     }
     
     /**
+     * @Route("/security/user/{user_uri}", name="security-user")
+     */
+    public function userAction($user_uri)
+    {
+        $user_uri = urldecode($user_uri);
+        $model = $this->get('model.security');            
+        $user = $model->findUserByURI($user_uri);                    
+        
+        return $this->render(
+            'security/user.html.twig',
+            array(
+                'user' => $user
+            )
+        );
+    }
+    
+    /**
      * @Route("/security/reset", name="security-reset")
      */
     public function resetAction()

@@ -104,6 +104,8 @@ class Security
                 <foaf:homepage> ?homepage;
                 <w2share:hasPassword> ?password;
                 <w2share:hasSalt> ?salt.
+                OPTIONAL { ?uri <org:memberOf> [ a <org:Organization>; <skos:prefLabel> ?organization]. }
+                OPTIONAL { ?uri <dc:description> ?description. }
             }
         }";   
         
@@ -117,12 +119,65 @@ class Security
             $user->setPassword($user_array[0]['password']['value']);
             $user->setHomepage($user_array[0]['homepage']['value']);
             $user->setSalt($user_array[0]['salt']['value']);
+            if (array_key_exists('description', $user_array[0]))
+            {
+                $user->setDescription($user_array[0]['description']['value']);
+            }
+            if (array_key_exists('organization', $user_array[0]))
+            {
+                $user->setOrganization($user_array[0]['organization']['value']);
+            }
+            
+            return $user;
         } 
-        else {
-            return null;
-        }                                
         
-        return $user;
+        return null;      
+    }
+    
+    public function findUserByURI($uri)
+    {
+        $user = new \AppBundle\Entity\Person(); 
+        
+        $query = 
+        "SELECT * WHERE        
+        { 
+            GRAPH <".$this->driver->getDefaultGraph('security')."> 
+            { 
+                <".$uri."> a <foaf:Person>;
+                <foaf:name> ?name;
+                <foaf:mbox> ?email;
+                <foaf:homepage> ?homepage;
+                <w2share:hasPassword> ?password;
+                <w2share:hasSalt> ?salt.
+                OPTIONAL { ?uri <org:memberOf> [ a <org:Organization>; <skos:prefLabel> ?organization]. }
+                OPTIONAL { ?uri <dc:description> ?description. }
+            }
+        }";   
+        
+        $user_array = $this->driver->getResults($query);
+        
+        if (count($user_array) > 0)
+        {
+            $user->setUri($uri);
+            $user->setName($user_array[0]['name']['value']);
+            $user->setEmail($user_array[0]['email']['value']);
+            $user->setPassword($user_array[0]['password']['value']);
+            $user->setHomepage($user_array[0]['homepage']['value']);
+            $user->setSalt($user_array[0]['salt']['value']);
+            
+            if (array_key_exists('description', $user_array[0]))
+            {
+                $user->setDescription($user_array[0]['description']['value']);
+            }
+            if (array_key_exists('organization', $user_array[0]))
+            {
+                $user->setOrganization($user_array[0]['organization']['value']);
+            }
+            
+            return $user;
+        } 
+        
+        return null;  
     }
     
     public function clearGraph()

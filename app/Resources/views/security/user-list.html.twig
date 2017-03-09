@@ -6,6 +6,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>Actions</th>
                 <th>Name</th>
                 <th>Homepage</th>
                 <th>E-mail</th>
@@ -14,6 +15,7 @@
         <tbody>
     {% for user in pagination %}
         <tr>            
+            <td><a href="{{ path('security-user', { 'user_uri':user.uri|url_encode() }) }}"><i class="glyphicon glyphicon-search"></i></a></td>
             <td>{{ user.name }}</td>
             <td>{{ user.homepage }}</a></td>
             <td>{{ user.email }}</td> 
