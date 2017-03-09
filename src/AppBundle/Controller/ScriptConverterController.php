@@ -226,6 +226,31 @@ class ScriptConverterController extends Controller
     }
     
     /**
+     * @Route("/script-converter/provenance/download/{hash}", name="script-converter-provenance-download")
+     */
+    public function downloadProvenanceAction($hash)
+    {     
+        $workflow = new \AppBundle\Entity\Workflow();
+        $workflow->setHash($hash);
+        
+        $file_path = $workflow->getProvenanceAbsolutePath();
+        $content = $workflow->getProvenanceFile();
+                
+        $response = new \Symfony\Component\HttpFoundation\Response();   
+        
+        // Set headers
+        $response->headers->set('Cache-Control', 'private');
+        $response->headers->set('Content-type', mime_content_type($file_path));
+        $response->headers->set('Content-Disposition', 'attachment; filename="'.basename($file_path).'";');
+        $response->headers->set('Content-length', filesize($file_path));
+
+        // Send headers before outputting anything
+        $response->sendHeaders();
+
+        return $response->setContent($content);
+    }
+    
+    /**
      * @Route("/script-converter/script/download/{hash}/{language}", name="script-converter-script-download")
      */
     public function downloadScriptAction($hash, $language)

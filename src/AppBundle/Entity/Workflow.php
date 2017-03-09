@@ -306,14 +306,20 @@ class Workflow
      */
     public function getProvenanceFile()
     {
-        return $this->provenance_file;
+        if ($this->provenance_file)
+        {
+            return $this->provenance_file;
+        }
+        else if (file_exists($this->getProvenanceAbsolutePath()))
+        {
+            return file_get_contents($this->getProvenanceAbsolutePath());
+        }
+        return null;
     }
     
     public function getProvenanceAbsolutePath()
     {
-        return null === $this->provenance_path && $this->provenance_path != ''
-            ? null
-            : $this->getUploadRootDir().'/'.$this->provenance_path;
+        return $this->getUploadRootDir().'/workflowrun.prov.ttl';
     }
     
     public function getWfdescAbsolutePath()

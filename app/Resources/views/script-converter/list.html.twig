@@ -47,6 +47,7 @@
                       <li><a href="{{ path("script-converter-abstract-workflow-download", { 'hash': row.hash, 'language': row.scriptLanguage }) }}" title="Download Graph Image">Abstract Workflow Image</a></li>
                       <li><a href="{{ path("script-converter-workflow-image-download", { 'hash': row.hash, 'language': row.scriptLanguage }) }}" title="Download Draft Workflow Image">Preliminary Workflow Image</a></li>
                       <li><a href="{{ path("script-converter-workflow-download", { 'hash': row.hash, 'language': row.scriptLanguage }) }}" title="Download Draft Workflow">Preliminary Workflow</a></li>
+                      <li><a href="{{ path("script-converter-provenance-download", { 'hash': row.hash }) }}" title="Download Provenance data">Provenance Data</a></li>
                     </ul>
                 </label>
                 {% for workflow in row.workflows %}                    
