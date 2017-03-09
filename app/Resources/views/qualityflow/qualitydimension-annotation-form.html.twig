@@ -118,6 +118,8 @@
                            title="Delete quality annotations" ><i class="glyphicon glyphicon-trash"></i></a> 
                         <a href="{{ path('edit-qualitydimension-annotation', { 'annotation_uri':annotation.uri|url_encode(), 'type': type }) }}" 
                            title="Edit quality annotations"><i class="glyphicon glyphicon-edit"></i></a> 
+                        <a href="{{ path('add-qualitymetric-annotation', { 'qualitydimension_uri':annotation.qualityDimension.uri|url_encode() }) }}" 
+                           title="Add a quality metric" ><i class="glyphicon glyphicon-plus"></i></a> 
                     </td>
                     <td>{{ annotation.qualityDimension.name }}</td>
                     <td>{{ annotation.value }}</td>
