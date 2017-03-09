@@ -3,7 +3,7 @@ namespace AppBundle\Utils;
 
 class RestAPI 
 {       
-    private $default_graph = "http://www.lis.ic.unicamp.br/w2share";
+    private $default_graph = "http://www.lis.ic.unicamp.br/w2share/";
    
     private $env;
     
@@ -35,6 +35,7 @@ class RestAPI
     prefix biocat: <http://biocatalogue.org/attribute/>
     prefix ro: <http://purl.org/wf4ever/ro#>
     prefix ore: <http://www.openarchives.org/ore/terms/>
+    prefix org: <http://www.w3.org/ns/org#>
     prefix w2share: <http://www.lis.ic.unicamp.br/w2share/qualityflow#>";
     
     public function __construct(\Symfony\Component\DependencyInjection\ContainerInterface $container)
@@ -72,7 +73,7 @@ class RestAPI
     {
         if ($name)
         {
-            return $this->default_graph."/".$name;
+            return $this->default_graph.$name."/";
         }
         return $this->default_graph;
     }

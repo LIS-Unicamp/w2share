@@ -234,5 +234,60 @@ class Person implements AdvancedUserInterface, EquatableInterface, \Serializable
     public function __toString() {
         return $this->name;
     }
-}
+    /**
+     * @var string
+     */
+    private $organization;
 
+    /**
+     * @var string
+     */
+    private $description;
+
+
+    /**
+     * Set organization
+     *
+     * @param string $organization
+     * @return Person
+     */
+    public function setOrganization($organization)
+    {
+        $this->organization = $organization;
+    
+        return $this;
+    }
+
+    /**
+     * Get organization
+     *
+     * @return string 
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return Person
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+}

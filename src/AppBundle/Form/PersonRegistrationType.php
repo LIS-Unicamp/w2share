@@ -21,7 +21,9 @@ class PersonRegistrationType extends AbstractType
             ->add('email', 'email', array('label' => 'E-mail'))
             ->add('password', 'password', array('label' => 'Password'))
             ->add('confirm_password', 'password', array('label' => 'Confirm Password', 'mapped' => false))
-            ->add('homepage', 'url', array('label' => 'Description'))
+            ->add('homepage', 'url', array('label' => 'Homepage', 'required' => false))
+            ->add('organization', 'text', array('label' => 'Organization'))
+            ->add('description', 'textarea', array('label' => 'Description', 'required' => false, 'attr'=>array('rows' => 4)))
             ->add('save', 'submit', array(
                     'label' => 'Register Now',
                     'attr' => array('class' => 'form-control btn btn-register')

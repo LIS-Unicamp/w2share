@@ -1,0 +1,21 @@
+AppBundle\Entity\Person: 
+    type: entity
+    fields:   
+        uri:
+            type: string
+        name:
+            type: string
+        email:
+            type: string
+        password:
+            type: string
+        homepage:
+            type: string
+        organization:
+            type: string
+        roles:
+            type: string
+        salt:
+            type: string
+        description:
+            type: text

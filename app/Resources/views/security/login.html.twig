@@ -81,6 +81,10 @@
                                                                             {{ form_errors(form_registration.email) }}
                                                                     </div>
                                                                     <div class="form-group">
+                                                                            {{ form_widget(form_registration.organization, { 'attr': { 'class':'form-control','placeholder':'Organization' } }) }}
+                                                                            {{ form_errors(form_registration.organization) }}
+                                                                    </div>
+                                                                    <div class="form-group">
                                                                             {{ form_widget(form_registration.homepage, { 'attr': { 'class':'form-control','placeholder':'Homepage' } }) }}
                                                                             {{ form_errors(form_registration.homepage) }}
                                                                     </div>
@@ -91,6 +95,10 @@
                                                                     <div class="form-group">
                                                                             {{ form_widget(form_registration.confirm_password, { 'attr': { 'class':'form-control','placeholder':'Confirm Password' } }) }}
                                                                             {{ form_errors(form_registration.confirm_password) }}
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                            {{ form_widget(form_registration.description, { 'attr': { 'class':'form-control','placeholder':'Description about you' } }) }}
+                                                                            {{ form_errors(form_registration.description) }}
                                                                     </div>
                                                                     <div class="form-group">
                                                                             {{ form_widget(form_registration.recaptcha, { 'attr': { 'class':'form-control' } }) }}
@@ -113,14 +121,15 @@
                                 <div class="panel panel-default dropshadow">
                                         <div class="panel-body">
                                                 <div>
-                                                        <div class="text-center"><h4>Create An Account</h4></div>
+                                                        <div class="text-center"><h4>Create an Account</h4></div>
                                                         <div>Creating an account will allow you to: 
                                                             <ol>
                                                                 <li>Create Quality Dimensions</li>
-                                                                <li>Upload Workflows</li>
-                                                                <li>Upload Provenance</li>
-                                                                <li>Convert Script-based Experiments</li>
-                                                                <li>And more</li>
+                                                                <li>Annotate Experiments with Quality Information</li>
+                                                                <li>Upload Scientific Workflows</li>
+                                                                <li>Upload Provenance Data</li>
+                                                                <li>Convert Script-based Experiments into Workflow Research Objects</li>
+                                                                <li>And more...</li>
                                                             </ol>
                                                             Click <a href="#" class="register-form-link" title="Register Here">here</a> to create your account now
                                                         </div>
@@ -288,6 +297,14 @@
                     $('#login-form-link').removeClass('active');
                     $('.register-form-link').addClass('active');
                     e.preventDefault();
+                });
+                
+                $('input#person_homepage').keyup(function()
+                {
+                    if (this.value !== '' && this.value.indexOf('http://') !== 0 )
+                    { 
+                        this.value = 'http://' + this.value;
+                    }
                 });
                 
                 {% if app.request.get('_route') == 'registration-form' %}

@@ -40,6 +40,8 @@ class Security
                 <".$user->getUri()."> <foaf:homepage> '".$user->getHomepage()."'.
                 <".$user->getUri()."> <w2share:hasPassword> '".$user->getPassword()."'.
                 <".$user->getUri()."> <w2share:hasSalt> '".$user->getSalt()."'.
+                <".$user->getUri()."> <org:memberOf> [ a <org:Organization>; <skos:prefLabel> '".$user->getOrganization()."'].
+                <".$user->getUri()."> <dc:description> '".$user->getDescription()."'.
             }
         }";  
 
@@ -53,10 +55,12 @@ class Security
         { 
             GRAPH <".$this->driver->getDefaultGraph('security')."> 
             { 
-                ?uri a <foaf:Person>;
-                <foaf:name> ?name;
-                <foaf:mbox> ?email;
-                <foaf:homepage> ?homepage.
+                ?uri a <foaf:Person>.
+                ?uri <foaf:name> ?name.
+                ?uri <foaf:mbox> ?email.
+                ?uri <foaf:homepage> ?homepage.
+                OPTIONAL { ?uri <org:memberOf> [ a <org:Organization>; <skos:prefLabel> ?organization]. }
+                OPTIONAL { ?uri <dc:description> ?description. }
             }
         }";   
         
@@ -70,6 +74,14 @@ class Security
             $user->setName($user_array[$i]['name']['value']);
             $user->setEmail($user_array[$i]['email']['value']);
             $user->setHomepage($user_array[$i]['homepage']['value']);
+            if (array_key_exists('description', $user_array[$i]))
+            {
+                $user->setDescription($user_array[$i]['description']['value']);
+            }
+            if (array_key_exists('organization', $user_array[$i]))
+            {
+                $user->setOrganization($user_array[$i]['organization']['value']);
+            }
             
             $users[] = $user;
         }                                        
