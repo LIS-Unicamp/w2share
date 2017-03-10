@@ -14,11 +14,11 @@ class WROController extends Controller
     public function listAction(Request $request)
     {         
         $model = $this->get('model.wro');         
-        $ros = $model->findAll();
+        $wros = $model->findAll();
         
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-            $ros, /* query NOT result */
+            $wros, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
             10 /*limit per page*/
         );
@@ -33,9 +33,9 @@ class WROController extends Controller
      */
     public function addWROAction(Request $request)
     {                
-        $ro = new \AppBundle\Entity\WRO();
+        $wro = new \AppBundle\Entity\WRO();
         
-        $form = $this->createForm(new \AppBundle\Form\WROType(), $ro, array(
+        $form = $this->createForm(new \AppBundle\Form\WROType(), $wro, array(
             'action' => $this->generateUrl('wro-add'),
             'method' => 'POST'
         ));
@@ -48,7 +48,7 @@ class WROController extends Controller
             $wro->upload();
             
             $model = $this->get('model.wro');             
-            $model->addWRO($ro);
+            $model->addWRO($wro);
             
             $this->get('session')
                 ->getFlashBag()
@@ -59,7 +59,7 @@ class WROController extends Controller
         
         return $this->render('wro/form.html.twig', array(
             'form' => $form->createView(),
-            'ro' => $ro
+            'wro' => $wro
         ));
     }
     
@@ -71,11 +71,11 @@ class WROController extends Controller
         $wro_uri = urldecode($wro_uri);
                 
         $model = $this->get('model.wro'); 
-        $ro = $model->findWRO($wro_uri);
+        $wro = $model->findWRO($wro_uri);
 
-        if ($ro)
+        if ($wro)
         {
-            $model->deleteWRO($ro);                        
+            $model->deleteWRO($wro);                        
 
             $this->get('session')
                     ->getFlashBag()
@@ -101,14 +101,14 @@ class WROController extends Controller
         $wro_uri = urldecode($wro_uri);
         
         $model = $this->get('model.wro');                                   
-        $ro = $model->findWRO($wro_uri);
+        $wro = $model->findWRO($wro_uri);
         
-        if (null === $ro)
+        if (null === $wro)
         {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('WRO not found!');
         }
         
-        $form = $this->createForm(new \AppBundle\Form\WROType(), $ro);
+        $form = $this->createForm(new \AppBundle\Form\WROType(), $wro);
         
         $form->handleRequest($request);
                 
@@ -118,7 +118,7 @@ class WROController extends Controller
             $wro->upload();
             
             $model = $this->get('model.wro'); 
-            $model->editWRO($ro);
+            $model->editWRO($wro);
             
             $this->get('session')
                 ->getFlashBag()
@@ -128,7 +128,7 @@ class WROController extends Controller
         
         return $this->render('wro/form.html.twig', array(
             'form' => $form->createView(),
-            'ro' => $ro
+            'wro' => $wro
         ));
     } 
     
@@ -140,11 +140,11 @@ class WROController extends Controller
         $wro_uri = urldecode($wro_uri);
         
         $model = $this->get('model.wro');                                   
-        $ro = $model->findWRO($wro_uri);
+        $wro = $model->findWRO($wro_uri);
                 
         return $this->render('wro/wro.html.twig', array(
 
-            'ro' => $ro,
+            'wro' => $wro,
             'wro_uri' => $wro_uri
         ));
     }    
@@ -157,11 +157,11 @@ class WROController extends Controller
         $wro_uri = urldecode($wro_uri);
         
         $model = $this->get('model.wro');                                   
-        $ro = $model->findWRO($wro_uri);
+        $wro = $model->findWRO($wro_uri);
                 
         return $this->render('wro/wro.html.twig', array(
 
-            'ro' => $ro,
+            'wro' => $wro,
             'wro_uri' => $wro_uri
         ));
     }

@@ -5,12 +5,12 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ResearchObjectType extends AbstractType
+class WROType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('ro_file', 'file', array('label' => 'Research Object Bundle File', 'required' => true))
+            ->add('wro_file', 'file', array('label' => 'WRO Bundle File', 'required' => true))
             ->add('save', 'submit', array(
                     'label' => 'Add',
                     'icon' => 'glyphicon glyphicon-floppy-disk',
@@ -22,12 +22,12 @@ class ResearchObjectType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\ResearchObject',
+            'data_class' => 'AppBundle\Entity\WRO',
         ));
     }
 
     public function getName()
     {
-        return 'ro';
+        return 'wro';
     }
 }

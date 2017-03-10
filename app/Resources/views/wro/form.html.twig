@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block title %}{% if wro.uri %}Edit{% else %}Add{% endif %} Workflow Research Object{% endblock %}
 {% block body %}
-<h1>Workflow Research Object <small>{% if wro.uri %}<button class="btn btn-xs copy" data-clipboard-text="{{ wro.uri }}">
+<h1>WRO <small>{% if wro.uri %}<button class="btn btn-xs copy" data-clipboard-text="{{ wro.uri }}">
                 <i class="glyphicon glyphicon-copy"></i>
             </button> Edit{% else %}Add{% endif %}</small></h1>
     {% if wro.uri %}
@@ -45,9 +45,9 @@
             {% else %}
                 {{ form_widget(form.save) }} 
             {% endif %}
-            <a href="{{ path('ro-list') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
+            <a href="{{ path('wro-list') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
             {% if wro.uri %}
-                <a href="{{ path('ro-details', { 'wro_uri':wro.uri|url_encode() }) }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-search"></i></a>                
+                <a href="{{ path('wro-details', { 'wro_uri':wro.uri|url_encode() }) }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-search"></i></a>                
             {% endif %}
     </div>
     {{ form_end(form) }}                

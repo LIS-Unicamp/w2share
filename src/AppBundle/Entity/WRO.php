@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * ResearchObject
  */
-class WWRO
+class WRO
 {
     /**
      * @var string
@@ -156,7 +156,7 @@ class WWRO
     {
         // get rid of the __DIR__ so it doesn't screw up
         // when displaying uploaded doc/image in the view.
-        return 'uploads/documents/ro';
+        return 'uploads/documents/wro';
     }
 
     /**
