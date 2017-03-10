@@ -75,7 +75,7 @@
           <ul class="nav navbar-nav">
             <li{% if get_controller_name() == 'default' and get_action_name() == 'homepage' %} class="active"{% endif %}><a href="{{ path('homepage') }}">Home</a></li>
             <li{% if get_controller_name() == 'scriptconverter' %} class="active"{% endif %}><a href="{{ path('script-converter') }}">Script Converter</a></li>
-            <li{% if get_controller_name() == 'researchobject' %} class="active"{% endif %}><a href="{{ path('ro-list') }}">Research Object</a></li>
+            <li{% if get_controller_name() == 'wro' %} class="active"{% endif %}><a href="{{ path('wro-list') }}" title="Workflow Research Object">WRO</a></li>
             <li class="dropdown{% if get_controller_name() == 'workflow' %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   Workflows <span class="caret"></span>
@@ -144,7 +144,7 @@
                         <li class="divider"></li>
                         <li><a href="#">Reset <span><i class="glyphicon glyphicon-alert pull-right"></i></span></a></li>
                         <li><a href="{{ path('workflow-reset') }}" class="reset">Workflows</a></li>
-                        <li><a href="{{ path('ro-reset') }}" class="reset">Research Objects </a></li>
+                        <li><a href="{{ path('wro-reset') }}" class="reset">WRO</a></li>
                         <li><a href="{{ path('provenance-reset') }}" class="reset">Provenance Data</a></li>
                         <li><a href="{{ path('annotation-reset') }}" class="reset">Annotations </a></li>
                         <li><a href="{{ path('qualitydimension-reset') }}" class="reset">Quality Dimensions </a></li>

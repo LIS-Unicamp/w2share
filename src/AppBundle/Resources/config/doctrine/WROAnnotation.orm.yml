@@ -1,4 +1,4 @@
-AppBundle\Entity\ROAnnotation: 
+AppBundle\Entity\WROAnnotation: 
     type: entity
     fields: 
         uri:
@@ -10,10 +10,10 @@ AppBundle\Entity\ROAnnotation:
         
     manyToOne:
         resource:
-            targetEntity: ROResource
+            targetEntity: WROResource
             inversedBy: annotations
-        research_object:
-            targetEntity: ResearchObject
+        wro:
+            targetEntity: WRO
             inversedBy: annotations    
     manyToOne:
         creator:

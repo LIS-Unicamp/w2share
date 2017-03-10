@@ -229,7 +229,7 @@ class ScriptConverterController extends Controller
     /**
      * @Route("/script-converter/provenance/download/{hash}", name="script-converter-provenance-download")
      */
-    public function downloadProvenanceAction($hash)
+    public function downloadProvenanceDataAction($hash)
     {     
         $workflow = new \AppBundle\Entity\Workflow();
         $workflow->setHash($hash);
@@ -303,7 +303,7 @@ class ScriptConverterController extends Controller
         // Set headers
         $response->headers->set('Cache-Control', 'private');
         $response->headers->set('Content-type', mime_content_type($file_path));
-        $response->headers->set('Content-Disposition', 'attachment; filename="workflow.t2flow";');
+        $response->headers->set('Content-Disposition', 'attachment; filename="'.basename($file_path).'";');
         $response->headers->set('Content-length', filesize($file_path));
 
         // Send headers before outputting anything
@@ -321,14 +321,75 @@ class ScriptConverterController extends Controller
         $converter = new \AppBundle\Entity\ScriptConverter();
         $converter->setHash($hash);
         $content = $converter->getWorkflowImage();
+        $file_path = $converter->getWorkflowImageFilePath();
         
         $response = new \Symfony\Component\HttpFoundation\Response();   
         
         // Set headers
         $response->headers->set('Cache-Control', 'private');
-        $response->headers->set('Content-type', mime_content_type($converter->getWorkflowImageFilePath()));
-        $response->headers->set('Content-Disposition', 'attachment; filename="workflow.svg";');
-        $response->headers->set('Content-length', filesize($converter->getWorkflowImageFilePath()));
+        $response->headers->set('Content-type', mime_content_type($file_path));
+        $response->headers->set('Content-Disposition', 'attachment; filename="'.basename($file_path).'";');
+        $response->headers->set('Content-length', filesize($file_path));
+
+        // Send headers before outputting anything
+        $response->sendHeaders();
+
+        return $response->setContent($content);
+    }
+    
+    /**
+     * @Route("/script-converter/draft-workflow/download", options={"expose"=true}, name="script-converter-draft-workflow-download")
+     */
+    public function downloadDraftWorkflowAction(Request $request)
+    {      
+        if ($request->get('hash') && $request->get('language'))
+        {
+            $language = $request->get('language');        
+            $hash = $request->get('hash');
+        }
+        else
+        {
+            $language = $this->get('session')->get('language');        
+            $hash = $this->get('session')->get('hash');
+        }
+        $converter = new \AppBundle\Entity\ScriptConverter();
+        $converter->setScriptLanguage($language);
+        $converter->setHash($hash);
+        $content = $converter->getDraftWorkflowT2FlowFile();
+        $file_path = $converter->getDraftWorkflowT2FlowFilepath();
+                
+        $response = new \Symfony\Component\HttpFoundation\Response();   
+        
+        // Set headers
+        $response->headers->set('Cache-Control', 'private');
+        $response->headers->set('Content-type', mime_content_type($file_path));
+        $response->headers->set('Content-Disposition', 'attachment; filename="'.basename($file_path).'";');
+        $response->headers->set('Content-length', filesize($file_path));
+
+        // Send headers before outputting anything
+        $response->sendHeaders();
+
+        return $response->setContent($content);
+    }
+    
+    /**
+     * @Route("/script-converter/draft-workflow/image/download", options={"expose"=true}, name="script-converter-draft-workflow-image-download")
+     */
+    public function draftWorkflowImageDownloadAction(Request $request)
+    {       
+        $hash = $this->get('session')->get('hash');        
+        $converter = new \AppBundle\Entity\ScriptConverter();
+        $converter->setHash($hash);
+        $content = $converter->getDraftWorkflowImage();
+        $file_path = $converter->getDraftWorkflowImageFilePath();
+        
+        $response = new \Symfony\Component\HttpFoundation\Response();   
+        
+        // Set headers
+        $response->headers->set('Cache-Control', 'private');
+        $response->headers->set('Content-type', mime_content_type($file_path));
+        $response->headers->set('Content-Disposition', 'attachment; filename="'.basename($file_path).'";');
+        $response->headers->set('Content-length', filesize($file_path));
 
         // Send headers before outputting anything
         $response->sendHeaders();

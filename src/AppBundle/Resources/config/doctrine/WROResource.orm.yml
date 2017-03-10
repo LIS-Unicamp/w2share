@@ -1,4 +1,4 @@
-AppBundle\Entity\ROResource: 
+AppBundle\Entity\WROResource: 
     type: entity
     fields: 
         uri:
@@ -9,10 +9,10 @@ AppBundle\Entity\ROResource:
             type: datetime
         
     manyToOne:
-        resources:
-            targetEntity: ResearchObject
+        wro:
+            targetEntity: WRO
             invertedBy: resources
     oneToMany:
         annotations:
-            targetEntity: ROAnnotation
+            targetEntity: WROAnnotation
             mappedBy: resource         

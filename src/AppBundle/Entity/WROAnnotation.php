@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ROAnnotation
  */
-class ROAnnotation
+class WROAnnotation
 {
     /**
      * @var string
@@ -25,14 +25,14 @@ class ROAnnotation
     private $created_at;
 
     /**
-     * @var \AppBundle\Entity\ROResource
+     * @var \AppBundle\Entity\WROResource
      */
     private $resource;
 
     /**
-     * @var \AppBundle\Entity\ResearchObject
+     * @var \AppBundle\Entity\WRO
      */
-    private $research_object;
+    private $wro;
 
 
     /**
@@ -128,25 +128,25 @@ class ROAnnotation
     }
 
     /**
-     * Set research_object
+     * Set wro
      *
-     * @param \AppBundle\Entity\ResearchObject $researchObject
+     * @param \AppBundle\Entity\WRO $wro
      * @return ROAnnotation
      */
-    public function setResearchObject(\AppBundle\Entity\ResearchObject $researchObject = null)
+    public function setWRO(\AppBundle\Entity\WRO $wro = null)
     {
-        $this->research_object = $researchObject;
+        $this->wro = $wro;
     
         return $this;
     }
 
     /**
-     * Get research_object
+     * Get wro
      *
-     * @return \AppBundle\Entity\ResearchObject 
+     * @return \AppBundle\Entity\WRO 
      */
-    public function getResearchObject()
+    public function getWRO()
     {
-        return $this->research_object;
+        return $this->wro;
     }
 }

@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
-{% block title %}Research Objects{% endblock %}
+{% block title %}Workflow Research Objects{% endblock %}
 {% block body %}
-<h1>Research Objects</h1>
+<h1>Workflow Research Objects</h1>
 {% for flashMessage in app.session.flashbag.get('success') %}
     <div class="alert alert-success">
             <button class="close" data-dismiss="alert"></button>
@@ -14,7 +14,7 @@
             {{ flashMessage }}
     </div>            
 {% endfor %}
-<a class="btn btn-success" href="{{ path('ro-add') }}"><i class="glyphicon glyphicon-plus"></i> Add</a>
+<a class="btn btn-success" href="{{ path('wro-add') }}"><i class="glyphicon glyphicon-plus"></i> Add</a>
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -27,16 +27,17 @@
             </tr>
         </thead>
         <tbody>
-    {% for ro in pagination %}
+    {% for wro in pagination %}
         <tr>
             <td style="width:150px">
-                <a href="{{ path('ro-details', { 'workflow_uri':ro.uri|url_encode() }) }}" title="Go to RO details"><i class="glyphicon glyphicon-search"></i></a>
-                <a href="{{ path('ro-edit', { 'workflow_uri':ro.uri|url_encode() }) }}" title="Edit RO"><i class="glyphicon glyphicon-edit"></i></a>
-                <a href="{{ path('ro-delete', { 'workflow_uri':ro.uri|url_encode() }) }}" title="Delete RO" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
+                <a href="{{ path('wro-details', { 'wro_uri':ro.uri|url_encode() }) }}" title="Go to WRO details"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('wro-edit', { 'wro_uri':ro.uri|url_encode() }) }}" title="Edit WRO"><i class="glyphicon glyphicon-edit"></i></a>
+                <a href="{{ path('wro-download', { 'wro_uri':ro.uri|url_encode() }) }}" title="Download WRO"><i class="glyphicon glyphicon-download"></i></a>
+                <a href="{{ path('wro-delete', { 'wro_uri':ro.uri|url_encode() }) }}" title="Delete WRO" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
             </td> 
-            <td>{{ ro.title }}</td>
-            <td>{{ ro.creator }}</a></td>
-            <td>{{ ro.description }}</td> 
+            <td>{{ wro.title }}</td>
+            <td>{{ wro.creator }}</a></td>
+            <td>{{ wro.description }}</td> 
         </tr>
     {% endfor %}
         </tbody>

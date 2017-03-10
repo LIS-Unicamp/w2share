@@ -19,3 +19,13 @@ AppBundle\Entity\Person:
             type: string
         description:
             type: text
+        country:
+            type: string
+        state:
+            type: string
+        city:
+            type: string        
+        created_at:
+            type: string
+        updated_at:
+            type: string

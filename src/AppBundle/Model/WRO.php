@@ -6,7 +6,7 @@ namespace AppBundle\Model;
  *
  * @author lucas
  */
-class ResearchObject
+class WRO
 {
     private $driver;
         
@@ -34,7 +34,7 @@ class ResearchObject
         
         for ($i = 0; $i < count($ros); $i++)
         {   
-            $ro = new \AppBundle\Entity\ResearchObject();            
+            $ro = new \AppBundle\Entity\WRO();            
             $ro->setUri($ros[$i]['uri']['value']);
             $ro->setCreatedAt($ros[$i]['createdAt']['value']);            
             $ro->setCreator($ros[$i]['creator']['value']);                        
@@ -45,7 +45,7 @@ class ResearchObject
         return $ro_array;
     }
     
-    public function addResearchObject(\AppBundle\Entity\ResearchObject $ro)
+    public function addWRO(\AppBundle\Entity\WRO $ro)
     {
         $this->unzipROBundle($ro);
         $this->findManifest($ro);
@@ -53,7 +53,7 @@ class ResearchObject
         $this->saveROHash($ro);        
     }
     
-    private function saveROHash(\AppBundle\Entity\ResearchObject $ro) 
+    private function saveROHash(\AppBundle\Entity\WRO $ro) 
     {      
         $query = 
         "        
@@ -68,7 +68,7 @@ class ResearchObject
         return $this->driver->getResults($query);        
     }
     
-    private function findManifest(\AppBundle\Entity\ResearchObject $ro)
+    private function findManifest(\AppBundle\Entity\WRO $ro)
     {
         if (file_exists($this->getRODirPath($ro)."/.ro/manifest.json"))
         {
@@ -91,7 +91,7 @@ class ResearchObject
         }
     }
     
-    private function loadManifestJSON(\AppBundle\Entity\ResearchObject $ro)
+    private function loadManifestJSON(\AppBundle\Entity\WRO $ro)
     {
         $str = file_get_contents($this->getRODirPath($ro)."/.ro/manifest.json");
         $manifest_data = json_decode($str, true); // decode the JSON into an associative array
@@ -120,7 +120,7 @@ class ResearchObject
         } 
     }
     
-    private function loadManifestRDF(\AppBundle\Entity\ResearchObject $ro)
+    private function loadManifestRDF(\AppBundle\Entity\WRO $ro)
     {
         $path_url = $this->getRODirPath($ro)."/.ro/manifest.rdf";
         
@@ -141,7 +141,7 @@ class ResearchObject
         exit;
     }
     
-    private function unzipWFBundle(\AppBundle\Entity\ResearchObject $ro, $wfbundle_filename)
+    private function unzipWFBundle(\AppBundle\Entity\WRO $ro, $wfbundle_filename)
     {            
         $wfbundle_path = $this->getRODirPath($ro).$wfbundle_filename;
         $zip = new \ZipArchive; 
@@ -161,7 +161,7 @@ class ResearchObject
         @unlink($wfbundle_path);
     }
     
-    private function unzipROBundle(\AppBundle\Entity\ResearchObject $ro)
+    private function unzipROBundle(\AppBundle\Entity\WRO $ro)
     {
             
         $zip = new \ZipArchive; 
@@ -173,14 +173,14 @@ class ResearchObject
         unlink($ro->getROAbsolutePath());
     }
     
-    private function getRODirPath(\AppBundle\Entity\ResearchObject $ro)
+    private function getRODirPath(\AppBundle\Entity\WRO $ro)
     {
         $root_path = $this->container->get('kernel')->getRootDir();
 
         return $root_path."/../web/uploads/documents/ro/".$ro->getHash();
     }
     
-    private function loadIntoDB(\AppBundle\Entity\ResearchObject $ro, $file_path)
+    private function loadIntoDB(\AppBundle\Entity\WRO $ro, $file_path)
     {        
         $env = $this->container->get('kernel')->getEnvironment();
         

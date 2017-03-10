@@ -360,9 +360,19 @@ class ScriptConverter
         system($command);        
     }
     
-    public function getWorkflowT2FlowFilepath()
+    public function getDraftWorkflowT2FlowFilepath()
     {
         return $this->getUploadRootDir()."/draft-workflow.t2flow";
+    }
+    
+    public function getDraftWorkflowT2FlowFile()
+    {                                 
+        return file_get_contents($this->getDraftWorkflowT2FlowFilepath());
+    }
+    
+    public function getWorkflowT2FlowFilepath()
+    {
+        return $this->getUploadRootDir()."/workflow.t2flow";
     }
     
     public function getWorkflowT2FlowFile()
@@ -395,8 +405,8 @@ class ScriptConverter
     {
         $python = $this->getUploadRootDir()."/conversion.py";
         $script = $this->getScriptFilepath();
-        $workflow = $this->getWorkflowT2FlowFilepath();
-        $image = $this->getUploadRootDir()."/workflow.svg";
+        $workflow = $this->getDraftWorkflowT2FlowFilepath();
+        $image = $this->getDraftWorkflowImageFilePath();
             
         $command_python = "java -jar ".__DIR__."/../../../src/AppBundle/Utils/yesworkflow2taverna.jar ".$script." ".$this->getScriptLanguage()." ".$python;
         system($command_python);
@@ -409,14 +419,23 @@ class ScriptConverter
     }
     
     public function getWorkflowImage()
-    {
-        $image = $this->getWorkflowImageFilePath();
-        return file_get_contents($image);
+    {        
+        return file_get_contents($this->getWorkflowImageFilePath());
     }
     
     public function getWorkflowImageFilePath()
     {        
         return $this->getUploadRootDir()."/workflow.svg";;
+    }
+    
+    public function getDraftWorkflowImage()
+    {
+        return file_get_contents($this->getDraftWorkflowImageFilePath());
+    }
+    
+    public function getDraftWorkflowImageFilePath()
+    {        
+        return $this->getUploadRootDir()."/draft-workflow.svg";;
     }
     
     public function getScriptExtension()

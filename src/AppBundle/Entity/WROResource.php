@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ROResource
  */
-class ROResource
+class WROResource
 {
     /**
      * @var string
@@ -30,9 +30,9 @@ class ROResource
     private $annotations;
 
     /**
-     * @var \AppBundle\Entity\ResearchObject
+     * @var \AppBundle\Entity\WRO
      */
-    private $resources;
+    private $wro;
 
     /**
      * Constructor
@@ -114,10 +114,10 @@ class ROResource
     /**
      * Add annotations
      *
-     * @param \AppBundle\Entity\ROAnnotation $annotations
-     * @return ROResource
+     * @param \AppBundle\Entity\WROAnnotation $annotations
+     * @return WROResource
      */
-    public function addAnnotation(\AppBundle\Entity\ROAnnotation $annotations)
+    public function addAnnotation(\AppBundle\Entity\WROAnnotation $annotations)
     {
         $this->annotations[] = $annotations;
     
@@ -129,7 +129,7 @@ class ROResource
      *
      * @param \AppBundle\Entity\ROAnnotation $annotations
      */
-    public function removeAnnotation(\AppBundle\Entity\ROAnnotation $annotations)
+    public function removeAnnotation(\AppBundle\Entity\WROAnnotation $annotations)
     {
         $this->annotations->removeElement($annotations);
     }
@@ -142,28 +142,28 @@ class ROResource
     public function getAnnotations()
     {
         return $this->annotations;
-    }
-
+    } 
+    
     /**
-     * Set resources
+     * Set wro
      *
-     * @param \AppBundle\Entity\ResearchObject $resources
-     * @return ROResource
+     * @param \AppBundle\Entity\WRO $wro
+     * @return ROAnnotation
      */
-    public function setResources(\AppBundle\Entity\ResearchObject $resources = null)
+    public function setWRO(\AppBundle\Entity\WRO $wro = null)
     {
-        $this->resources = $resources;
+        $this->wro = $wro;
     
         return $this;
     }
 
     /**
-     * Get resources
+     * Get wro
      *
-     * @return \AppBundle\Entity\ResearchObject 
+     * @return \AppBundle\Entity\WRO 
      */
-    public function getResources()
+    public function getWRO()
     {
-        return $this->resources;
+        return $this->wro;
     }
 }

@@ -42,8 +42,8 @@ services:
         class: AppBundle\Model\Provenance
         arguments: ["@app.rest_api"]
         
-    model.ro:
-        class: AppBundle\Model\ResearchObject
+    model.wro:
+        class: AppBundle\Model\WRO
         arguments: [@app.rest_api, @service_container]
         
     model.search:

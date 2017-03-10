@@ -1,4 +1,4 @@
-AppBundle\Entity\ResearchObject: 
+AppBundle\Entity\WRO: 
     type: entity
     fields: 
         uri:
@@ -14,11 +14,11 @@ AppBundle\Entity\ResearchObject:
         
     oneToMany:
         resources:
-            targetEntity: ROResource
-            mappedBy: research_object
+            targetEntity: WROResource
+            mappedBy: wro
         annotations:
-            targetEntity: ROAnnotation
-            mappedBy: research_object        
+            targetEntity: WROAnnotation
+            mappedBy: wro       
     manyToOne:
         creator:
             targetEntity: Person  

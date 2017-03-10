@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
-{% block title %}{% if ro.uri %}Edit{% else %}Add{% endif %} Research Object{% endblock %}
+{% block title %}{% if wro.uri %}Edit{% else %}Add{% endif %} Workflow Research Object{% endblock %}
 {% block body %}
-<h1>Research Object <small>{% if ro.uri %}<button class="btn btn-xs copy" data-clipboard-text="{{ ro.uri }}">
+<h1>Workflow Research Object <small>{% if wro.uri %}<button class="btn btn-xs copy" data-clipboard-text="{{ wro.uri }}">
                 <i class="glyphicon glyphicon-copy"></i>
             </button> Edit{% else %}Add{% endif %}</small></h1>
-    {% if ro.uri %}
+    {% if wro.uri %}
     <ul>
-        <li><strong>Title:</strong> {{ ro.title }}</li>
-        <li><strong>Creator:</strong> {{ ro.creator }}</li>
-        <li><strong>Description:</strong> {{ ro.description }}</li>
-        <li><strong>Label:</strong> {{ ro.label }}</li>
+        <li><strong>Title:</strong> {{ wro.title }}</li>
+        <li><strong>Creator:</strong> {{ wro.creator }}</li>
+        <li><strong>Description:</strong> {{ wro.description }}</li>
+        <li><strong>Label:</strong> {{ wro.label }}</li>
     </ul>
     {% endif %}
 {{ form_start(form) }}
@@ -31,23 +31,23 @@
             <div class="col-md-12">                                
                 <div class="row">
                     <div class="form-group">
-                        {{ form_label(form.ro_file) }}
-                        {{ form_widget(form.ro_file, { 'attr': { 'class':'form-control' } }) }}
-                        {{ form_errors(form.ro_file) }}
+                        {{ form_label(form.wro_file) }}
+                        {{ form_widget(form.wro_file, { 'attr': { 'class':'form-control' } }) }}
+                        {{ form_errors(form.wro_file) }}
                     </div>
                 </div>                
             </div>
         </div>
     </div>
     <div class="form-actions">
-            {% if ro.uri %}
+            {% if wro.uri %}
                 {{ form_widget(form.save, { 'label':'Edit' }) }} 
             {% else %}
                 {{ form_widget(form.save) }} 
             {% endif %}
             <a href="{{ path('ro-list') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
-            {% if ro.uri %}
-                <a href="{{ path('ro-details', { 'ro_uri':ro.uri|url_encode() }) }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-search"></i></a>                
+            {% if wro.uri %}
+                <a href="{{ path('ro-details', { 'wro_uri':wro.uri|url_encode() }) }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-search"></i></a>                
             {% endif %}
     </div>
     {{ form_end(form) }}                

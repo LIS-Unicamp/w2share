@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * ResearchObject
  */
-class ResearchObject
+class WWRO
 {
     /**
      * @var string
@@ -46,17 +46,17 @@ class ResearchObject
     /**
      * @var string
      */
-    private $ro_path;
+    private $wro_path;
     
     /**
      * @var UploadedFile
      */
-    private $ro_file;
+    private $wro_file;
 
     /**
      * @var File
      */
-    private $ro_temp;
+    private $wro_temp;
 
     /**
      * Constructor
@@ -73,51 +73,51 @@ class ResearchObject
      *
      * @param UploadedFile $file
      */
-    public function setROFile(UploadedFile $file = null)
+    public function setWROFile(UploadedFile $file = null)
     {     
-        $this->ro_file = $file;
+        $this->wro_file = $file;
         // check if we have an old image path
-        if (isset($this->ro_path)) {
+        if (isset($this->wro_path)) {
             // store the old name to delete after the update
-            $this->ro_temp = $this->ro_path;
-            $this->ro_path = null;
+            $this->wro_temp = $this->wro_path;
+            $this->wro_path = null;
         } else {
-            $this->ro_path = sha1(uniqid(mt_rand(), true));
+            $this->wro_path = sha1(uniqid(mt_rand(), true));
         }
     }
     
     public function preUpload()
     {
         $filename = $this->getHash();
-        if (null !== $this->getROFile()) 
+        if (null !== $this->getWROFile()) 
         {
-            $this->ro_path = $filename.'.'.$this->getROFile()->getClientOriginalExtension();
+            $this->wro_path = $filename.'.'.$this->getWROFile()->getClientOriginalExtension();
         }
     }
     
     public function upload()
     {
-        if (null === $this->getROFile() 
+        if (null === $this->getWROFile() 
                 && null === $this->getWfdescFile() 
                 && null === $this->getProvenanceFile()) {
             return;
         }
         
-        if (null !== $this->getROFile())
+        if (null !== $this->getWROFile())
         {
             // if there is an error when moving the file, an exception will
             // be automatically thrown by move(). This will properly prevent
             // the entity from being persisted to the database on error
-            $this->getROFile()->move($this->getUploadRootDir(), $this->ro_path);
+            $this->getWROFile()->move($this->getUploadRootDir(), $this->wro_path);
 
             // check if we have an old image
-            if (isset($this->ro_temp) && $this->ro_temp != '') {
+            if (isset($this->wro_temp) && $this->wro_temp != '') {
                 // delete the old image
-                @unlink($this->getUploadRootDir().'/'.$this->ro_temp);
+                @unlink($this->getUploadRootDir().'/'.$this->wro_temp);
                 // clear the temp image path
-                $this->ro_temp = null;
+                $this->wro_temp = null;
             }
-            $this->ro_file = null;
+            $this->wro_file = null;
         }                
         
     }
@@ -125,17 +125,17 @@ class ResearchObject
     public function removeUpload()
     {
         $this->fileNames();
-        $ro_file = $this->getROAbsolutePath();
-        if ($ro_file) {
-            unlink($ro_file);
+        $wro_file = $this->getWROAbsolutePath();
+        if ($wro_file) {
+            unlink($wro_file);
         }        
     }
     
-    public function getROAbsolutePath()
+    public function getWROAbsolutePath()
     {
-        return null === $this->ro_path && $this->ro_path != ''
+        return null === $this->wro_path && $this->wro_path != ''
             ? null
-            : $this->getUploadRootDir().'/'.$this->ro_path;
+            : $this->getUploadRootDir().'/'.$this->wro_path;
     }
     
     public function getWebPath()
@@ -164,9 +164,9 @@ class ResearchObject
      *
      * @return UploadedFile
      */
-    public function getROFile()
+    public function getWROFile()
     {
-        return $this->ro_file;
+        return $this->wro_file;
     }
     
     /**
@@ -174,11 +174,11 @@ class ResearchObject
      *
      * @param string $roPath
      *
-     * @return RO
+     * @return WRO
      */
-    public function setROPath($roPath)
+    public function setWROPath($roPath)
     {
-        $this->ro_path = $roPath;
+        $this->wro_path = $roPath;
 
         return $this;
     }
@@ -188,9 +188,9 @@ class ResearchObject
      *
      * @return string
      */
-    public function getROPath()
+    public function getWROPath()
     {
-        return $this->ro_path;
+        return $this->wro_path;
     }
     
     /**
@@ -288,10 +288,10 @@ class ResearchObject
     /**
      * Add resources
      *
-     * @param \AppBundle\Entity\ROResource $resources
+     * @param \AppBundle\Entity\WROResource $resources
      * @return ResearchObject
      */
-    public function addResource(\AppBundle\Entity\ROResource $resources)
+    public function addResource(\AppBundle\Entity\WROResource $resources)
     {
         $this->resources[] = $resources;
     
@@ -301,9 +301,9 @@ class ResearchObject
     /**
      * Remove resources
      *
-     * @param \AppBundle\Entity\ROResource $resources
+     * @param \AppBundle\Entity\WROResource $resources
      */
-    public function removeResource(\AppBundle\Entity\ROResource $resources)
+    public function removeResource(\AppBundle\Entity\WROResource $resources)
     {
         $this->resources->removeElement($resources);
     }
@@ -321,10 +321,10 @@ class ResearchObject
     /**
      * Add annotations
      *
-     * @param \AppBundle\Entity\ROAnnotation $annotations
+     * @param \AppBundle\Entity\WROAnnotation $annotations
      * @return ResearchObject
      */
-    public function addAnnotation(\AppBundle\Entity\ROAnnotation $annotations)
+    public function addAnnotation(\AppBundle\Entity\WROAnnotation $annotations)
     {
         $this->annotations[] = $annotations;
     
@@ -334,9 +334,9 @@ class ResearchObject
     /**
      * Remove annotations
      *
-     * @param \AppBundle\Entity\ROAnnotation $annotations
+     * @param \AppBundle\Entity\WROAnnotation $annotations
      */
-    public function removeAnnotation(\AppBundle\Entity\ROAnnotation $annotations)
+    public function removeAnnotation(\AppBundle\Entity\WROAnnotation $annotations)
     {
         $this->annotations->removeElement($annotations);
     }
