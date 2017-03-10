@@ -76,11 +76,11 @@
                 {% endfor %}
             </td>
             <td>
-                {% if row.ro %}
-                    <a href="{{ path('ro-details', { 'ro_uri':row.ro.uri|url_encode() }) }}" title="Go to Workflow Research Object details"><i class="glyphicon glyphicon-search"></i></a>
-                    <a href="{{ path('ro-download', { 'ro_uri':row.ro.uri|url_encode() }) }}" title="Download Workflow Research Object"><i class="glyphicon glyphicon-search"></i></a>
+                {% if row.wro %}
+                    <a href="{{ path('wro-details', { 'wro_uri':row.wro.uri|url_encode() }) }}" title="Go to Workflow Research Object details"><i class="glyphicon glyphicon-search"></i></a>
+                    <a href="{{ path('wro-download', { 'wro_uri':row.wro.uri|url_encode() }) }}" title="Download Workflow Research Object"><i class="glyphicon glyphicon-search"></i></a>
                 {% else %}
-                    <a href="{{ path('script-converter-create-ro', { 'hash':row.hash }) }}" title="Create Workflow Research Object"><i class="glyphicon glyphicon-plus"></i></a>                
+                    <a href="{{ path('script-converter-create-wro', { 'hash':row.hash }) }}" title="Create Workflow Research Object"><i class="glyphicon glyphicon-plus"></i></a>                
                 {% endif %}
             </td>
             <td>{{ row.creator }}</a></td>

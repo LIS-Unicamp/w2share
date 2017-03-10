@@ -54,7 +54,6 @@ class ScriptConverterController extends Controller
         if ($form->isValid()) 
         {       
             $workflow->setHash($hash);
-            $workflow->preUpload();
             $workflow->upload();            
             
             $model = $this->get('model.scriptconverter');             
@@ -159,9 +158,9 @@ class ScriptConverterController extends Controller
     }
     
     /**
-     * @Route("/script-converter/create-ro", name="script-converter-create-ro")
+     * @Route("/script-converter/create-wro", name="script-converter-create-wro")
      */
-    public function createROAction(Request $request)
+    public function createWROAction(Request $request)
     {        
         $this->get('session')
                 ->getFlashBag()

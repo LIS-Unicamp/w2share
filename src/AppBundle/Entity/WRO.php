@@ -41,12 +41,7 @@ class WRO
     /**
      * @var \AppBundle\Entity\Person
      */
-    private $creator;
-    
-    /**
-     * @var string
-     */
-    private $wro_path;
+    private $creator;    
     
     /**
      * @var UploadedFile
@@ -75,35 +70,16 @@ class WRO
      */
     public function setWROFile(UploadedFile $file = null)
     {     
-        $this->wro_file = $file;
-        // check if we have an old image path
-        if (isset($this->wro_path)) {
-            // store the old name to delete after the update
-            $this->wro_temp = $this->wro_path;
-            $this->wro_path = null;
-        } else {
-            $this->wro_path = sha1(uniqid(mt_rand(), true));
-        }
-    }
-    
-    public function preUpload()
-    {
-        $filename = $this->getHash();
-        if (null !== $this->getWROFile()) 
-        {
-            $this->wro_path = $filename.'.'.$this->getWROFile()->getClientOriginalExtension();
-        }
-    }
+        $this->wro_file = $file;        
+    }    
     
     public function upload()
     {
-        if (null === $this->getWROFile() 
-                && null === $this->getWfdescFile() 
-                && null === $this->getProvenanceFile()) {
+        if (null === $this->getWROFile()) 
+        {
             return;
-        }
-        
-        if (null !== $this->getWROFile())
+        }        
+        else
         {
             // if there is an error when moving the file, an exception will
             // be automatically thrown by move(). This will properly prevent
@@ -124,32 +100,24 @@ class WRO
 
     public function removeUpload()
     {
-        $this->fileNames();
-        $wro_file = $this->getWROAbsolutePath();
-        if ($wro_file) {
-            unlink($wro_file);
-        }        
+        \AppBundle\Utils\Utils::unlinkr($this->getUploadRootDir());               
     }
     
     public function getWROAbsolutePath()
     {
-        return null === $this->wro_path && $this->wro_path != ''
-            ? null
-            : $this->getUploadRootDir().'/'.$this->wro_path;
+        return $this->getUploadRootDir().'/wro-bundle.zip';
     }
     
     public function getWebPath()
     {
-        return null === $this->path
-            ? null
-            : $this->getUploadDir().'/'.$this->path;
+        return $this->getUploadDir().'/wro-bundle.zip';
     }
 
     protected function getUploadRootDir()
     {
         // the absolute directory path where uploaded
         // documents should be saved
-        return __DIR__.'/../../../web/'.$this->getUploadDir();
+        return __DIR__.'/../../../web/'.$this->getUploadDir().'/'.$this->getHash();
     }
 
     protected function getUploadDir()
@@ -167,31 +135,7 @@ class WRO
     public function getWROFile()
     {
         return $this->wro_file;
-    }
-    
-    /**
-     * Set roPath
-     *
-     * @param string $roPath
-     *
-     * @return WRO
-     */
-    public function setWROPath($roPath)
-    {
-        $this->wro_path = $roPath;
-
-        return $this;
-    }
-
-    /**
-     * Get roPath
-     *
-     * @return string
-     */
-    public function getWROPath()
-    {
-        return $this->wro_path;
-    }
+    }        
     
     /**
      * Set uri

@@ -80,19 +80,8 @@ class WRO
             $this->loadManifestJSON($wro); 
         }
         else if (file_exists($this->getWRODirPath($wro)."/.ro/manifest.rdf"))
-        {
-            $env = $this->container->get('kernel')->getEnvironment();
-        
-            $path_url = '';
-            if ($env == 'dev')
-            {
-                $path_url = "http://"
-                    . $this->container->get('request')->getHost();
-            }
-            $path_url .= $this->container->get('templating.helper.assets')
-                    ->getUrl("/uploads/documents/ro/".$wro->getHash()."/.ro/manifest.rdf", null, true, true);
-            
-            $this->loadManifestRDF($path_url);
+        {            
+            $this->loadManifestRDF($wro);
         }
     }
     
@@ -133,8 +122,8 @@ class WRO
         \EasyRdf_Namespace::set('dc', 'http://purl.org/dc/elements/1.1/');
         \EasyRdf_Namespace::set('ore', 'http://www.openarchives.org/ore/terms/');
 
-        $graph = new \EasyRdf_Graph($path_url);
-        $graph->load();
+        $graph = new \EasyRdf_Graph();
+        $graph->parseFile($path_url);
         //print_r($graph);
         $resource = $graph->resourcesMatching('ore:aggregates');
         $aggregates = $graph->AllResources($resource[0],'ore:aggregates');
@@ -203,16 +192,13 @@ class WRO
     }
             
     public function clearGraph()
-    {
-        $wroot_path = $this->container->get('kernel')->getRootDir();
-
-        foreach(glob($wroot_path."/../web/uploads/documents/wro/*.*") as $file)
-        {            
-            unlink($file);
-        }
-        
+    {               
         $query = "CLEAR GRAPH <".$this->driver->getDefaultGraph('wro').">";        
         return $this->driver->getResults($query);                  
     }
     
+    public function clearUploads()
+    {
+        \AppBundle\Utils\Utils::unlinkr(__DIR__."/../../../web/uploads/documents/wro");
+    }    
 }

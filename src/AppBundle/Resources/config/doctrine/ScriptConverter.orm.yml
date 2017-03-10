@@ -17,8 +17,8 @@ AppBundle\Entity\ScriptConverter:
             type: datetime
         
     oneToOne:
-        ro:
-            targetEntity: ResearchObject
+        wro:
+            targetEntity: WRO
     oneToMany:
         workflows:
             targetEntity: Workflow

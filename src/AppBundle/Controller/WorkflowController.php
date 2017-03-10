@@ -45,7 +45,6 @@ class WorkflowController extends Controller
                 
         if ($form->isValid()) 
         {       
-            $workflow->preUpload();
             $workflow->upload();
             
             $model = $this->get('model.workflow');             

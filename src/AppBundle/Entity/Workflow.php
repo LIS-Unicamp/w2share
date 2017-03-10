@@ -178,15 +178,7 @@ class Workflow
      */
     public function setWorkflowFile(UploadedFile $file = null)
     {     
-        $this->workflow_file = $file;
-        // check if we have an old image path
-        if (isset($this->workflow_path)) {
-            // store the old name to delete after the update
-            $this->workflow_temp = $this->workflow_path;
-            $this->workflow_path = null;
-        } else {
-            $this->workflow_path = sha1(uniqid(mt_rand(), true));
-        }
+        $this->workflow_file = $file; 
     }
     
     /**
@@ -196,41 +188,25 @@ class Workflow
      */
     public function setProvenanceFile(UploadedFile $file = null)
     {
-        $this->provenance_file = $file;
-        // check if we have an old image path
-        if (isset($this->provenance_path)) {
-            // store the old name to delete after the update
-            $this->provenance_temp = $this->provenance_path;
-            $this->provenance_path = null;
-        } else {
-            $this->provenance_path = sha1(uniqid(mt_rand(), true));
-        }
+        $this->provenance_file = $file; 
+    }
+    
+    public function createWorkflowPNG()
+    {
+        $command = "ruby ".__DIR__."/../../../src/AppBundle/Utils/script.rb ".$this->getWorkflowAbsolutePath()." ".$this->getWorkflowImageFilepath();            
+        exec($command);
+    }
+    
+    public function getWorkflowImageFilepath()
+    {
+        return $this->getUploadRootDir()."/workflow.svg";
     }
     
     public function createWfdescFile()
     {
         $command = "java -jar ". __DIR__ . "/../../../src/AppBundle/Utils/scufl2-wfdesc-0.3.7-standalone.jar ".$this->getWorkflowAbsolutePath();                              
         exec($command);  
-    }
-    
-    public function fileNames()
-    {
-        $this->provenance_path = 'workflow.prov.ttl';
-        $this->workflow_path = 'workflow.t2flow';
-    }
-
-    public function preUpload()
-    {
-        if (null !== $this->getWorkflowFile()) 
-        {
-            $this->workflow_path = 'workflow.t2flow';
-        }
-        
-        if (null !== $this->getProvenanceFile()) 
-        {
-            $this->provenance_path = 'workflow.prov.ttl';
-        }                
-    }
+    }           
 
     public function upload()
     {
@@ -244,7 +220,7 @@ class Workflow
             // if there is an error when moving the file, an exception will
             // be automatically thrown by move(). This will properly prevent
             // the entity from being persisted to the database on error
-            $this->getWorkflowFile()->move($this->getUploadRootDir(), $this->workflow_path);
+            $this->getWorkflowFile()->move($this->getUploadRootDir(), basename($this->getWorkflowAbsolutePath()));
 
             // check if we have an old image
             if (isset($this->workflow_temp) && $this->workflow_temp != '') {
@@ -261,7 +237,7 @@ class Workflow
             // if there is an error when moving the file, an exception will
             // be automatically thrown by move(). This will properly prevent
             // the entity from being persisted to the database on error
-            $this->getProvenanceFile()->move($this->getUploadRootDir(), $this->provenance_path);
+            $this->getProvenanceFile()->move($this->getUploadRootDir(), basename($this->getProvenanceAbsolutePath()));
 
             // check if we have an old image
             if (isset($this->provenance_temp) && $this->provenance_temp != '') {
@@ -277,7 +253,6 @@ class Workflow
 
     public function removeUpload()
     {
-        $this->fileNames();
         $workflow_file = $this->getWorkflowAbsolutePath();
         if ($workflow_file) {
             unlink($workflow_file);
@@ -286,7 +261,12 @@ class Workflow
         $provenance_file = $this->getProvenanceAbsolutePath();
         if ($provenance_file) {
             unlink($provenance_file);
-        }                
+        }
+        
+        $wfdesc_file = $this->getWfdescAbsolutePath();
+        if ($wfdesc_file) {
+            unlink($wfdesc_file);
+        }
     }
 
     /**
@@ -296,7 +276,15 @@ class Workflow
      */
     public function getWorkflowFile()
     {
-        return $this->workflow_file;
+        if ($this->workflow_file)
+        {
+            return $this->workflow_file;
+        }
+        else if (file_exists($this->getWorkflowAbsolutePath()))
+        {
+            return file_get_contents($this->getWorkflowAbsolutePath());
+        }
+        return null;
     }       
     
     /**
@@ -319,7 +307,7 @@ class Workflow
     
     public function getProvenanceAbsolutePath()
     {
-        return $this->getUploadRootDir().'/workflowrun.prov.ttl';
+        return $this->getUploadRootDir().'/workflow.prov.ttl';
     }
     
     public function getWfdescAbsolutePath()
@@ -379,65 +367,7 @@ class Workflow
     public function getUri()
     {
         return $this->uri;
-    }
-    /**
-     * @var string
-     */
-    private $workflow_path;
-
-    /**
-     * @var string
-     */
-    private $provenance_path;
-
-
-    /**
-     * Set workflowPath
-     *
-     * @param string $workflowPath
-     *
-     * @return Workflow
-     */
-    public function setWorkflowPath($workflowPath)
-    {
-        $this->workflow_path = $workflowPath;
-
-        return $this;
-    }
-
-    /**
-     * Get workflowPath
-     *
-     * @return string
-     */
-    public function getWorkflowPath()
-    {
-        return $this->workflow_path;
-    }
-
-    /**
-     * Set provenancePath
-     *
-     * @param string $provenancePath
-     *
-     * @return Workflow
-     */
-    public function setProvenancePath($provenancePath)
-    {
-        $this->provenance_path = $provenancePath;
-
-        return $this;
-    }
-
-    /**
-     * Get provenancePath
-     *
-     * @return string
-     */
-    public function getProvenancePath()
-    {
-        return $this->provenance_path;
-    }    
+    }            
     
     public function __toString() {
         return $this->title ? $this->title : $this->label;

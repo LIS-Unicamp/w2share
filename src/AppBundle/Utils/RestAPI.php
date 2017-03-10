@@ -4,6 +4,8 @@ namespace AppBundle\Utils;
 class RestAPI 
 {       
     private $default_graph = "http://www.lis.ic.unicamp.br/w2share/";
+    
+    private $container;
    
     private $env;
     
@@ -41,6 +43,7 @@ class RestAPI
     public function __construct(\Symfony\Component\DependencyInjection\ContainerInterface $container)
     {
         $this->env = $container->get('kernel')->getEnvironment();
+        $this->container = $container;
     }        
     
     public function getDomainSPAQL()
@@ -118,29 +121,19 @@ class RestAPI
         }
     }
     
-    public function load($path)
-    {
-        // is curl installed?
-        if (!function_exists('curl_init')){ 
-            die('CURL is not installed!');
+    public function load($file_path, $default_graph = '')
+    {        
+        $path_url = '';
+        if ($this->env == 'dev')
+        {
+            $path_url = "http://"
+                . $this->container->get('request')->getHost();
         }
-        $basename = basename($path);
-        $ch = curl_init("http://lucascarvalho:lucas2@".$this->getDomain()."/DAV/home/lucascarvalho/".$basename); 
-        $file = fopen($path, 'r');
-        curl_setopt($ch, CURLOPT_INFILE, $file);
-        curl_setopt($ch, CURLOPT_INFILESIZE, filesize($path));
-        curl_setopt($ch, CURLOPT_PUT, true);
-        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        $path_url .= $this->container->get('templating.helper.assets')
+                ->getUrl("/".$file_path, null, true, true);
         
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-          'Content-type: application/x-turtle',
-          'Accept: text/html'
-        ));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        curl_close($ch);
-        fclose($file);
-        return $response;
+        $query = "LOAD <".$path_url."> INTO graph <".$this->getDefaultGraph($default_graph).">";
+        $this->getResults($query);
     }
     
     public function request($url){

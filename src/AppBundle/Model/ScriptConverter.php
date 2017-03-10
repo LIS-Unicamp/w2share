@@ -194,7 +194,7 @@ class ScriptConverter
         
         $this->driver->getResults($query);
         
-        $this->unlinkr(__DIR__."/../../../web/uploads/documents/w2share/".$conversion->getHash());
+        \AppBundle\Utils\Utils::unlinkr(__DIR__."/../../../web/uploads/documents/w2share/".$conversion->getHash());
         rmdir(__DIR__."/../../../web/uploads/documents/w2share/".$conversion->getHash());        
     }
     
@@ -225,24 +225,6 @@ class ScriptConverter
     
     public function clearUploads ()
     {            
-        $this->unlinkr(__DIR__."/../../../web/uploads/documents/w2share");
-    }
-    
-    function unlinkr($dir, $pattern = "*") {
-        // find all files and folders matching pattern
-        $files = glob($dir . "/$pattern"); 
-
-        //interate thorugh the files and folders
-        foreach($files as $file){ 
-        //if it is a directory then re-call unlinkr function to delete files inside this directory     
-            if (is_dir($file) and !in_array($file, array('..', '.')))  {
-                $this->unlinkr($file, $pattern);
-                //remove the directory itself
-                rmdir($file);
-            } else if(is_file($file) and ($file != __FILE__)) {
-                // make sure you don't delete the current script
-                unlink($file); 
-            }
-        }
-    }         
+        \AppBundle\Utils\Utils::unlinkr(__DIR__."/../../../web/uploads/documents/w2share");
+    }               
 }

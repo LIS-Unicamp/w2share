@@ -310,12 +310,8 @@ class Workflow
     }
     
     public function addWorkflow(\AppBundle\Entity\Workflow $workflow)
-    {
-        $command = "java -jar ". __DIR__ . "/../../../src/AppBundle/Utils/scufl2-wfdesc-0.3.7-standalone.jar ".$workflow->getWorkflowAbsolutePath();                              
-        exec($command);                 
-        
-        $this->load($workflow, $workflow->getProvenanceAbsolutePath());
-        $this->load($workflow, $workflow->getWfdescAbsolutePath());
+    {                        
+        $this->editWorkflow($workflow);
         
         \EasyRdf_Namespace::set('ro', 'http://purl.org/wf4ever/ro#');
         \EasyRdf_Namespace::set('dc', 'http://purl.org/dc/elements/1.1/');
@@ -323,43 +319,30 @@ class Workflow
         
         $graph = new \EasyRdf_Graph();
         $graph->parseFile($workflow->getWfdescAbsolutePath());
-        //print_r($graph);
         $resources = $graph->allOfType('http://purl.org/wf4ever/wfdesc#Workflow');
+        
         foreach ($resources as $resource)
         {
             $workflow->setUri($resource->getUri());
         }
         
-        $this->saveWorkflowHash($workflow);
-        
-        $this->createWorkflowPNG($workflow);
+        $this->saveWorkflowHash($workflow);        
     }
     
     public function editWorkflow(\AppBundle\Entity\Workflow $workflow)
-    {
-        $root_path = $this->container->get('kernel')->getRootDir();
-        
+    {       
         if ($workflow->getProvenanceFile())
         {
-            $this->load($workflow->getProvenanceAbsolutePath());
-        }
-        
-        if ($workflow->getWfdescFile())
-        {
-            $this->load($workflow->getWfdescAbsolutePath());
-        }
+            $this->driver->load($workflow->getWebPath()."/".basename($workflow->getProvenanceAbsolutePath()));
+        }                
         
         if ($workflow->getWorkflowFile())
         {
-            $this->createWorkflowPNG($workflow, $root_path);
+            $workflow->createWorkflowPNG();
+            $workflow->createWfdescFile();
+            $this->driver->load($workflow->getWebPath()."/".basename($workflow->getWfdescAbsolutePath()));
         }
-    }
-    
-    private function createWorkflowPNG(\AppBundle\Entity\Workflow $workflow)
-    {
-        $command = "ruby ".__DIR__."/../../../src/AppBundle/Utils/script.rb ".$workflow->getWorkflowAbsolutePath()." ".$workflow->getUploadRootDir()."/workflow.svg";            
-        exec($command);
-    }
+    }        
     
     private function saveWorkflowHash(\AppBundle\Entity\Workflow $workflow) 
     {      
@@ -373,23 +356,7 @@ class Workflow
             }
         }"; 
         $this->driver->getResults($query);       
-    }
-    
-    protected function load(\AppBundle\Entity\Workflow $workflow, $file_path)
-    {        
-        $env = $this->container->get('kernel')->getEnvironment();
-        $path_url = '';
-        if ($env == 'dev')
-        {
-            $path_url = "http://"
-                . $this->container->get('request')->getHost();
-        }
-        $path_url .= $this->container->get('templating.helper.assets')
-                ->getUrl("/".$workflow->getWebPath()."/".basename($file_path), null, true, true);
-        
-        $query = "LOAD <".$path_url."> INTO graph <".$this->driver->getDefaultGraph().">";
-        $this->driver->getResults($query);
-    }
+    }        
     
     /**
      * Delete triples related to a workflow URI
