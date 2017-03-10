@@ -518,7 +518,7 @@ class Annotation
         return $this->driver->getResults($query);
         
     }
-    //TO-DO
+    
     public function deleteQualityAnnotation(\AppBundle\Entity\QualityAnnotation $qualityAnnotation, $type)
     { 
         $element_uri = "";
@@ -547,6 +547,35 @@ class Annotation
             }";
         
         return $this->driver->getResults($query);
+    }
+    
+    public function insertQualityMetricToQualityDimensionAnnotation(\AppBundle\Entity\QualityDimension $qualityDimension, $metric, $description, $user) 
+    {
+        $now = new Datetime();
+        //Confirmar com Lucas
+        $uri = Utils::convertNameToUri("Quality Metric", $qualityDimension->getName().'/'.$now->format('Ymdhis'));
+        
+        $qualityMetric = new \AppBundle\Entity\QualityMetric();
+        $qualityMetric->setUri($uri);
+        $qualityMetric->setQualityDimension($qualityDimension);
+        
+        $query = 
+        "INSERT        
+        { 
+            GRAPH <".$this->driver->getDefaultGraph('qualitymetric-annotation')."> 
+            { 
+                <".$qualityMetric->getUri()."> a w2share:QualityAnnotation;
+                oa:hasTarget <".$qualityDimension->getUri().">;
+                w2share:hasMetric '".$metric."';
+                w2share:hasDescription '".$description."';
+                oa:annotatedAt \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\";
+                oa:annotatedBy <".$user->getUri().">. 
+            }
+        }";
+        
+        $this->driver->getResults($query);    
+        
+        return $qualityMetric;
     }
     
     public function clearGraphQualityAnnotation()

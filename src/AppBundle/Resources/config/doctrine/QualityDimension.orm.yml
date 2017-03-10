@@ -15,3 +15,6 @@ AppBundle\Entity\QualityDimension:
         quality_annotation:
             targetEntity: QualityAnnotation
             mappedBy: quality_dimension
+        quality_metric:
+            targetEntity: QualityMetric
+            mappedBy: quality_dimension

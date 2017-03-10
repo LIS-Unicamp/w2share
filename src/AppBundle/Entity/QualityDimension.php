@@ -205,4 +205,42 @@ class QualityDimension {
     {
         return $this->quality_annotation;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $quality_metrics;
+
+
+    /**
+     * Add quality_metrics
+     *
+     * @param \AppBundle\Entity\QualityMetrics $qualityMetrics
+     * @return QualityDimension
+     */
+    public function addQualityMetric(\AppBundle\Entity\QualityMetrics $qualityMetrics)
+    {
+        $this->quality_metrics[] = $qualityMetrics;
+    
+        return $this;
+    }
+
+    /**
+     * Remove quality_metrics
+     *
+     * @param \AppBundle\Entity\QualityMetrics $qualityMetrics
+     */
+    public function removeQualityMetric(\AppBundle\Entity\QualityMetrics $qualityMetrics)
+    {
+        $this->quality_metrics->removeElement($qualityMetrics);
+    }
+
+    /**
+     * Get quality_metrics
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getQualityMetrics()
+    {
+        return $this->quality_metrics;
+    }
 }

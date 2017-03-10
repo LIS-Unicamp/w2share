@@ -435,4 +435,27 @@ class ScriptConverter
     {
         return $this->workflows;
     }
+
+    /**
+     * Set wro
+     *
+     * @param \AppBundle\Entity\WRO $wro
+     * @return ScriptConverter
+     */
+    public function setWro(\AppBundle\Entity\WRO $wro = null)
+    {
+        $this->wro = $wro;
+    
+        return $this;
+    }
+
+    /**
+     * Get wro
+     *
+     * @return \AppBundle\Entity\WRO 
+     */
+    public function getWro()
+    {
+        return $this->wro;
+    }
 }

@@ -436,8 +436,54 @@ class AnnotationController extends Controller
      * @Route("/annotation/qualitymetric/add/{qualitydimension_uri}", name="add-qualitymetric-annotation")
      */
     public function addQualityMetricAnnotationAction(Request $request, $qualitydimension_uri)
-    {   //TODO
-        return "something";
+    {   
+        $qualitydimension_uri = urldecode($qualitydimension_uri);
+        
+        $model_annotation = $this->get('model.annotation');
+        $model_qualitydimension = $this->get('model.qualitydimension'); 
+        
+        $quality_dimension = $model_qualitydimension->findOneQualityDimension($qualitydimension_uri);
+
+        //Annotation quality dimension and value
+        $qualityAnnotation = new \AppBundle\Entity\QualityAnnotation(); //verificar se existem as métricas
+
+        $form = $this->createForm(new \AppBundle\Form\QualityMetricAnnotationType(), $qualityAnnotation,
+                                          array(
+                                          'action' => $this->generateUrl('add-qualitymetric-annotation', 
+                                                                        array('qualitydimension_uri' => urlencode($qualitydimension_uri))),
+                                          'method' => 'POST'
+                                          ));
+        
+        $form->handleRequest($request);
+        
+        if ($form->isValid())
+        {   
+            $metric = $form->get('metric')->getData();
+            $description = $form->get('description')->getData();
+            $user = $this->getUser();
+            
+            $quality_annotation = $model_annotation->insertQualityMetricToQualityDimensionAnnotation($quality_dimension, $metric, $description, $user);
+            
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Quality metric assigned to quality dimension!');
+        }
+        
+        $query = $model_annotation->findQualityMetricByQualityDimension($qualitydimension_uri);
+        
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+        
+        return $this->render('qualityflow/quality-metrics-form.html.twig', array(
+            'pagination' => $pagination,
+            'form' => $form->createView(),
+            'qualitydimension_uri' => $qualitydimension_uri, 
+            'quality_dimension' => $quality_dimension
+        )); 
         
     }
     

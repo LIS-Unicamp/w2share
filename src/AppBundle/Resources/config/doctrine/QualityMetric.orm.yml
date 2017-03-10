@@ -1,0 +1,17 @@
+AppBundle\Entity\QualityMetric: 
+    type: entity
+    fields:   
+        uri:
+            type: string
+        metric:
+            type: string
+        description:
+            type: string
+        result:
+            type: string
+        creator:
+            type: string
+    manyToOne:
+        quality_dimension:
+            targetEntity: QualityDimension
+            inversedBy: quality_metric
