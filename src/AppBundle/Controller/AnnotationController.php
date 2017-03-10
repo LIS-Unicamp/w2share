@@ -418,6 +418,58 @@ class AnnotationController extends Controller
         return $this->redirect($this->generateUrl('homepage'));
     }  
     
+    
+    /**
+     * Quality Metrics
+     */
+    
+    /**
+     * @Route("/annotation/qualitymetrics-annotations", name="qualitymetrics-annotations") 
+     */
+    public function qualityMetricsAnnotationListAction(Request $request)
+    {   //TODO
+        return "something";
+    }
+    
+    /**
+     * 
+     * @Route("/annotation/qualitymetric/add/{qualitydimension_uri}", name="add-qualitymetric-annotation")
+     */
+    public function addQualityMetricAnnotationAction(Request $request, $qualitydimension_uri)
+    {   //TODO
+        return "something";
+        
+    }
+    
+    /**
+     * 
+     * @Route("/annotation/qualitymetric/edit/{qualitymetric_uri}", name="edit-qualitymetric-annotation")
+     */
+    public function editQualityMetricAnnotationAction(Request $request, $qualitymetric_uri)
+    {   //TODO
+        return "something";
+        
+    }
+    
+    /**
+     * 
+     * @Route("/annotation/qualitymetric/compute/{qualitymetric_uri}", name="compute-qualitymetric-annotation")
+     */
+    public function computicQualityMetric(Request $request)
+    {   //TODO
+        return "something";
+    }
+
+
+    /**
+     * @Route("/annotation/qualitymetric/reset", name="qualitymetric-annotation-reset")
+     */
+    public function qualityMetricAnnotationResetAction(Request $request)
+    {      //TODO             
+        
+        return $this->redirect($this->generateUrl('homepage'));
+    }  
+    
     /**
      * @Route("/annotatation/reset", name="annotation-reset")
      */
