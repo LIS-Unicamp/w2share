@@ -366,7 +366,7 @@
 
     var graphViewer = document.getElementById("graph-viewer");
 
-    $timeout(onLoadInitialScript, 100);
+    $timeout(onLoadInitialScript, 1000);
   };
 
   app.controller("MainController", ["$scope", "$http", "$timeout", 'FileSaver', 'Blob', '$window', MainController]);

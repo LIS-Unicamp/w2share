@@ -96,6 +96,7 @@ class ScriptConverterController extends Controller
         if ($request->get('language'))
         {
             $language = $request->get('language');
+            $this->get('session')->set('language', $language);
         }
         else {
             $language = $this->get('session')->get('language');
