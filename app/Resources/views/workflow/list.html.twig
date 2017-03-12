@@ -32,6 +32,7 @@
             <td style="width:150px">
                 <a href="{{ path('workflow-details', { 'workflow_uri':row.uri|url_encode() }) }}" title="Go to Workflow details"><i class="glyphicon glyphicon-search"></i></a>
                 <a href="{{ path('workflow-edit', { 'workflow_uri':row.uri|url_encode() }) }}" title="Edit Workflow"><i class="glyphicon glyphicon-edit"></i></a>
+                <a href="{{ path("workflow-download", { 'hash': row.hash }) }}" title="Download Workflow Specification"><i class="glyphicon glyphicon-download-alt"></i></a>
                 <a href="{{ path('workflow-delete', { 'workflow_uri':row.uri|url_encode() }) }}" title="Delete Workflow" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
                 <a href="{{ path('provenance-workflow', { 'workflow_uri':row.uri|url_encode() }) }}" title="Go to Workflow Runs"><i class="glyphicon glyphicon-fast-backward"></i></a>
                 <a href="{{ path('element-qualitydimension-annotation', { 'element_uri':row.uri|url_encode(), 'type':'workflow' }) }}" title="Add Quality Annotation"><i class="glyphicon glyphicon-pencil"></i></a>

@@ -91,10 +91,14 @@
         </tbody>
     </table>
 </div>
-<h2>Abstract Workflow</h2>
-{% if workflow %}
-<img src="{{ asset('uploads/documents/w2share/' ~ workflow.hash ~ '/workflow.svg')}}">
-{% endif %}
+<h2>Executable Workflow</h2>
+<div class="alert alert-info">
+    <p>
+        Download workflow specification for Taverna System (T2Flow format for Taverna 2.5): 
+        <a href="{{ path("workflow-download", { 'hash': workflow.hash }) }}" title="Download Workflow Specification" class="btn btn-xs"><i class="glyphicon glyphicon-download-alt"></i></a>
+    </p>
+</div>
+<img src="{{ asset('uploads/documents/w2share/' ~ workflow.hash ~ '/workflow.svg')}}" alt="Workflow rendering for Taverna workflow system." title="Workflow rendering for Taverna workflow system.">
 
 <h2>Workflow Runs</h2>
 <div class="table-responsive">

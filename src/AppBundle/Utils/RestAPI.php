@@ -48,7 +48,7 @@ class RestAPI
     
     public function getDomainSPAQL()
     {
-        $prod_domain = "10.1.1.32:8890/sparql";
+        $prod_domain = "localhost:8890/sparql";
         $dev_domain = "localhost:8890/sparql";
     
         if ($this->env == "prod")
@@ -61,7 +61,7 @@ class RestAPI
     
     public function getDomain()
     {
-        $prod_domain = "10.1.1.32";
+        $prod_domain = "w2share.lis.ic.unicamp.br";
         $dev_domain = "localhost";
     
         if ($this->env == "prod")

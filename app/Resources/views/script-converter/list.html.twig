@@ -69,7 +69,7 @@
                         </label>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                           <li><a href="{{ path("script-converter-workflow-image-download", { 'hash': row.hash }) }}" title="Download Workflow Image">Workflow Image</a></li>
-                          <li><a href="{{ path("script-converter-workflow-download", { 'hash': row.hash }) }}" title="Download Workflow Specification">Workflow Specification</a></li>
+                          <li><a href="{{ path("workflow-download", { 'hash': row.hash }) }}" title="Download Workflow Specification">Workflow Specification</a></li>
                           <li><a href="{{ path("script-converter-provenance-download", { 'hash': row.hash }) }}" title="Download Provenance data">Provenance Data</a></li>
                         </ul>
                     </label>

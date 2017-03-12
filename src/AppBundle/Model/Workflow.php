@@ -123,7 +123,10 @@ class Workflow
         {
             $process = new \AppBundle\Entity\Process();
             $process->setUri($process_array[$i]['process']['value']);
-            $process->setDescription($process_array[$i]['description']['value']);
+            if (array_key_exists('description', $process_array[$i]))
+            {
+                $process->setDescription($process_array[$i]['description']['value']);
+            }
             $process->setLabel($process_array[$i]['label']['value']);            
                 
             $workflow = new \AppBundle\Entity\Workflow();

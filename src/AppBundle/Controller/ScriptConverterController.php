@@ -274,42 +274,7 @@ class ScriptConverterController extends Controller
         $response->sendHeaders();
 
         return $response->setContent($content);
-    }
-    
-    /**
-     * @Route("/script-converter/workflow/download", options={"expose"=true}, name="script-converter-workflow-download")
-     */
-    public function downloadWorkflowAction(Request $request)
-    {      
-        if ($request->get('hash') && $request->get('language'))
-        {
-            $language = $request->get('language');        
-            $hash = $request->get('hash');
-        }
-        else
-        {
-            $language = $this->get('session')->get('language');        
-            $hash = $this->get('session')->get('hash');
-        }
-        $converter = new \AppBundle\Entity\ScriptConverter();
-        $converter->setScriptLanguage($language);
-        $converter->setHash($hash);
-        $content = $converter->getWorkflowT2FlowFile();
-        $file_path = $converter->getWorkflowT2FlowFilepath();
-                
-        $response = new \Symfony\Component\HttpFoundation\Response();   
-        
-        // Set headers
-        $response->headers->set('Cache-Control', 'private');
-        $response->headers->set('Content-type', mime_content_type($file_path));
-        $response->headers->set('Content-Disposition', 'attachment; filename="'.basename($file_path).'";');
-        $response->headers->set('Content-length', filesize($file_path));
-
-        // Send headers before outputting anything
-        $response->sendHeaders();
-
-        return $response->setContent($content);
-    }
+    }        
     
     /**
      * @Route("/script-converter/workflow/image/download", options={"expose"=true}, name="script-converter-workflow-image-download")
@@ -397,14 +362,14 @@ class ScriptConverterController extends Controller
     }
     
     /**
-     * @Route("/script-converter/workflow/image", options={"expose"=true}, name="script-converter-workflow-image")
+     * @Route("/script-converter/draft-workflow/image", options={"expose"=true}, name="script-converter-draft-workflow-image")
      */
     public function workflowImageJsonAction(Request $request)
     {       
         $hash = $this->get('session')->get('hash');        
         $converter = new \AppBundle\Entity\ScriptConverter();
         $converter->setHash($hash);
-        $content = $converter->getWorkflowImage();
+        $content = $converter->getDraftWorkflowImage();
         
         $array = array('svg' => $content);
         

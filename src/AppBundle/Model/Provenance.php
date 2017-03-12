@@ -24,8 +24,9 @@ class Provenance
                 ?workflowRun prov:endedAtTime ?endedAtTime.
                 ?workflowRun prov:startedAtTime ?startedAtTime.
                 ?workflowRun wfprov:describedByWorkflow ".(($workflow_uri)?"<".$workflow_uri.">":"?workflow").".
-                ".(($workflow_uri)?"<".$workflow_uri.">":"?workflow")." dcterms:title ?title.
-                ".(($workflow_uri)?"<".$workflow_uri.">":"?workflow")." dcterms:description ?description.
+                OPTIONAL { ".(($workflow_uri)?"<".$workflow_uri.">":"?workflow")." dcterms:title ?title. }
+                OPTIONAL { ".(($workflow_uri)?"<".$workflow_uri.">":"?workflow")." rdfs:label ?wlabel. }
+                OPTIONAL { ".(($workflow_uri)?"<".$workflow_uri.">":"?workflow")." dcterms:description ?description. }
             }}
             ORDER BY  DESC(?startedAtTime)
             ";
@@ -42,8 +43,19 @@ class Provenance
             
             $workflow = new \AppBundle\Entity\Workflow();
             $workflow->setUri(($workflow_uri)?$workflow_uri:$workflows_run_array[$i]['workflow']['value']);
-            $workflow->setTitle(($workflow_uri)?$workflow_uri:$workflows_run_array[$i]['title']['value']);
-            $workflow->setDescription(($workflow_uri)?$workflow_uri:$workflows_run_array[$i]['description']['value']);
+            
+            if (array_key_exists('title', $workflows_run_array[$i]))
+            {
+                $workflow->setTitle(($workflow_uri)?$workflow_uri:$workflows_run_array[$i]['title']['value']);
+            }
+            if (array_key_exists('description', $workflows_run_array[$i]))
+            {
+                $workflow->setDescription(($workflow_uri)?$workflow_uri:$workflows_run_array[$i]['description']['value']);
+            }
+            if (array_key_exists('wlabel', $workflows_run_array[$i]))
+            {
+                $workflow->setLabel(($workflow_uri)?$workflow_uri:$workflows_run_array[$i]['wlabel']['value']);
+            }
             $workflowRun->setWorkflow($workflow);
             
             $workflowsRun[] = $workflowRun;

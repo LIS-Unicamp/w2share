@@ -15,12 +15,13 @@
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
           <li><a ng-click="downloadScript()" title="Download Script">Script</a></li>
           <li><a ng-click="downloadGraphImage()" title="Download Graph Image">Graph Image</a></li>
-          <li><a ng-click="downloadWorkflowImage()" title="Download Workflow Image">Workflow Image</a></li>
-          <li><a ng-click="downloadWorkflow()" title="Download Workflow">Workflow</a></li>
+          <li><a ng-click="downloadWorkflowImage()" title="Download Draft Workflow Image">Draft Workflow Image</a></li>
+          <li><a ng-click="downloadWorkflow()" title="Download Workflow">Draft Workflow</a></li>
         </ul>
     </label>
-    <a class="btn btn-default" href="{{ path("script-converter-upload") }}"><i class="fa fa-upload"></i> Upload</a>    
-    <a class="btn btn-default" href="{{ path("script-converter-restart") }}"><i class="fa fa-refresh"></i> Restart</a>    
+    <a class="btn btn-default" href="{{ path("script-converter-upload") }}"><i class="fa fa-forward"></i> Next</a>    
+    <a class="btn btn-default" href="{{ path("script-converter-editor") }}"><i class="fa fa-refresh"></i> Refresh</a>    
+    <a class="btn btn-default" href="{{ path("script-converter-restart") }}"><i class="glyphicon glyphicon-plus"></i> New</a>    
     <a class="btn btn-default" href="{{ path("script-converter-list") }}"><i class="fa fa-list"></i> List</a>    
     {% endif %}
     <div id="viewer-mode-btn-group" class="btn-group btn-group-xs viewer-option">                        

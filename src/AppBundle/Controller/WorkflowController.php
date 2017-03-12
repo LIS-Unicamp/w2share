@@ -130,7 +130,39 @@ class WorkflowController extends Controller
             'form' => $form->createView(),
             'workflow' => $workflow
         ));
-    }       
+    }     
+    
+    /**
+     * @Route("/workflow/download", options={"expose"=true}, name="workflow-download")
+     */
+    public function downloadWorkflowAction(Request $request)
+    {      
+        if ($request->get('hash'))
+        {
+            $hash = $request->get('hash');
+        }
+        else
+        {
+            $hash = $this->get('session')->get('hash');
+        }
+        $converter = new \AppBundle\Entity\ScriptConverter();
+        $converter->setHash($hash);
+        $content = $converter->getWorkflowT2FlowFile();
+        $file_path = $converter->getWorkflowT2FlowFilepath();
+                
+        $response = new \Symfony\Component\HttpFoundation\Response();   
+        
+        // Set headers
+        $response->headers->set('Cache-Control', 'private');
+        $response->headers->set('Content-type', mime_content_type($file_path));
+        $response->headers->set('Content-Disposition', 'attachment; filename="'.basename($file_path).'";');
+        $response->headers->set('Content-length', filesize($file_path));
+
+        // Send headers before outputting anything
+        $response->sendHeaders();
+
+        return $response->setContent($content);
+    }
     
     /**
      * @Route("/workflow/process/{process_uri}", name="workflow-process")

@@ -56,12 +56,12 @@
     
     $scope.downloadWorkflowImage = function() {
         var file = new Blob([workflow_image.svg], {type: "image/svg+xml"});
-        FileSaver.saveAs(file, 'concrete-workflow.svg');
+        FileSaver.saveAs(file, 'draft-workflow.svg');
     }
     
     $scope.downloadWorkflow = function() 
     {        
-        window.location = $window.Routing.generate('script-converter-workflow-download',{},'true');
+        window.location = $window.Routing.generate('script-converter-draft-workflow-download',{},'true');
     }
     
     $scope.saveScript = function() {
@@ -185,25 +185,7 @@
       
       var content = null;
       
-      switch($scope.viewerMode) {
-        
-        case "skeleton":
-          if (graph.skeleton) {
-            $scope.showGraphViewer = false;
-            viewer.setValue(graph.skeleton);
-          } else {
-            viewer.setValue(graph.error)
-          }
-          break;
-        
-        case "dot":
-          $scope.showGraphViewer = false;
-          if (graph.dot) {
-            viewer.setValue(graph.dot);
-          } else {
-            viewer.setValue(graph.error)
-          }
-          break;
+      switch($scope.viewerMode) {                
           
         case "graph":
           if (graph.svg) {
@@ -222,13 +204,12 @@
         case "workflow":
           $scope.showGraphViewer = true;
           $http.get(
-            $window.Routing.generate('script-converter-workflow-image',{},'true')
+            $window.Routing.generate('script-converter-draft-workflow-image',{},'true')
           )
           .then(function(response) {
             workflow_image = response.data;
-            var svgElementStart = workflow_image.svg.search("<svg");
-            var svgElement = workflow_image.svg.substring(svgElementStart);
-            graphViewer.innerHTML = svgElement;          
+            updateViewer(); 
+            updateSvg();
           });                  
           break;
       }
@@ -249,9 +230,19 @@
     var updateSvg = function() {
 
       if (graph.svg == null) return;
+      
+      switch($scope.viewerMode) {                
+          
+        case "graph":
 
-      var svgElementStart = graph.svg.search("<svg");
-      var svgElement = graph.svg.substring(svgElementStart);
+            var svgElementStart = graph.svg.search("<svg");
+            var svgElement = graph.svg.substring(svgElementStart);
+            break;
+        case "workflow":
+            var svgElementStart = workflow_image.svg.search("<svg");
+            var svgElement = workflow_image.svg.substring(svgElementStart);
+            break;
+      }
       graphViewer.innerHTML = svgElement;
       svg = graphViewer.getElementsByTagName("svg")[0];      
       svg.setAttribute("preserveAspectRatio", "xMinYMin meet");

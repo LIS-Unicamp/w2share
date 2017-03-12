@@ -229,7 +229,6 @@ class Workflow
                 // clear the temp image path
                 $this->workflow_temp = null;
             }
-            $this->workflow_file = null;
         }
         
         if (null !== $this->getProvenanceFile())
@@ -246,7 +245,6 @@ class Workflow
                 // clear the temp image path
                 $this->provenance_temp = null;
             }
-            $this->provenance_file = null;
         }                
         
     }
@@ -276,15 +274,7 @@ class Workflow
      */
     public function getWorkflowFile()
     {
-        if ($this->workflow_file)
-        {
-            return $this->workflow_file;
-        }
-        else if (file_exists($this->getWorkflowAbsolutePath()))
-        {
-            return file_get_contents($this->getWorkflowAbsolutePath());
-        }
-        return null;
+        return $this->workflow_file;        
     }       
     
     /**
@@ -294,15 +284,7 @@ class Workflow
      */
     public function getProvenanceFile()
     {
-        if ($this->provenance_file)
-        {
-            return $this->provenance_file;
-        }
-        else if (file_exists($this->getProvenanceAbsolutePath()))
-        {
-            return file_get_contents($this->getProvenanceAbsolutePath());
-        }
-        return null;
+        return $this->provenance_file;        
     }
     
     public function getProvenanceAbsolutePath()
