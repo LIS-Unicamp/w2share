@@ -10,7 +10,7 @@ namespace AppBundle\Entity;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
- * QualityMetrics
+ * QualityMetric
  */
 class QualityMetric {
     
@@ -81,7 +81,7 @@ class QualityMetric {
      * Set uri
      *
      * @param string $uri
-     * @return QualityMetrics
+     * @return QualityMetric
      */
     public function setUri($uri)
     {
@@ -104,7 +104,7 @@ class QualityMetric {
      * Set result
      *
      * @param string $result
-     * @return QualityMetrics
+     * @return QualityMetric
      */
     public function setResult($result)
     {
@@ -127,7 +127,7 @@ class QualityMetric {
      * Set creator
      *
      * @param string $creator
-     * @return QualityMetrics
+     * @return QualityMetric
      */
     public function setCreator($creator)
     {
@@ -150,7 +150,7 @@ class QualityMetric {
      * Set quality_dimension
      *
      * @param \AppBundle\Entity\QualityDimension $qualityDimension
-     * @return QualityMetrics
+     * @return QualityMetric
      */
     public function setQualityDimension(\AppBundle\Entity\QualityDimension $qualityDimension = null)
     {

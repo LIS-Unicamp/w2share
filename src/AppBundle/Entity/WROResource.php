@@ -142,30 +142,7 @@ class WROResource
     public function getAnnotations()
     {
         return $this->annotations;
-    } 
-    
-    /**
-     * Set wro
-     *
-     * @param \AppBundle\Entity\WRO $wro
-     * @return ROAnnotation
-     */
-    public function setWRO(\AppBundle\Entity\WRO $wro = null)
-    {
-        $this->wro = $wro;
-    
-        return $this;
-    }
-
-    /**
-     * Get wro
-     *
-     * @return \AppBundle\Entity\WRO 
-     */
-    public function getWRO()
-    {
-        return $this->wro;
-    }
+    }            
 
     /**
      * Set wro

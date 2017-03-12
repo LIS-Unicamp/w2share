@@ -1,8 +1,9 @@
 AppBundle\Entity\InputRun: 
     type: entity
-    fields:   
+    id:
         uri:
             type: string
+    fields: 
         content:
             type: string
     manyToOne:

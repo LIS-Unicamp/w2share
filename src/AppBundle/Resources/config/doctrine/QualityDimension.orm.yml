@@ -1,8 +1,9 @@
 AppBundle\Entity\QualityDimension: 
     type: entity
-    fields:   
+    id:
         uri:
             type: string
+    fields: 
         name:
             type: string
         description:
@@ -15,6 +16,6 @@ AppBundle\Entity\QualityDimension:
         quality_annotation:
             targetEntity: QualityAnnotation
             mappedBy: quality_dimension
-        quality_metric:
+        quality_metrics:
             targetEntity: QualityMetric
             mappedBy: quality_dimension

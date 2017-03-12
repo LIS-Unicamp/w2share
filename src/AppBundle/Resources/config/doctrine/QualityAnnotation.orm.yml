@@ -1,10 +1,11 @@
 AppBundle\Entity\QualityAnnotation: 
     type: entity
+    id:
+        uri:
+            type: string
     fields: 
         qualityDimension:
             type: object
-        uri:
-            type: string
         value:
             type: string
         created_at_time:

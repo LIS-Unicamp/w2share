@@ -1,8 +1,9 @@
 AppBundle\Entity\WROAnnotation: 
     type: entity
-    fields: 
+    id:
         uri:
             type: string
+    fields: 
         description:
             type: string        
         created_at:

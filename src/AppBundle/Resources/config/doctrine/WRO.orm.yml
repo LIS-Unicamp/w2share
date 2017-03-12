@@ -1,8 +1,9 @@
 AppBundle\Entity\WRO: 
     type: entity
-    fields: 
+    id:
         uri:
             type: string
+    fields: 
         description:
             type: string
         title:

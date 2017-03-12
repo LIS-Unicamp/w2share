@@ -1,8 +1,9 @@
 AppBundle\Entity\QualityMetric: 
-    type: entity
-    fields:   
+    type: entity    
+    id:
         uri:
             type: string
+    fields: 
         metric:
             type: string
         description:
@@ -14,4 +15,4 @@ AppBundle\Entity\QualityMetric:
     manyToOne:
         quality_dimension:
             targetEntity: QualityDimension
-            inversedBy: quality_metric
+            inversedBy: quality_metrics

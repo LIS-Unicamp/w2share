@@ -1,8 +1,9 @@
 AppBundle\Entity\ProcessRun: 
     type: entity
-    fields:  
+    id:
         uri:
-            type: string        
+            type: string
+    fields:         
         label:
             type: string
         started_at_time:

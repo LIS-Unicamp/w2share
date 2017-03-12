@@ -214,12 +214,12 @@ class QualityDimension {
     /**
      * Add quality_metrics
      *
-     * @param \AppBundle\Entity\QualityMetrics $qualityMetrics
+     * @param \AppBundle\Entity\QualityMetric $qualityMetric
      * @return QualityDimension
      */
-    public function addQualityMetric(\AppBundle\Entity\QualityMetrics $qualityMetrics)
+    public function addQualityMetric(\AppBundle\Entity\QualityMetric $qualityMetric)
     {
-        $this->quality_metrics[] = $qualityMetrics;
+        $this->quality_metrics[] = $qualityMetric;
     
         return $this;
     }
@@ -227,11 +227,11 @@ class QualityDimension {
     /**
      * Remove quality_metrics
      *
-     * @param \AppBundle\Entity\QualityMetrics $qualityMetrics
+     * @param \AppBundle\Entity\QualityMetric $qualityMetric
      */
-    public function removeQualityMetric(\AppBundle\Entity\QualityMetrics $qualityMetrics)
+    public function removeQualityMetric(\AppBundle\Entity\QualityMetric $qualityMetric)
     {
-        $this->quality_metrics->removeElement($qualityMetrics);
+        $this->quality_metrics->removeElement($qualityMetric);
     }
 
     /**

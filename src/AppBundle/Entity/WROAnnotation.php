@@ -107,10 +107,10 @@ class WROAnnotation
     /**
      * Set resource
      *
-     * @param \AppBundle\Entity\ROResource $resource
+     * @param \AppBundle\Entity\WROResource $resource
      * @return ROAnnotation
      */
-    public function setResource(\AppBundle\Entity\ROResource $resource = null)
+    public function setResource(\AppBundle\Entity\WROResource $resource = null)
     {
         $this->resource = $resource;
     
@@ -120,35 +120,12 @@ class WROAnnotation
     /**
      * Get resource
      *
-     * @return \AppBundle\Entity\ROResource 
+     * @return \AppBundle\Entity\WROResource 
      */
     public function getResource()
     {
         return $this->resource;
-    }
-
-    /**
-     * Set wro
-     *
-     * @param \AppBundle\Entity\WRO $wro
-     * @return ROAnnotation
-     */
-    public function setWRO(\AppBundle\Entity\WRO $wro = null)
-    {
-        $this->wro = $wro;
-    
-        return $this;
-    }
-
-    /**
-     * Get wro
-     *
-     * @return \AppBundle\Entity\WRO 
-     */
-    public function getWRO()
-    {
-        return $this->wro;
-    }
+    }   
 
     /**
      * Set wro

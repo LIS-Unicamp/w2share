@@ -1,8 +1,9 @@
 AppBundle\Entity\WorkflowRun: 
     type: entity
-    fields:   
+    id:
         uri:
             type: string
+    fields: 
         label:
             type: string
         started_at_time:

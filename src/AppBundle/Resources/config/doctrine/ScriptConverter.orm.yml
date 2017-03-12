@@ -1,8 +1,9 @@
 AppBundle\Entity\ScriptConverter: 
     type: entity
-    fields: 
+    id:
         uri:
             type: string
+    fields: 
         description:
             type: string
         title:

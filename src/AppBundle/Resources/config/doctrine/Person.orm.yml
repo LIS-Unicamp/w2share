@@ -1,8 +1,9 @@
 AppBundle\Entity\Person: 
-    type: entity
-    fields:   
+    type: entity    
+    id:
         uri:
             type: string
+    fields: 
         name:
             type: string
         email:
