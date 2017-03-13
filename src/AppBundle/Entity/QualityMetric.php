@@ -27,17 +27,17 @@ class QualityMetric {
     
     /**
      * 
-     * @param type $title
+     * @param type $metric
      */
     public function setMetric($metric) {
-        $this->title = $title;
+        $this->meric = $metric;
     }
     /**
      * 
      * @return string
      */
     public function getMetric() {
-        return $this->title;
+        return $this->metric;
     }
 
     /**

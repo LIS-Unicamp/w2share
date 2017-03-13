@@ -39,13 +39,54 @@
     <div class="form-actions">
         {% if qualityMetric.uri %} 
             {{ form_widget(form.save, { 'label':'Edit' }) }} 
-            <a class="btn btn-primary" href="{{ path('add-qualitymetric-annotation') }}">Add</a> 
         {% else %}
             {{ form_widget(form.save, { 'label':'Add' }) }}
         {% endif %}
-        <a href="{{ path('qualitymetrics-annotations') }}" class="btn btn-info">List</a>
+        <a href="" class="btn btn-info">List</a>
     </div>
     {{ form_end(form) }}
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Actions</th>
+                <th>Dimension</th>
+                <th>Metric</th>
+                <th>Description</th>
+                <th>Author</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for metric in pagination %}
+                <tr>
+                    <td>
+                        <a href="" 
+                           title="Delete quality metric" ><i class="glyphicon glyphicon-trash"></i></a> 
+                        <a href="" 
+                           title="Edit quality annotations"><i class="glyphicon glyphicon-edit"></i></a> 
+                    </td>
+                    <td>{{ metric.qualityDimension.name }}</td>
+                    <td>{{ metric.metric }}</td>
+                    <td>{{ metric.description }}</td>
+                    <td>{{ metric.creator }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div> 
+<div class="row">
+    <div class="col-sm-12">
+        <div class="navigation">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        {{ app_pagination_render(pagination) }}
+    </div>
 </div>
     
 {% endblock %}  
