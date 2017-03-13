@@ -166,4 +166,88 @@ class WROResource
     {
         return $this->wro;
     }
+    /**
+     * @var string
+     */
+    private $filename;
+
+    /**
+     * @var string
+     */
+    private $folder;
+
+    /**
+     * @var string
+     */
+    private $description;
+
+
+    /**
+     * Set filename
+     *
+     * @param string $filename
+     * @return WROResource
+     */
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
+    
+        return $this;
+    }
+
+    /**
+     * Get filename
+     *
+     * @return string 
+     */
+    public function getFilename()
+    {
+        return $this->filename;
+    }
+
+    /**
+     * Set folder
+     *
+     * @param string $folder
+     * @return WROResource
+     */
+    public function setFolder($folder)
+    {
+        $this->folder = $folder;
+    
+        return $this;
+    }
+
+    /**
+     * Get folder
+     *
+     * @return string 
+     */
+    public function getFolder()
+    {
+        return $this->folder;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return WROResource
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
 }

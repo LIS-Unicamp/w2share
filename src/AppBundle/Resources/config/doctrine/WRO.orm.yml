@@ -12,7 +12,10 @@ AppBundle\Entity\WRO:
             type: string
         created_at:
             type: datetime
-        
+    oneToOne:
+        workflow:
+            targetEntity: Workflow
+    
     oneToMany:
         resources:
             targetEntity: WROResource

@@ -20,6 +20,8 @@ AppBundle\Entity\ScriptConverter:
     oneToOne:
         wro:
             targetEntity: WRO
+        workflow:
+            targetEntity: Workflow
     oneToMany:
         workflows:
             targetEntity: Workflow

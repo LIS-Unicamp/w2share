@@ -119,6 +119,8 @@ class ScriptConverter
             ?uri <w2share:scriptLanguage> ?scriptLanguage.
             ?uri <w2share:createdAt> ?createdAt.
             ?uri <w2share:updatedAt> ?updatedAt.
+            OPTIONAL { ?uri <w2share:hasWorkflow> ?workflow. }
+            OPTIONAL { ?uri <w2share:hasWorkflowResearchObject> ?wro. }
             ?uri <dc:creator> ?creator. 
             ?creator <foaf:name> ?name.
         }";   
@@ -134,6 +136,20 @@ class ScriptConverter
             $converter->setCreatedAt(new \Datetime($result_array[$i]['createdAt']['value']));
             $converter->setUpdatedAt(new \Datetime($result_array[$i]['updatedAt']['value']));
             $converter->setScriptLanguage($result_array[$i]['scriptLanguage']['value']);
+            
+            if (array_key_exists('workflow', $result_array[$i]))
+            {
+                $workflow = new \AppBundle\Entity\Workflow();
+                $workflow->setUri($result_array[$i]['workflow']['value']);
+                $converter->setWorkflow($workflow);
+            }
+            
+            if (array_key_exists('wro', $result_array[$i]))
+            {
+                $wro = new \AppBundle\Entity\WRO();
+                $wro->setUri($result_array[$i]['wro']['value']);
+                $converter->setWro($wro);
+            }
             
             $creator = new \AppBundle\Entity\Person();
             $creator->setUri($result_array[$i]['creator']['value']);
@@ -156,6 +172,9 @@ class ScriptConverter
             <".$conversion->getUri()."> <w2share:scriptLanguage> ?scriptLanguage.
             <".$conversion->getUri()."> <w2share:createdAt> ?createdAt.
             <".$conversion->getUri()."> <w2share:updatedAt> ?updatedAt.
+            <".$conversion->getUri()."> <w2share:hasWorkflow> ?workflow.
+            <".$conversion->getUri()."> <w2share:hasWorkflowResearchObject> ?wro.
+            <".$conversion->getUri()."> <w2share:updatedAt> ?updatedAt.
             <".$conversion->getUri()."> <dc:creator> ?creator. 
         }
         INSERT
@@ -165,23 +184,49 @@ class ScriptConverter
             <".$conversion->getUri()."> <w2share:scriptLanguage> '".$conversion->getScriptLanguage()."'.
             <".$conversion->getUri()."> <w2share:createdAt> '".$conversion->getCreatedAt()->format(\DateTime::ISO8601)."'.
             <".$conversion->getUri()."> <w2share:updatedAt> '".$conversion->getUpdatedAt()->format(\DateTime::ISO8601)."'.
-            <".$conversion->getUri()."> <dc:creator> <".$conversion->getCreator()->getUri().">. 
+            <".$conversion->getUri()."> <dc:creator> <".$conversion->getCreator()->getUri().">.
+        ";
+        
+        if ($conversion->getWorkflow())
+        {
+            $query .= "<".$conversion->getUri()."> <w2share:hasWorkflow> <".$conversion->getWorkflow()->getUri().">.\n";
         }
+        if ($conversion->getWro())
+        {
+            $query .= "<".$conversion->getUri()."> <w2share:hasWorkflowResearchObject> <".$conversion->getWro()->getUri().">.\n";
+        }
+        
+        $query .= "}
         WHERE 
         { 
             <".$conversion->getUri()."> a <w2share:ScriptConversion>.
             <".$conversion->getUri()."> <w2share:hash> ?hash.
             <".$conversion->getUri()."> <w2share:scriptLanguage> ?scriptLanguage.
             <".$conversion->getUri()."> <w2share:createdAt> ?createdAt.
+            OPTIONAL { <".$conversion->getUri()."> <w2share:hasWorkflow> ?workflow. }
+            OPTIONAL { <".$conversion->getUri()."> <w2share:hasWorkflowResearchObject> ?wro. }
             <".$conversion->getUri()."> <w2share:updatedAt> ?updatedAt.
             <".$conversion->getUri()."> <dc:creator> ?creator. 
         }"; 
-        
         return $this->driver->getResults($query);
     }
     
     public function deleteScriptConversion(\AppBundle\Entity\ScriptConverter $conversion)
     {
+        $workflow = $conversion->getWorkflow();
+        if ($workflow)
+        {
+            $model = $this->container->get('model.workflow');
+            $model->deleteWorkflow($workflow);
+        }
+        
+        $wro = $conversion->getWro();
+        if ($wro)
+        {
+            $model = $this->container->get('model.wro');
+            $model->deleteWro($wro);
+        }
+        
         $query = 
         "DELETE data FROM <".$this->driver->getDefaultGraph('scriptconverter')."> { 
             <".$conversion->getUri()."> a <w2share:ScriptConversion>.
@@ -190,7 +235,18 @@ class ScriptConverter
             <".$conversion->getUri()."> <w2share:createdAt> '".$conversion->getCreatedAt()->format(\DateTime::ISO8601)."'.
             <".$conversion->getUri()."> <w2share:updatedAt> '".$conversion->getUpdatedAt()->format(\DateTime::ISO8601)."'.
             <".$conversion->getUri()."> <dc:creator> <".$conversion->getCreator()->getUri().">. 
-        }"; 
+        "; 
+        
+        if ($conversion->getWorkflow())
+        {
+            $query .= "<".$conversion->getUri()."> <w2share:hasWorkflow> <".$conversion->getWorkflow()->getUri().">.\n";
+        }
+        if ($conversion->getWro())
+        {
+            $query .= "<".$conversion->getUri()."> <w2share:hasWorkflowResearchObject> <".$conversion->getWro()->getUri().">.\n";
+        }
+        
+        $query .= "}";
         
         $this->driver->getResults($query);
         
@@ -201,7 +257,15 @@ class ScriptConverter
     public function addWorkflow(\AppBundle\Entity\Workflow $workflow)
     {                        
         $this->editWorkflow($workflow);
-        $this->saveWorkflowHash($workflow);        
+        $this->saveWorkflowHash($workflow); 
+        $this->addWorkflowIntoConversion($workflow);
+    }
+    
+    public function addWorkflowIntoConversion(\AppBundle\Entity\Workflow $workflow)
+    {
+        $conversion = $this->findOneScriptConversionByHash($workflow->getHash());
+        $conversion->setWorkflow($workflow);
+        $this->updateScriptConversion($conversion);
     }
     
     public function getURIFromWfdesc(\AppBundle\Entity\Workflow $workflow)

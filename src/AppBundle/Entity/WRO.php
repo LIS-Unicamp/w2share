@@ -108,6 +108,11 @@ class WRO
         return $this->getUploadRootDir().'/wro-bundle.zip';
     }
     
+    public function getWROScriptAbsolutePath()
+    {
+        return $this->getUploadRootDir().'/script.sh';
+    }
+    
     public function getWebPath()
     {
         return $this->getUploadDir().'/wro-bundle.zip';
@@ -228,6 +233,25 @@ class WRO
     {
         return $this->created_at;
     }
+    
+    /**
+     * Add resources
+     *
+     * @param \AppBundle\Entity\WROResource $resources
+     * @return ResearchObject
+     */
+    public function addResourceBuilder($uri, $filename, $folder, $description, $type)
+    {
+        $resource = new WROResource();
+        $resource->setFilename($filename);
+        $resource->setDescription($description);
+        $resource->setFolder($folder);
+        $resource->setUri($uri);
+        $resource->setType($type);
+        $this->resources[] = $resource;
+    
+        return $this;
+    }
 
     /**
      * Add resources
@@ -345,5 +369,33 @@ class WRO
     public function getHash()
     {
         return $this->hash;
+    }
+    /**
+     * @var \AppBundle\Entity\Workflow
+     */
+    private $workflow;
+
+
+    /**
+     * Set workflow
+     *
+     * @param \AppBundle\Entity\Workflow $workflow
+     * @return WRO
+     */
+    public function setWorkflow(\AppBundle\Entity\Workflow $workflow = null)
+    {
+        $this->workflow = $workflow;
+    
+        return $this;
+    }
+
+    /**
+     * Get workflow
+     *
+     * @return \AppBundle\Entity\Workflow 
+     */
+    public function getWorkflow()
+    {
+        return $this->workflow;
     }
 }

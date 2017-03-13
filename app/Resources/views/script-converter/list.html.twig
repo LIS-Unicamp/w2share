@@ -60,8 +60,8 @@
             </td>
             <td>                
                 <a href="{{ path('script-converter-upload', { 'hash':row.hash }) }}" title="Upload Workflow"><i class="glyphicon glyphicon-upload"></i></a>
-                {% for workflow in row.workflows %}                    
-                    <a href="{{ path('workflow-details', { 'workflow-uri':workflow.uri|url_encode() }) }}"><i class="glyphicon glyphicon-search"></a> &nbsp;{{ workflow.title }}
+                {% if row.workflow %}                    
+                <a href="{{ path('workflow-details', { 'workflow_uri':row.workflow.uri|url_encode() }) }}"><i class="glyphicon glyphicon-search"></i></a> &nbsp;{{ row.workflow.title }}
                     <label class="dropdown">
                         <label class="btn btn-xs btn-default dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             <i class="glyphicon glyphicon-download-alt"></i>
@@ -73,7 +73,7 @@
                           <li><a href="{{ path("script-converter-provenance-download", { 'hash': row.hash }) }}" title="Download Provenance data">Provenance Data</a></li>
                         </ul>
                     </label>
-                {% endfor %}
+                {% endif %}
             </td>
             <td>
                 {% if row.wro %}
@@ -83,7 +83,7 @@
                     <a href="{{ path('script-converter-create-wro', { 'hash':row.hash }) }}" title="Create Workflow Research Object"><i class="glyphicon glyphicon-plus"></i></a>                
                 {% endif %}
             </td>
-            <td>{{ row.creator }}</a></td>
+            <td><a href="{{ path('security-user', { 'user_uri':row.creator.uri|url_encode() }) }}" title="Go to user profile"><i class="glyphicon glyphicon-search"></i></a> {{ row.creator }}</a></td>
             <td>{{ row.createdAt|date('H:i Y-m-d') }}</td>
             <td>{{ row.updatedAt|date('H:i Y-m-d') }}</td>
         </tr>

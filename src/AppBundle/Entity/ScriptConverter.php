@@ -1,31 +1,12 @@
 <?php
 
 namespace AppBundle\Entity;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Filesystem\Filesystem;
 /**
  * YesScript
  */
 class ScriptConverter
-{                     
-    public function getWebPath()
-    {
-        return $this->getUploadDir()."/".$this->getHash();
-    }
-
-    public function getUploadRootDir()
-    {
-        // the absolute directory path where uploaded
-        // documents should be saved
-        return __DIR__.'/../../../web/'.$this->getUploadDir()."/".$this->getHash();
-    }
-
-    public function getUploadDir()
-    {
-        // get rid of the __DIR__ so it doesn't screw up
-        // when displaying uploaded doc/image in the view.
-        return 'uploads/documents/w2share';
-    }
+{                         
     /**
      * @var string
      */
@@ -182,30 +163,7 @@ class ScriptConverter
     public function getCreatedAt()
     {
         return $this->created_at;
-    }
-
-    /**
-     * Set wro
-     *
-     * @param \AppBundle\Entity\WRO $wro
-     * @return ScriptConverter
-     */
-    public function setWRO(\AppBundle\Entity\WRO $wro = null)
-    {
-        $this->wro = $wro;
-    
-        return $this;
-    }
-
-    /**
-     * Get wro
-     *
-     * @return \AppBundle\Entity\WRO 
-     */
-    public function getWRO()
-    {
-        return $this->wro;
-    }
+    }   
 
     /**
      * Set creator
@@ -284,17 +242,7 @@ class ScriptConverter
     public function getDraftWorkflowT2FlowFile()
     {                                 
         return file_get_contents($this->getDraftWorkflowT2FlowFilepath());
-    }
-    
-    public function getWorkflowT2FlowFilepath()
-    {
-        return $this->getUploadRootDir()."/workflow.t2flow";
-    }
-    
-    public function getWorkflowT2FlowFile()
-    {                                 
-        return file_get_contents($this->getWorkflowT2FlowFilepath());
-    }
+    }        
     
     public function getScriptFilepath()
     {
@@ -332,6 +280,16 @@ class ScriptConverter
         
         $command_image = "ruby ".__DIR__."/../../../src/AppBundle/Utils/script.rb ".$workflow." ".$image;   
         system($command_image);      
+    }
+    
+    public function getWorkflowT2FlowFilepath()
+    {
+        return $this->getUploadRootDir()."/workflow.t2flow";
+    }
+    
+    public function getWorkflowT2FlowFile()
+    {                                 
+        return file_get_contents($this->getWorkflowT2FlowFilepath());
     }
     
     public function getWorkflowImage()
@@ -434,5 +392,76 @@ class ScriptConverter
     public function getWorkflows()
     {
         return $this->workflows;
-    }    
+    }
+    
+    /**
+     * @var \AppBundle\Entity\Workflow
+     */
+    private $workflow;
+
+
+    /**
+     * Set wro
+     *
+     * @param \AppBundle\Entity\WRO $wro
+     * @return ScriptConverter
+     */
+    public function setWro(\AppBundle\Entity\WRO $wro = null)
+    {
+        $this->wro = $wro;
+    
+        return $this;
+    }
+
+    /**
+     * Get wro
+     *
+     * @return \AppBundle\Entity\WRO 
+     */
+    public function getWro()
+    {
+        return $this->wro;
+    }
+
+    /**
+     * Set workflow
+     *
+     * @param \AppBundle\Entity\Workflow $workflow
+     * @return ScriptConverter
+     */
+    public function setWorkflow(\AppBundle\Entity\Workflow $workflow = null)
+    {
+        $this->workflow = $workflow;
+    
+        return $this;
+    }
+
+    /**
+     * Get workflow
+     *
+     * @return \AppBundle\Entity\Workflow 
+     */
+    public function getWorkflow()
+    {
+        return $this->workflow;
+    }
+    
+    public function getWebPath()
+    {
+        return $this->getUploadDir()."/".$this->getHash();
+    }
+
+    public function getUploadRootDir()
+    {
+        // the absolute directory path where uploaded
+        // documents should be saved
+        return __DIR__.'/../../../web/'.$this->getUploadDir()."/".$this->getHash();
+    }
+
+    public function getUploadDir()
+    {
+        // get rid of the __DIR__ so it doesn't screw up
+        // when displaying uploaded doc/image in the view.
+        return 'uploads/documents/w2share';
+    }
 }

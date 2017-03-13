@@ -200,5 +200,75 @@ class WRO
     public function clearUploads()
     {
         \AppBundle\Utils\Utils::unlinkr(__DIR__."/../../../web/uploads/documents/wro");
-    }    
+    } 
+    
+    public function saveWRO(\AppBundle\Entity\WRO $wro)
+    {
+        $query = "        
+        INSERT        
+        { 
+            GRAPH <".$this->driver->getDefaultGraph('wro')."> 
+            { 
+                <".$wro->getUri()."> a ro:ResearchObject, ore:Aggregation ; 
+                ore:aggregates <a_workflow.t2flow>, :ann1 ;
+                dct:created '2011-12-02T15:01:10Z'^^xsd:dateTime ;
+                dct:creator [ a foaf:Person; foaf:name 'Stian Soiland-Reyes' ] .
+
+                <a_workflow.t2flow> a ro:Resource .
+            }
+        }"; 
+
+        return $this->driver->getResults($query); 
+        
+    }
+    
+    public function createWRO(\AppBundle\Entity\ScriptConverter $conversion)
+    {
+        $wro = new \AppBundle\Entity\WRO();
+        $wro->setHash($conversion->getHash());
+        $wro->setCreator($conversion->getCreator());
+        $wro->setWorkflow($conversion->getWorkflow());
+        //$wro->addResource($resources);
+        $this->saveWRO($wro);
+        $this->createWROScript($wro);
+    }
+    
+    public function createWROScript(\AppBundle\Entity\WRO $wro)
+    {
+        //TODO: add rdf:type wf4ever:WorkflowResearchObject
+        $code = '#!/bin/bash                   
+
+                ROBASE="wro"
+
+                ro config -v \
+                  -b $ROBASE \
+                  -r http://sandbox.wf4ever-project.org/rodl/ROs/ \
+                  -t "'.$wro->getHash().'" \
+                  -n "Lucas" \
+                  -e "lucas.carvalho@ic.unicamp.br"
+
+                mkdir  $ROBASE/test-create-RO
+
+                rm -rf $ROBASE/test-create-RO/.ro
+                cp -r  '.$wro->getHash().'/* $ROBASE/test-create-RO
+
+                ro create -v "Reproducible WRO" -d $ROBASE/test-create-RO -i RO-id-testCreate
+
+                ro add -v -a -d $ROBASE/test-create-RO $ROBASE/test-create-RO
+
+                ro status -v -d $ROBASE/test-create-RO';
+
+        foreach ($wro->getResources() as $resource)
+        {
+            $code .= 'ro annotate -v $ROBASE/test-create-RO/'.$resource->getFolder().'/'.$resource->getFilename().' rdf:type "'.$resource->getType().'" title "'.$resource->getDescription().'"';
+        }
+        $code .= 'echo -n application/vnd.wf4ever.robundle+zip > mimetype
+
+                zip -0 -X ../example.robundle mimetype  
+
+                zip -X -r ../example.robundle . -x mimetype';
+        
+        $fs = new Filesystem();           
+        $fs->dumpFile($wro->getWROAbsolutePath(), $code);
+    }
 }

@@ -15,7 +15,7 @@
         <tbody>
     {% for user in pagination %}
         <tr>            
-            <td><a href="{{ path('security-user', { 'user_uri':user.uri|url_encode() }) }}"><i class="glyphicon glyphicon-search"></i></a></td>
+            <td><a href="{{ path('security-user', { 'user_uri':user.uri|url_encode() }) }}" title="Go to user profile"><i class="glyphicon glyphicon-search"></i></a></td>
             <td>{{ user.name }}</td>
             <td>{{ user.homepage }}</a></td>
             <td>{{ user.email }}</td> 

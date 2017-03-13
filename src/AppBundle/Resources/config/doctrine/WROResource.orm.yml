@@ -6,6 +6,12 @@ AppBundle\Entity\WROResource:
     fields: 
         type:
             type: string
+        filename:
+            type: string
+        folder:
+            type: string
+        description:
+            type: string
         created_at:
             type: datetime
         
