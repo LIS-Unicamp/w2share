@@ -50,6 +50,65 @@ class WRO
         return $wro_array;
     }
     
+    public function findAllResourcesByWRO(\AppBundle\Entity\WRO $wro)
+    {
+        $query = 
+        "SELECT * WHERE        
+        { 
+            <".$wro->getUri()."> a ro:ResearchObject, wf4ever:WorkflowResearchObject.
+            <".$wro->getUri()."> ore:aggregates ?resource.
+            ?resource a ?type. 
+        }";
+       
+        $result_array = $this->driver->getResults($query);
+        
+        $results_array = array();
+        
+        for ($i = 0; $i < count($wros); $i++)
+        {   
+            $resource = new \AppBundle\Entity\WROResource();            
+            $resource->setUri($result_array[$i]['resource']['value']);
+            $resource->setType($result_array[$i]['type']['value']);            
+            
+            $results_array[] = $wro;
+        } 
+        
+        return $results_array;
+    }
+    
+    public function findWRO($uri)
+    {
+        $query = 
+        "SELECT * WHERE        
+        { 
+            <".$uri."> a ro:ResearchObject, wf4ever:WorkflowResearchObject.
+            <".$uri."> dct:created ?createdAt.
+            <".$uri."> dct:creator ?creator. 
+            ?creator foaf:name ?name.
+        }";
+       
+        $result_array = $this->driver->getResults($query);
+           
+        if (count($result_array) > 0)
+        {
+            $wro = new \AppBundle\Entity\WRO();            
+            $wro->setUri($uri);
+            $wro->setCreatedAt($result_array[0]['createdAt']['value']); 
+            $creator = new \AppBundle\Entity\Person();
+            $creator->setUri($result_array[0]['creator']['value']);
+            $creator->setName($result_array[0]['name']['value']);
+
+            $wro->setCreator($creator); 
+            
+            $resources = $this->findAllResourcesByWRO($uri);
+            $wro->setResources($resources);
+            
+            return $wro;
+        }
+        
+        return null;
+    }
+    
     public function addWRO(\AppBundle\Entity\WRO $wro)
     {
         $this->unzipWROBundle($wro);
@@ -58,20 +117,19 @@ class WRO
         $this->saveWROHash($wro);        
     }
     
-    private function saveWROHash(\AppBundle\Entity\WRO $wro) 
+    private function saveWroScriptConversion(\AppBundle\Entity\WRO $wro) 
     {      
         $query = 
         "        
         INSERT        
         { 
-            GRAPH <".$this->driver->getDefaultGraph('wro')."> 
+            GRAPH <".$this->driver->getDefaultGraph('scriptconverter')."> 
             { 
-                <".$wro->getUri()."> <w2share:hash> '".$wro->getHash()."'. 
+                <".$wro->getScriptConversion()->getUri()."> <w2share:hasWorkflowResearchObject> <".$wro->getUri().">. 
             }
         }"; 
-
-        return $this->driver->getResults($query);        
-    }
+        $this->driver->getResults($query);       
+    }        
     
     private function findManifest(\AppBundle\Entity\WRO $wro)
     {
@@ -209,11 +267,28 @@ class WRO
         { 
             GRAPH <".$this->driver->getDefaultGraph('wro')."> 
             { 
-                <".$wro->getUri()."> a ro:ResearchObject, ore:Aggregation ; 
-                ore:aggregates <a_workflow.t2flow>, :ann1 ;
-                dct:created '2011-12-02T15:01:10Z'^^xsd:dateTime ;
-                dct:creator [ a foaf:Person; foaf:name 'Stian Soiland-Reyes' ] .
+                <".$wro->getUri()."> a ro:ResearchObject, ore:Aggregation, a wf4ever:WorkflowResearchObject ; 
+                ore:aggregates <script.R>, <abstract-workflow.svg> ;
+                dct:created '".$wro->getCreatedAt()->format(\DateTime::ISO8601)."'^^xsd:dateTime ;
+                dct:creator <".$wro->getCreator()->getUri().">.
+                
+                <script.".$wro->getScriptConversion()->getScriptExtension()."> a ro:Resource, wf4ever:Script.
+                <abstract-workflow.svg> a ro:Resource, wf4ever:Script.
+            }
+        }"; 
 
+        $this->driver->getResults($query, true);         
+        exit;
+    }
+    
+    public function addWorkflowWRO(\AppBundle\Entity\WRO $wro)
+    {
+        $query = "        
+        INSERT        
+        { 
+            GRAPH <".$this->driver->getDefaultGraph('wro')."> 
+            { 
+                <".$wro->getUri()."> ore:aggregates <a_workflow.t2flow> .
                 <a_workflow.t2flow> a ro:Resource .
             }
         }"; 
@@ -224,13 +299,47 @@ class WRO
     
     public function createWRO(\AppBundle\Entity\ScriptConverter $conversion)
     {
-        $wro = new \AppBundle\Entity\WRO();
+        $wro = new \AppBundle\Entity\WRO();        
         $wro->setHash($conversion->getHash());
+        $wro_uri = $uri = \AppBundle\Utils\Utils::convertNameToUri("Workflow Research Object", $wro->getHash());
+        $wro->setUri($wro_uri);
         $wro->setCreator($conversion->getCreator());
         $wro->setWorkflow($conversion->getWorkflow());
+        $wro->setScriptConversion($conversion);
         //$wro->addResource($resources);
         $this->saveWRO($wro);
+        $this->saveWroScriptConversion($wro);
         $this->createWROScript($wro);
+    }
+    
+    /**
+     * Delete triples related to a workflow URI
+     * @param type Workflow
+     */
+    public function deleteWRO(\AppBundle\Entity\WRO $wro)
+    {
+        $query = "
+            DELETE FROM <".$this->driver->getDefaultGraph('wro')."> {
+                <".$wro->getUri()."> ?property ?object.                
+            }
+            WHERE {
+                <".$wro->getUri()."> ?property ?object.  
+            }
+            ";  
+        $this->driver->getResults($query,true);
+        
+        $query = "
+            DELETE FROM <".$this->driver->getDefaultGraph('script-converter')."> {
+                ?subject ?property <".$wro->getUri().">.                
+            }
+            WHERE
+            {
+               ?subject ?property  <".$wro->getUri().">.  
+            }
+            ";  
+        $this->driver->getResults($query,true);
+        exit;
+        $wro->removeUpload();        
     }
     
     public function createWROScript(\AppBundle\Entity\WRO $wro)
@@ -268,7 +377,8 @@ class WRO
 
                 zip -X -r ../example.robundle . -x mimetype';
         
-        $fs = new Filesystem();           
-        $fs->dumpFile($wro->getWROAbsolutePath(), $code);
+        $fs = new \Symfony\Component\Filesystem\Filesystem();           
+        $fs->dumpFile($wro->getWROScriptAbsolutePath(), $code);
+        exec('sh '.$wro->getWROScriptAbsolutePath());
     }
 }

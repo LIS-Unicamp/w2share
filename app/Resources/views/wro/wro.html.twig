@@ -1,7 +1,17 @@
 {% extends 'base.html.twig' %}
-{% block title %}Research Object{% endblock %}
+{% block title %}Workflow Research Object{% endblock %}
 {% block body %}
-<h1>Research Object</h1>
+<h1>Workflow Research Object<small>
+            <button class="btn btn-xs copy" data-clipboard-text="{{ wro.uri }}">
+                <i class="glyphicon glyphicon-copy"></i>
+            </button>           
+        </small>
+</h1>
+<ul>
+    <li><strong>Creator:</strong> {{ wro.creator }}</li>
+    <li><strong>Description:</strong> {{ wro.description }}</li>
+    <li><strong>Title:</strong> {{ wro.title }}</li>
+</ul>
 {% for flashMessage in app.session.flashbag.get('success') %}
     <div class="alert alert-success">
             <button class="close" data-dismiss="alert"></button>
@@ -14,29 +24,24 @@
             {{ flashMessage }}
     </div>            
 {% endfor %}
-<a class="btn btn-success" href="{{ path('ro-add') }}"><i class="glyphicon glyphicon-plus"></i> Add</a>
+<h2>Resources</h2>
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
             <tr>
                 <th style="width:100px">Action</th>
-                <th>Title</th>
-                <th>Creator</th>
+                <th>File</th>                
                 <th>Description</th>
-                
+                <th>Type</th>                
             </tr>
         </thead>
         <tbody>
-    {% for ro in pagination %}
-        <tr>
-            <td style="width:150px">
-                <a href="{{ path('ro-details', { 'workflow_uri':ro.uri|url_encode() }) }}" title="Go to RO details"><i class="glyphicon glyphicon-search"></i></a>
-                <a href="{{ path('ro-edit', { 'workflow_uri':ro.uri|url_encode() }) }}" title="Edit RO"><i class="glyphicon glyphicon-edit"></i></a>
-                <a href="{{ path('ro-delete', { 'workflow_uri':ro.uri|url_encode() }) }}" title="Delete RO" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
-            </td> 
-            <td>{{ ro.title }}</td>
-            <td>{{ ro.creator }}</a></td>
-            <td>{{ ro.description }}</td> 
+    {% for resource in pagination %}
+        <tr>   
+            <td><a title="Go to annotations"><i class="glyphicon glyphicon-search"></i></a></td>
+            <td>{{ resource.folder }}/{{ resource.filename }}</td> 
+            <td>{{ resource.type }}</td>
+            <td>{{ resource.description }}</a></td>
         </tr>
     {% endfor %}
         </tbody>

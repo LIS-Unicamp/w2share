@@ -78,7 +78,8 @@
             <td>
                 {% if row.wro %}
                     <a href="{{ path('wro-details', { 'wro_uri':row.wro.uri|url_encode() }) }}" title="Go to Workflow Research Object details"><i class="glyphicon glyphicon-search"></i></a>
-                    <a href="{{ path('wro-download', { 'wro_uri':row.wro.uri|url_encode() }) }}" title="Download Workflow Research Object"><i class="glyphicon glyphicon-search"></i></a>
+                    <a href="{{ path('wro-download', { 'wro_uri':row.wro.uri|url_encode() }) }}" title="Download Workflow Research Object"><i class="glyphicon glyphicon-download"></i></a>
+                    <a href="{{ path('wro-delete', { 'wro_uri':row.wro.uri|url_encode() }) }}" title="Delete Workflow Research Object" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
                 {% else %}
                     <a href="{{ path('script-converter-create-wro', { 'hash':row.hash }) }}" title="Create Workflow Research Object"><i class="glyphicon glyphicon-plus"></i></a>                
                 {% endif %}

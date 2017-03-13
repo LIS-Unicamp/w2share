@@ -161,11 +161,15 @@ class ScriptConverterController extends Controller
      * @Route("/script-converter/create-wro", name="script-converter-create-wro")
      */
     public function createWROAction(Request $request)
-    {        
+    {   
+        $model = $this->get('model.wro');
+        $conversion = $this->get('model.scriptconverter')->findOneScriptConversionByHash($request->get('hash'));
+        $model->createWRO($conversion);
         $this->get('session')
                 ->getFlashBag()
-                ->add('error', 'Feature Not implemented yet!')
+                ->add('success', 'Workflow Research Object created!')
             ; 
+        
         return $this->redirect($this->generateUrl('script-converter-list'));
     }
     

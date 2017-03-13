@@ -71,7 +71,9 @@ class WROController extends Controller
         $wro_uri = urldecode($wro_uri);
                 
         $model = $this->get('model.wro'); 
-        $wro = $model->findWRO($wro_uri);
+        //$wro = $model->findWRO($wro_uri);
+        $wro = new \AppBundle\Entity\WRO();
+        $wro->setUri($wro_uri);
 
         if ($wro)
         {
@@ -160,9 +162,7 @@ class WROController extends Controller
         $wro = $model->findWRO($wro_uri);
                 
         return $this->render('wro/wro.html.twig', array(
-
-            'wro' => $wro,
-            'wro_uri' => $wro_uri
+            'wro' => $wro
         ));
     }
     

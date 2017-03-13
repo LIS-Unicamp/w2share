@@ -61,6 +61,8 @@ class WRO
         $this->resources = new \Doctrine\Common\Collections\ArrayCollection();
         $this->annotations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->hash = sha1(uniqid(mt_rand(), true));
+        $this->created_at = new \Datetime();
+        $this->updated_at = new \Datetime();
     }
     
     /**
@@ -118,18 +120,18 @@ class WRO
         return $this->getUploadDir().'/wro-bundle.zip';
     }
 
-    protected function getUploadRootDir()
+    public function getUploadRootDir()
     {
         // the absolute directory path where uploaded
         // documents should be saved
-        return __DIR__.'/../../../web/'.$this->getUploadDir().'/'.$this->getHash();
+        return __DIR__.'/../../../web/'.$this->getUploadDir().'/'.$this->getHash().'/wro';
     }
 
     protected function getUploadDir()
     {
         // get rid of the __DIR__ so it doesn't screw up
         // when displaying uploaded doc/image in the view.
-        return 'uploads/documents/wro';
+        return 'uploads/documents/w2share';
     }
 
     /**
@@ -249,6 +251,19 @@ class WRO
         $resource->setUri($uri);
         $resource->setType($type);
         $this->resources[] = $resource;
+    
+        return $this;
+    }
+    
+    /**
+     * Add resources
+     *
+     * @param array $resources
+     * @return ResearchObject
+     */
+    public function setResources($resources)
+    {        
+        $this->resources[] = $resources;
     
         return $this;
     }
@@ -397,5 +412,33 @@ class WRO
     public function getWorkflow()
     {
         return $this->workflow;
+    }
+    /**
+     * @var \AppBundle\Entity\ScriptConverter
+     */
+    private $script_conversion;
+
+
+    /**
+     * Set script_conversion
+     *
+     * @param \AppBundle\Entity\ScriptConverter $scriptConversion
+     * @return WRO
+     */
+    public function setScriptConversion(\AppBundle\Entity\ScriptConverter $scriptConversion = null)
+    {
+        $this->script_conversion = $scriptConversion;
+    
+        return $this;
+    }
+
+    /**
+     * Get script_conversion
+     *
+     * @return \AppBundle\Entity\ScriptConverter 
+     */
+    public function getScriptConversion()
+    {
+        return $this->script_conversion;
     }
 }
