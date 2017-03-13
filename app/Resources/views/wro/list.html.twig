@@ -30,10 +30,10 @@
     {% for wro in pagination %}
         <tr>
             <td style="width:150px">
-                <a href="{{ path('wro-details', { 'wro_uri':ro.uri|url_encode() }) }}" title="Go to WRO details"><i class="glyphicon glyphicon-search"></i></a>
-                <a href="{{ path('wro-edit', { 'wro_uri':ro.uri|url_encode() }) }}" title="Edit WRO"><i class="glyphicon glyphicon-edit"></i></a>
-                <a href="{{ path('wro-download', { 'wro_uri':ro.uri|url_encode() }) }}" title="Download WRO"><i class="glyphicon glyphicon-download"></i></a>
-                <a href="{{ path('wro-delete', { 'wro_uri':ro.uri|url_encode() }) }}" title="Delete WRO" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
+                <a href="{{ path('wro-details', { 'wro_uri':wro.uri|url_encode() }) }}" title="Go to WRO details"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('wro-edit', { 'wro_uri':wro.uri|url_encode() }) }}" title="Edit WRO"><i class="glyphicon glyphicon-edit"></i></a>
+                <a href="{{ path('wro-download', { 'wro_uri':wro.uri|url_encode() }) }}" title="Download WRO"><i class="glyphicon glyphicon-download"></i></a>
+                <a href="{{ path('wro-delete', { 'wro_uri':wro.uri|url_encode() }) }}" title="Delete WRO" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
             </td> 
             <td>{{ wro.title }}</td>
             <td>{{ wro.creator }}</a></td>

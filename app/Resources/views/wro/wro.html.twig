@@ -30,15 +30,15 @@
         <thead>
             <tr>
                 <th style="width:100px">Action</th>
-                <th>File</th>                
-                <th>Description</th>
-                <th>Type</th>                
+                <th>File</th>       
+                <th>Type</th> 
+                <th>Description</th>                               
             </tr>
         </thead>
         <tbody>
     {% for resource in pagination %}
         <tr>   
-            <td><a title="Go to annotations"><i class="glyphicon glyphicon-search"></i></a></td>
+            <td><a href="{{ resource.uri }}" title="Go to annotations"><i class="glyphicon glyphicon-search"></i></a></td>
             <td>{{ resource.folder }}/{{ resource.filename }}</td> 
             <td>{{ resource.type }}</td>
             <td>{{ resource.description }}</a></td>

@@ -263,7 +263,7 @@ class WRO
      */
     public function setResources($resources)
     {        
-        $this->resources[] = $resources;
+        $this->resources = $resources;
     
         return $this;
     }

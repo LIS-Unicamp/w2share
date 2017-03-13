@@ -30,8 +30,8 @@ class ScriptConverter
                 <".$uri."> a <w2share:ScriptConversion>.
                 <".$uri."> <w2share:hash> '".$converter->getHash()."'.
                 <".$uri."> <w2share:scriptLanguage> '".$converter->getScriptLanguage()."'.
-                <".$uri."> <w2share:createdAt> '".$converter->getCreatedAt()->format(\DateTime::ISO8601)."'^^xsd:dateTime.
-                <".$uri."> <w2share:updatedAt> '".$converter->getUpdatedAt()->format(\DateTime::ISO8601)."'^^xsd:dateTime.
+                <".$uri."> <w2share:createdAt> '".$converter->getCreatedAt()->format(\DateTime::ISO8601)."'.
+                <".$uri."> <w2share:updatedAt> '".$converter->getUpdatedAt()->format(\DateTime::ISO8601)."'.
                 <".$uri."> <dc:creator> <".$user->getUri().">. 
             }
         }"; 
@@ -125,7 +125,7 @@ class ScriptConverter
             ?creator <foaf:name> ?name.
         }";   
         
-        $result_array = $this->driver->getResults($query);
+        $result_array = $this->driver->getResults($query,true);
         $conversion = array();
         
         for ($i=0; $i < count($result_array); $i++)
@@ -182,8 +182,8 @@ class ScriptConverter
             <".$conversion->getUri()."> a <w2share:ScriptConversion>.
             <".$conversion->getUri()."> <w2share:hash> '".$conversion->getHash()."'.
             <".$conversion->getUri()."> <w2share:scriptLanguage> '".$conversion->getScriptLanguage()."'.
-            <".$conversion->getUri()."> <w2share:createdAt> '".$conversion->getCreatedAt()->format(\DateTime::ISO8601)."'^^xsd:dateTime.
-            <".$conversion->getUri()."> <w2share:updatedAt> '".$conversion->getUpdatedAt()->format(\DateTime::ISO8601)."'^^xsd:dateTime.
+            <".$conversion->getUri()."> <w2share:createdAt> '".$conversion->getCreatedAt()->format(\DateTime::ISO8601)."'.
+            <".$conversion->getUri()."> <w2share:updatedAt> '".$conversion->getUpdatedAt()->format(\DateTime::ISO8601)."'.
             <".$conversion->getUri()."> <dc:creator> <".$conversion->getCreator()->getUri().">.
         ";
         

@@ -24,9 +24,9 @@ class WRO
         "SELECT * WHERE        
         { 
             ?uri a ro:ResearchObject.
-            ?uri dct:created ?createdAt.
-            ?uri dct:creator ?creator. 
-            ?creator foaf:name ?name.
+            ?uri dc:created ?createdAt.
+            ?uri dc:creator ?creator. 
+            ?creator <foaf:name> ?name.
         }";
        
         $wros = $this->driver->getResults($query);
@@ -64,13 +64,13 @@ class WRO
         
         $results_array = array();
         
-        for ($i = 0; $i < count($wros); $i++)
+        for ($i = 0; $i < count($result_array); $i++)
         {   
             $resource = new \AppBundle\Entity\WROResource();            
             $resource->setUri($result_array[$i]['resource']['value']);
             $resource->setType($result_array[$i]['type']['value']);            
             
-            $results_array[] = $wro;
+            $results_array[] = $resource;
         } 
         
         return $results_array;
@@ -82,9 +82,10 @@ class WRO
         "SELECT * WHERE        
         { 
             <".$uri."> a ro:ResearchObject, wf4ever:WorkflowResearchObject.
-            <".$uri."> dct:created ?createdAt.
-            <".$uri."> dct:creator ?creator. 
-            ?creator foaf:name ?name.
+            <".$uri."> dc:created ?createdAt.
+            <".$uri."> dc:creator ?creator. 
+            ?creator <foaf:name> ?name.
+            OPTIONAL { ?conversion w2share:hasWorkflowResearchObject <".$uri."> }
         }";
        
         $result_array = $this->driver->getResults($query);
@@ -100,7 +101,14 @@ class WRO
 
             $wro->setCreator($creator); 
             
-            $resources = $this->findAllResourcesByWRO($uri);
+            if (array_key_exists('conversion', $result_array[0]))
+            {
+                $conversion = new \AppBundle\Entity\ScriptConverter();
+                $conversion->setUri();
+                $wro->setScriptConversion($conversion);
+            }
+            
+            $resources = $this->findAllResourcesByWRO($wro);
             $wro->setResources($resources);
             
             return $wro;
@@ -267,18 +275,17 @@ class WRO
         { 
             GRAPH <".$this->driver->getDefaultGraph('wro')."> 
             { 
-                <".$wro->getUri()."> a ro:ResearchObject, ore:Aggregation, a wf4ever:WorkflowResearchObject ; 
-                ore:aggregates <script.R>, <abstract-workflow.svg> ;
-                dct:created '".$wro->getCreatedAt()->format(\DateTime::ISO8601)."'^^xsd:dateTime ;
-                dct:creator <".$wro->getCreator()->getUri().">.
+                <".$wro->getUri()."> a ro:ResearchObject, ore:Aggregation, wf4ever:WorkflowResearchObject ; 
+                ore:aggregates <script.".$wro->getScriptConversion()->getScriptExtension().">, <abstract-workflow.svg> ;
+                dc:created '".$wro->getCreatedAt()->format(\DateTime::ISO8601)."' ;
+                dc:creator <".$wro->getCreator()->getUri().">.
                 
                 <script.".$wro->getScriptConversion()->getScriptExtension()."> a ro:Resource, wf4ever:Script.
-                <abstract-workflow.svg> a ro:Resource, wf4ever:Script.
+                <abstract-workflow.svg> a ro:Resource, wf4ever:Image.
             }
         }"; 
 
-        $this->driver->getResults($query, true);         
-        exit;
+        $this->driver->getResults($query); 
     }
     
     public function addWorkflowWRO(\AppBundle\Entity\WRO $wro)
@@ -326,10 +333,10 @@ class WRO
                 <".$wro->getUri()."> ?property ?object.  
             }
             ";  
-        $this->driver->getResults($query,true);
+        $this->driver->getResults($query);
         
         $query = "
-            DELETE FROM <".$this->driver->getDefaultGraph('script-converter')."> {
+            DELETE FROM <".$this->driver->getDefaultGraph('scriptconverter')."> {
                 ?subject ?property <".$wro->getUri().">.                
             }
             WHERE
@@ -337,8 +344,7 @@ class WRO
                ?subject ?property  <".$wro->getUri().">.  
             }
             ";  
-        $this->driver->getResults($query,true);
-        exit;
+        $this->driver->getResults($query);
         $wro->removeUpload();        
     }
     

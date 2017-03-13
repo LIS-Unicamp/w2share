@@ -160,9 +160,17 @@ class WROController extends Controller
         
         $model = $this->get('model.wro');                                   
         $wro = $model->findWRO($wro_uri);
+        
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $wro->getResources(), /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
                 
         return $this->render('wro/wro.html.twig', array(
-            'wro' => $wro
+            'wro' => $wro,
+            'pagination'=>$pagination
         ));
     }
     

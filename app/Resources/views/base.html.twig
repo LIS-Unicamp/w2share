@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" />  
 
   {% block stylesheets %}{% endblock %} 
-  <style>
+  <style>    
     .dropdown-submenu {
         position: relative;
     }
@@ -213,7 +213,8 @@ $(document).ready(function(){
     {
         allowClear: true,
         width: '100%',
-        placeholder: 'select...'
+        placeholder: 'select...',
+        dropdownAutoWidth : true
     });
 });
 </script>

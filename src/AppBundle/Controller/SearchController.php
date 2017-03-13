@@ -36,9 +36,16 @@ class SearchController extends Controller
         
         $model = $this->get('model.search'); 
         $result = $model->query($query, $concept);
+        
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $result, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
                 
         return $this->render('search/query-result.html.twig', array(
-            'result' => $result
+            'pagination' => $pagination
         ));
     }   
 }

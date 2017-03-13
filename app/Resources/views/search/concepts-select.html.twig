@@ -4,7 +4,7 @@
     </div>
     
     <div class="form-group">
-        <select name="concept" class="form-control">
+        <select name="concept" class="form-control select" style="width:300px">
             {% for row in result %}
                 <option value="{{ row.concept.value }}" {% if row.concept.value == concept %}selected{% endif %}>{{ row.concept.value }}</option>
             {% endfor %}
