@@ -275,7 +275,12 @@ class Workflow
     public function getWorkflowFile()
     {
         return $this->workflow_file;        
-    }       
+    }  
+    
+    public function getProvenanceDataFile()
+    {
+        return file_get_contents($this->getProvenanceAbsolutePath());
+    }
     
     /**
      * Get file.

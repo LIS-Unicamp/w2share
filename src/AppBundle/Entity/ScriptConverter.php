@@ -249,7 +249,7 @@ class ScriptConverter
         return $this->getUploadRootDir()."/script.".$this->getScriptExtension();
     }
     
-    public function getScriptWebFilepath()
+    public function getScriptFileWebPath()
     {
         return $this->getWebPath()."/script.".$this->getScriptExtension();
     }
@@ -259,9 +259,13 @@ class ScriptConverter
         return $this->getUploadRootDir()."/abstract-workflow.svg";
     }
     
+    public function getAbstractWorkflowFileWebPath()
+    {
+        return $this->getWebPath()."/abstract-workflow.svg";
+    }
+    
     public function getAbstractWorkflowFile()
     {
-        $this->createGraph();
         return file_get_contents($this->getAbstractWorkflowFilepath());
     }
     
@@ -279,7 +283,9 @@ class ScriptConverter
         system($command_taverna);
         
         $command_image = "ruby ".__DIR__."/../../../src/AppBundle/Utils/script.rb ".$workflow." ".$image;   
-        system($command_image);      
+        system($command_image); 
+        
+        $this->createGraph();
     }
     
     public function getWorkflowT2FlowFilepath()
@@ -302,9 +308,19 @@ class ScriptConverter
         return $this->getUploadRootDir()."/workflow.svg";;
     }
     
+    public function getWorkflowImageFileWebPath()
+    {        
+        return $this->getWebPath()."/workflow.svg";;
+    }
+    
     public function getDraftWorkflowImage()
     {
         return file_get_contents($this->getDraftWorkflowImageFilePath());
+    }
+    
+    public function getDraftWorkflowImageFileWebPath()
+    {        
+        return $this->getWebPath()."/draft-workflow.svg";;
     }
     
     public function getDraftWorkflowImageFilePath()

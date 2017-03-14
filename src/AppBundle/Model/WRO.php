@@ -85,7 +85,9 @@ class WRO
             <".$uri."> dc:created ?createdAt.
             <".$uri."> dc:creator ?creator. 
             ?creator <foaf:name> ?name.
-            OPTIONAL { ?conversion w2share:hasWorkflowResearchObject <".$uri."> }
+            OPTIONAL {  ?conversion <w2share:hasWorkflowResearchObject> <".$uri.">.
+                        ?conversion <w2share:hash> ?hash 
+                    }
         }";
        
         $result_array = $this->driver->getResults($query);
@@ -104,7 +106,8 @@ class WRO
             if (array_key_exists('conversion', $result_array[0]))
             {
                 $conversion = new \AppBundle\Entity\ScriptConverter();
-                $conversion->setUri();
+                $conversion->setUri($result_array[0]['conversion']['value']);
+                $conversion->setHash($result_array[0]['hash']['value']);
                 $wro->setScriptConversion($conversion);
             }
             

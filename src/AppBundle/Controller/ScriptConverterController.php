@@ -71,6 +71,21 @@ class ScriptConverterController extends Controller
     }  
     
     /**
+     * @Route("/script-converter/details/{hash}", name="script-converter-details")
+     */
+    public function detailsAction(Request $request)
+    {                       
+        $hash = $request->get('hash');                        
+        $model = $this->get('model.scriptconverter');
+        
+        $conversion = $model->findOneScriptConversionByHash($hash);        
+        
+        return $this->render('script-converter/details.html.twig', array(
+            'conversion' => $conversion,
+        ));
+    }
+    
+    /**
      * @Route("/script-converter/editor", name="script-converter-editor")
      */
     public function editorAction(Request $request)
@@ -238,7 +253,7 @@ class ScriptConverterController extends Controller
         $workflow->setHash($hash);
         
         $file_path = $workflow->getProvenanceAbsolutePath();
-        $content = $workflow->getProvenanceFile();
+        $content = $workflow->getProvenanceDataFile();
                 
         $response = new \Symfony\Component\HttpFoundation\Response();   
         

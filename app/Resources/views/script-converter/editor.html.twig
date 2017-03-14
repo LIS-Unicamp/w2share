@@ -59,9 +59,6 @@
                 
     <select id="language-select" class="editor-option" ng-model="language" ng-change="languageChange()" title="Select programming language">
       <option value="sh">Bash</option>
-      <option value="c_cpp">C/C++</option>
-      <option value="java">Java</option>
-      <option value="matlab">MATLAB</option>
       <option value="python">Python</option>
       <option value="r">R</option>
     </select>   
@@ -139,7 +136,7 @@
     var url = '{{ app.request.basepath }}';  
     {% if converter.scriptLanguage != '' %}
         var language = '{{ app.session.get('language') }}';
-        var sample = url+'/{{ converter.scriptWebFilePath }}';
+        var sample = url+'/{{ converter.scriptFileWebPath }}';
     {% else %}
         var language = 'python';
         var sample = url+'/yw-editor/samples/helloworld.py';

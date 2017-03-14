@@ -1,7 +1,14 @@
 {% extends 'base.html.twig' %}
 {% block title %}Workflow Research Object{% endblock %}
 {% block body %}
-<h1>Workflow Research Object<small>
+{% if wro.scriptConversion %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('homepage') }}">Home</a></li>
+        <li><a href="{{ path('script-converter', { 'hash': wro.scriptConversion.hash }) }}">Script Converter</a></li>
+        <li class="active">Workflow Research Object</li>
+    </ol>
+{% endif %}
+<h1>WRO<small>
             <button class="btn btn-xs copy" data-clipboard-text="{{ wro.uri }}">
                 <i class="glyphicon glyphicon-copy"></i>
             </button>           
@@ -12,18 +19,7 @@
     <li><strong>Description:</strong> {{ wro.description }}</li>
     <li><strong>Title:</strong> {{ wro.title }}</li>
 </ul>
-{% for flashMessage in app.session.flashbag.get('success') %}
-    <div class="alert alert-success">
-            <button class="close" data-dismiss="alert"></button>
-            {{ flashMessage }}
-    </div>            
-{% endfor %}
-{% for flashMessage in app.session.flashbag.get('error') %}
-    <div class="alert alert-danger">
-            <button class="close" data-dismiss="alert"></button>
-            {{ flashMessage }}
-    </div>            
-{% endfor %}
+
 <h2>Resources</h2>
 <div class="table-responsive">
     <table class="table table-striped">

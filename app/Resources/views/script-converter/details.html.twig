@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+{% block title %}Script Conversion{% endblock %}
+{% block body %}
+<h1>Script Conversion
+    <small>
+        <button class="btn btn-xs copy" data-clipboard-text="{{ conversion.uri }}">
+            <i class="glyphicon glyphicon-copy"></i>
+        </button>           
+    </small>
+</h1>
+<a class="btn btn-success" href="{{ path('script-converter-restart') }}"><i class="glyphicon glyphicon-plus"></i> New</a>
+<a class="btn btn-info" href="{{ path('script-converter-list') }}"><i class="glyphicon glyphicon-list"></i> List</a>
+<a class="btn btn-danger delete" href="{{ path('script-converter-delete', { 'hash':conversion.hash }) }}" title="Delete Conversion"><i class="glyphicon glyphicon-trash"></i> Delete</a>
+
+<ul>
+    <li><strong>Creator:</strong> <a href="{{ path('security-user', { 'user_uri':conversion.creator.uri|url_encode() }) }}" title="Go to user profile"><i class="glyphicon glyphicon-search"></i></a> {{ conversion.creator }}</li>
+    <li><strong>Description:</strong> {{ conversion.description }}</li>
+    <li><strong>Title:</strong> {{ conversion.title }}</li>   
+    <li><strong>Created At:</strong> {{ conversion.createdAt|date('H:i Y-m-d') }}</li>
+    <li><strong>Updated At:</strong> {{ conversion.updatedAt|date('H:i Y-m-d') }}</li>
+</ul>
+<h2>Script <small>Language: {{ conversion.scriptLanguage }}</small></h2>
+<a href="{{ path('script-converter-editor', { 'hash':conversion.hash, 'language':conversion.scriptLanguage }) }}" title="Open editor"><i class="glyphicon glyphicon-edit"></i></a>
+<a href="{{ path("script-converter-script-download", { 'hash': conversion.hash, 'language': conversion.scriptLanguage }) }}" title="Download Script"><i class="glyphicon glyphicon-download"></i></a>
+
+<h3>Abstract Workflow</h3>
+<img src="{{ asset(conversion.abstractWorkflowFileWebPath) }}">
+
+
+<h2>Draft Executable Workflow 
+    <small>
+        <a class="btn" href="{{ path("script-converter-draft-workflow-download", { 'hash': conversion.hash }) }}" title="Download Workflow Specification"><i class="glyphicon glyphicon-download"></i></a>
+    </small>
+</h2>
+<img src="{{ asset(conversion.draftWorkflowImageFileWebPath) }}">
+
+<h2>Executable Workflow
+    <small>
+        <a class="btn" href="{{ path('script-converter-upload', { 'hash':conversion.hash }) }}" title="Upload Workflow"><i class="glyphicon glyphicon-upload"></i></a>
+        {% if conversion.workflow %} 
+        <a class="btn" href="{{ path('workflow-details', { 'workflow_uri':conversion.workflow.uri|url_encode() }) }}"><i class="glyphicon glyphicon-search"></i></a>
+        <a class="btn" href="{{ path("workflow-download", { 'hash': conversion.hash }) }}" title="Download Workflow Specification"><i class="glyphicon glyphicon-download"></i></a>        
+        {% endif %}
+    </small>
+</h2>
+{% if conversion.workflow %}   
+<img src="{{ asset(conversion.workflowImageFileWebPath) }}">
+{% endif %}
+
+<h2>Provenance Data
+    <small>
+        <a href="{{ path("script-converter-provenance-download", { 'hash': conversion.hash }) }}" title="Download Provenance data"><i class="glyphicon glyphicon-download"></i></a>
+    </small>
+</h2>
+
+
+<h2>Workflow Research Object                     
+    <small>
+    {% if conversion.wro %}
+        <a href="{{ path('wro-details', { 'wro_uri':conversion.wro.uri|url_encode() }) }}" title="Go to Workflow Research Object details"><i class="glyphicon glyphicon-search"></i></a>
+        <a href="{{ path('wro-download', { 'wro_uri':conversion.wro.uri|url_encode() }) }}" title="Download Workflow Research Object"><i class="glyphicon glyphicon-download"></i></a>
+        <a href="{{ path('wro-delete', { 'wro_uri':conversion.wro.uri|url_encode() }) }}" title="Delete Workflow Research Object" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
+    {% else %}
+        <a href="{{ path('script-converter-create-wro', { 'hash':conversion.hash }) }}" title="Create Workflow Research Object"><i class="glyphicon glyphicon-plus"></i></a>                
+    {% endif %}
+    </small>
+</h2>
+{% endblock %}  
+{% block javascripts %}            
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 

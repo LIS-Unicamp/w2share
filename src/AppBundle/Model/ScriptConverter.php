@@ -49,6 +49,8 @@ class ScriptConverter
             <".$uri."> <w2share:scriptLanguage> ?scriptLanguage.
             <".$uri."> <w2share:createdAt> ?createdAt.
             <".$uri."> <w2share:updatedAt> ?updatedAt.
+            OPTIONAL { ?uri <w2share:hasWorkflow> ?workflow. }
+            OPTIONAL { ?uri <w2share:hasWorkflowResearchObject> ?wro. }
             <".$uri."> <dc:creator> ?creator. 
             ?creator <foaf:name> ?name.            
         }";   
@@ -63,6 +65,20 @@ class ScriptConverter
             $converter->setCreatedAt(new \Datetime($result_array[0]['createdAt']['value']));
             $converter->setUpdatedAt(new \Datetime($result_array[0]['updatedAt']['value']));
             $converter->setScriptLanguage($result_array[0]['scriptLanguage']['value']);
+            
+            if (array_key_exists('workflow', $result_array[0]))
+            {
+                $workflow = new \AppBundle\Entity\Workflow();
+                $workflow->setUri($result_array[0]['workflow']['value']);
+                $converter->setWorkflow($workflow);
+            }
+            
+            if (array_key_exists('wro', $result_array[0]))
+            {
+                $wro = new \AppBundle\Entity\WRO();
+                $wro->setUri($result_array[0]['wro']['value']);
+                $converter->setWro($wro);
+            }
             
             $creator = new \AppBundle\Entity\Person();
             $creator->setUri($result_array[0]['creator']['value']);
@@ -84,6 +100,8 @@ class ScriptConverter
             ?uri <w2share:scriptLanguage> ?scriptLanguage.
             ?uri <w2share:createdAt> ?createdAt.
             ?uri <w2share:updatedAt> ?updatedAt.
+            OPTIONAL { ?uri <w2share:hasWorkflow> ?workflow. }
+            OPTIONAL { ?uri <w2share:hasWorkflowResearchObject> ?wro. }
             ?uri <dc:creator> ?creator. 
             ?creator <foaf:name> ?name.
         }";   
@@ -98,6 +116,20 @@ class ScriptConverter
             $converter->setCreatedAt(new \Datetime($result_array[0]['createdAt']['value']));
             $converter->setUpdatedAt(new \Datetime($result_array[0]['updatedAt']['value']));
             $converter->setScriptLanguage($result_array[0]['scriptLanguage']['value']);
+            
+            if (array_key_exists('workflow', $result_array[0]))
+            {
+                $workflow = new \AppBundle\Entity\Workflow();
+                $workflow->setUri($result_array[0]['workflow']['value']);
+                $converter->setWorkflow($workflow);
+            }
+            
+            if (array_key_exists('wro', $result_array[0]))
+            {
+                $wro = new \AppBundle\Entity\WRO();
+                $wro->setUri($result_array[0]['wro']['value']);
+                $converter->setWro($wro);
+            }
             
             $creator = new \AppBundle\Entity\Person();
             $creator->setUri($result_array[0]['creator']['value']);
@@ -125,7 +157,7 @@ class ScriptConverter
             ?creator <foaf:name> ?name.
         }";   
         
-        $result_array = $this->driver->getResults($query,true);
+        $result_array = $this->driver->getResults($query);
         $conversion = array();
         
         for ($i=0; $i < count($result_array); $i++)
@@ -163,6 +195,7 @@ class ScriptConverter
     
     public function updateScriptConversion(\AppBundle\Entity\ScriptConverter $conversion)
     {
+        $now = new \Datetime();
         $query = 
         "MODIFY <".$this->driver->getDefaultGraph('scriptconverter').">
         DELETE 
@@ -183,7 +216,7 @@ class ScriptConverter
             <".$conversion->getUri()."> <w2share:hash> '".$conversion->getHash()."'.
             <".$conversion->getUri()."> <w2share:scriptLanguage> '".$conversion->getScriptLanguage()."'.
             <".$conversion->getUri()."> <w2share:createdAt> '".$conversion->getCreatedAt()->format(\DateTime::ISO8601)."'.
-            <".$conversion->getUri()."> <w2share:updatedAt> '".$conversion->getUpdatedAt()->format(\DateTime::ISO8601)."'.
+            <".$conversion->getUri()."> <w2share:updatedAt> '".$now->format(\DateTime::ISO8601)."'.
             <".$conversion->getUri()."> <dc:creator> <".$conversion->getCreator()->getUri().">.
         ";
         
