@@ -70,8 +70,9 @@
     {% for qd in pagination %}
         <tr>
             <td>
-                <a href="{{ path('qualitydimension-edit', { 'qualitydimension_uri':qd.uri|url_encode }) }}"><i class="glyphicon glyphicon-edit"></i></a>
-                <a href="{{ path('qualitydimension-delete', { 'qualitydimension_uri':qd.uri|url_encode }) }}" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
+                <a href="{{ path('qualitydimension-edit', { 'qualitydimension_uri':qd.uri|url_encode }) }}" title="Edit quality dimension" ><i class="glyphicon glyphicon-edit"></i></a>
+                <a href="{{ path('qualitydimension-delete', { 'qualitydimension_uri':qd.uri|url_encode }) }}" class="delete" title="Delete quality dimension "><i class="glyphicon glyphicon-trash"></i></a>
+                <a href="{{ path('add-qualitymetric', { 'qualitydimension_uri':qd.uri|url_encode() }) }}" title="Add a quality metric" ><i class="glyphicon glyphicon-plus"></i></a> 
             </td>
             <td>{{ qd.name }}</td>
             <td>{{ qd.description }}</a></td>
