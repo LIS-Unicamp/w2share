@@ -243,4 +243,19 @@ class QualityDimension {
     {
         return $this->quality_metrics;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $quality_metric;
+
+
+    /**
+     * Get quality_metric
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getQualityMetric()
+    {
+        return $this->quality_metric;
+    }
 }

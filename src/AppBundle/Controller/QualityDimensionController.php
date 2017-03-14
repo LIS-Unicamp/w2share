@@ -204,7 +204,7 @@ class QualityDimensionController extends Controller{
             
             $this->get('session')
                 ->getFlashBag()
-                ->add('success', 'Quality metric assigned to quality dimension!');
+                ->add('success', 'Quality metric added!');
         }
         
        $query = $model_qualitymetric->findQualityMetricByDimension($qualitydimension_uri);
@@ -219,11 +219,50 @@ class QualityDimensionController extends Controller{
         return $this->render('qualityflow/quality-metrics-form.html.twig', array(
             'pagination' => $pagination,
             'form' => $form->createView(),
-            'qualitydimension_uri' => $qualitydimension_uri, 
             'quality_dimension' => $quality_dimension,
             'qualityMetric' => $qualityMetric
         )); 
         
+    }
+    
+    /**
+     * @Route("/qualitymetric/edit/{qualitymetric_uri}", name="qualitymetric-edit")
+     */
+    public function editQualityMetricAction(Request $request, $qualitymetric_uri)
+    {     
+        $qualitymetric_uri = urldecode($qualitymetric_uri);
+        $model_qualitymetric = $this->get('model.qualitymetric'); 
+        
+        $quality_metric = $model_qualitymetric->findQualityMetric($qualitymetric_uri);
+        
+        $form = $this->createForm(new \AppBundle\Form\QualityMetricType(), $quality_metric);
+        
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) 
+        {           
+            $model->updateQualityMetric($quality_metric);
+            
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Quality metric edited!')
+            ;
+        }
+        
+        $query = $model_qualitymetric->findQualityMetricByDimension($quality_metric->getQualityDimension()->getUri());
+       
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+         $query, /* query NOT result */
+         $request->query->getInt('page', 1), /*page number*/
+         10 /*limit per page*/
+        );
+        
+        return $this->render('qualityflow/quality-metrics-form.html.twig', array(
+            'pagination'=> $pagination,
+            'form' => $form->createView(),
+            'quality_metric' => $quality_metric
+        ));
     }
     
 }

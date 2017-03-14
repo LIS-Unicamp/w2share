@@ -27,10 +27,12 @@ class QualityMetric {
     
     /**
      * 
-     * @param type $metric
+     * @param $metric
      */
     public function setMetric($metric) {
-        $this->meric = $metric;
+        $this->metric = $metric;
+        
+        return $this;
     }
     /**
      * 
@@ -46,6 +48,8 @@ class QualityMetric {
      */
     public function setDescription($description) {
         $this->description = $description;
+        
+        return $this;
     }
     
     /**
@@ -65,11 +69,6 @@ class QualityMetric {
      * @var string
      */
     private $result;
-
-    /**
-     * @var string
-     */
-    private $creator;
 
     /**
      * @var \AppBundle\Entity\QualityDimension
@@ -124,29 +123,6 @@ class QualityMetric {
     }
 
     /**
-     * Set creator
-     *
-     * @param string $creator
-     * @return QualityMetric
-     */
-    public function setCreator($creator)
-    {
-        $this->creator = $creator;
-    
-        return $this;
-    }
-
-    /**
-     * Get creator
-     *
-     * @return string 
-     */
-    public function getCreator()
-    {
-        return $this->creator;
-    }
-
-    /**
      * Set quality_dimension
      *
      * @param \AppBundle\Entity\QualityDimension $qualityDimension
@@ -167,5 +143,33 @@ class QualityMetric {
     public function getQualityDimension()
     {
         return $this->quality_dimension;
+    }
+    /**
+     * @var \AppBundle\Entity\Person
+     */
+    private $creator;
+
+
+    /**
+     * Set creator
+     *
+     * @param \AppBundle\Entity\Person $creator
+     * @return QualityMetric
+     */
+    public function setCreator(\AppBundle\Entity\Person $creator = null)
+    {
+        $this->creator = $creator;
+    
+        return $this;
+    }
+
+    /**
+     * Get creator
+     *
+     * @return \AppBundle\Entity\Person 
+     */
+    public function getCreator()
+    {
+        return $this->creator;
     }
 }

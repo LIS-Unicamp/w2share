@@ -430,4 +430,43 @@ class Person implements AdvancedUserInterface, EquatableInterface, \Serializable
     {
         return $this->updated_at;
     }
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $quality_metric;
+
+
+    /**
+     * Add quality_metric
+     *
+     * @param \AppBundle\Entity\QualityMetric $qualityMetric
+     * @return Person
+     */
+    public function addQualityMetric(\AppBundle\Entity\QualityMetric $qualityMetric)
+    {
+        $this->quality_metric[] = $qualityMetric;
+    
+        return $this;
+    }
+
+    /**
+     * Remove quality_metric
+     *
+     * @param \AppBundle\Entity\QualityMetric $qualityMetric
+     */
+    public function removeQualityMetric(\AppBundle\Entity\QualityMetric $qualityMetric)
+    {
+        $this->quality_metric->removeElement($qualityMetric);
+    }
+
+    /**
+     * Get quality_metric
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getQualityMetric()
+    {
+        return $this->quality_metric;
+    }
 }

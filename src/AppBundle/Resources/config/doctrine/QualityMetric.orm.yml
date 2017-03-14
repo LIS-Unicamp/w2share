@@ -10,9 +10,10 @@ AppBundle\Entity\QualityMetric:
             type: string
         result:
             type: string
-        creator:
-            type: string
     manyToOne:
         quality_dimension:
             targetEntity: QualityDimension
-            inversedBy: quality_metrics
+            inversedBy: quality_metric
+        creator:
+            targetEntity: Person
+            inversedBy: quality_metric

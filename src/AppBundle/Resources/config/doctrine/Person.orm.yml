@@ -30,3 +30,7 @@ AppBundle\Entity\Person:
             type: string
         updated_at:
             type: string
+    oneToMany:
+        quality_metric:
+            targetEntity: QualityMetric
+            mappedBy: creator

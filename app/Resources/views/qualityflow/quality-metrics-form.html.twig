@@ -2,8 +2,14 @@
 {% block title %}Add Quality Metric{% endblock %}
 {% block body %}
 
+<h1>Quality dimension <button class="btn btn-xs copy" data-clipboard-text="{{ quality_dimension.uri }}"> <i class="glyphicon glyphicon-copy"></i></h1>
+    
+    <ul>
+        <li><strong>Name:</strong> {{ quality_dimension.name }}</li>
+        <li><strong>Description:</strong> {{ quality_dimension.description }}</li>
+    </ul>
+
 <div>
-<h2>{% if qualityMetric.uri %}Edit{% else %}Add{% endif %} <small>quality metric</small></h2>
 {{ form_start(form) }}
     <div class="form-body">
         {% for flashMessage in app.session.flashbag.get('success') %}
@@ -51,15 +57,14 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Actions</th>
-                <th>Dimension</th>
+                <th style="width:100px">Action</th>
                 <th>Metric</th>
                 <th>Description</th>
                 <th>Author</th>
             </tr>
         </thead>
         <tbody>
-            {% for metric in pagination %}
+            {% for item in pagination %}
                 <tr>
                     <td>
                         <a href="" 
@@ -67,10 +72,9 @@
                         <a href="" 
                            title="Edit quality annotations"><i class="glyphicon glyphicon-edit"></i></a> 
                     </td>
-                    <td>{{ metric.qualityDimension.name }}</td>
-                    <td>{{ metric.metric }}</td>
-                    <td>{{ metric.description }}</td>
-                    <td>{{ metric.creator }}</td>
+                    <td>{{ item.metric }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.creator.name }}</td>
                 </tr>
             {% endfor %}
         </tbody>
