@@ -109,6 +109,7 @@ class WRO
                 $conversion->setUri($result_array[0]['conversion']['value']);
                 $conversion->setHash($result_array[0]['hash']['value']);
                 $wro->setScriptConversion($conversion);
+                $wro->setHash($result_array[0]['hash']['value']);
             }
             
             $resources = $this->findAllResourcesByWRO($wro);
@@ -355,7 +356,7 @@ class WRO
     {
         //TODO: add rdf:type wf4ever:WorkflowResearchObject
         $code = '#!/bin/bash                   
-
+                cd '.$wro->getUploadRootDir().'/../
                 ROBASE="wro"
 
                 ro config -v \
@@ -368,23 +369,22 @@ class WRO
                 mkdir  $ROBASE/test-create-RO
 
                 rm -rf $ROBASE/test-create-RO/.ro
-                cp -r  '.$wro->getHash().'/* $ROBASE/test-create-RO
+                rsync -aP --exclude=$ROBASE --exclude=create-wro.sh . $ROBASE/test-create-RO
 
                 ro create -v "Reproducible WRO" -d $ROBASE/test-create-RO -i RO-id-testCreate
 
-                ro add -v -a -d $ROBASE/test-create-RO $ROBASE/test-create-RO
-
-                ro status -v -d $ROBASE/test-create-RO';
+                ro add -v -a $ROBASE/test-create-RO -d $ROBASE/test-create-RO';
 
         foreach ($wro->getResources() as $resource)
         {
             $code .= 'ro annotate -v $ROBASE/test-create-RO/'.$resource->getFolder().'/'.$resource->getFilename().' rdf:type "'.$resource->getType().'" title "'.$resource->getDescription().'"';
         }
-        $code .= 'echo -n application/vnd.wf4ever.robundle+zip > mimetype
+        $code .= 'cd '.$wro->getUploadRootDir().'
+                echo -n application/vnd.wf4ever.robundle+zip > '.$wro->getUploadRootDir().'/mimetype
 
-                zip -0 -X ../example.robundle mimetype  
+                zip -0 -X '.$wro->getWROAbsolutePath().' mimetype  
 
-                zip -X -r ../example.robundle . -x mimetype';
+                zip -X -r '.$wro->getWROAbsolutePath().' . -x mimetype';
         
         $fs = new \Symfony\Component\Filesystem\Filesystem();           
         $fs->dumpFile($wro->getWROScriptAbsolutePath(), $code);

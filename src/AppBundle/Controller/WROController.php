@@ -71,9 +71,7 @@ class WROController extends Controller
         $wro_uri = urldecode($wro_uri);
                 
         $model = $this->get('model.wro'); 
-        //$wro = $model->findWRO($wro_uri);
-        $wro = new \AppBundle\Entity\WRO();
-        $wro->setUri($wro_uri);
+        $wro = $model->findWRO($wro_uri);
 
         if ($wro)
         {
@@ -143,12 +141,21 @@ class WROController extends Controller
         
         $model = $this->get('model.wro');                                   
         $wro = $model->findWRO($wro_uri);
+        $file_path = $wro->getWROAbsolutePath();
+        $content = $wro->getWROFileContent();
                 
-        return $this->render('wro/wro.html.twig', array(
+        $response = new \Symfony\Component\HttpFoundation\Response();   
+        
+        // Set headers
+        $response->headers->set('Cache-Control', 'private');
+        $response->headers->set('Content-type', mime_content_type($file_path));
+        $response->headers->set('Content-Disposition', 'attachment; filename="'.basename($file_path).'";');
+        $response->headers->set('Content-length', filesize($file_path));
 
-            'wro' => $wro,
-            'wro_uri' => $wro_uri
-        ));
+        // Send headers before outputting anything
+        $response->sendHeaders();
+
+        return $response->setContent($content);
     }    
     
     /**

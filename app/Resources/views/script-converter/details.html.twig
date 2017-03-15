@@ -8,8 +8,8 @@
         </button>           
     </small>
 </h1>
-<a class="btn btn-success" href="{{ path('script-converter-restart') }}"><i class="glyphicon glyphicon-plus"></i> New</a>
-<a class="btn btn-info" href="{{ path('script-converter-list') }}"><i class="glyphicon glyphicon-list"></i> List</a>
+<a class="btn btn-success" href="{{ path('script-converter-restart') }}" title="New conversion"><i class="glyphicon glyphicon-plus"></i> New</a>
+<a class="btn btn-info" href="{{ path('script-converter-list') }}" title="Go to conversion list"><i class="glyphicon glyphicon-list"></i> List</a>
 <a class="btn btn-danger delete" href="{{ path('script-converter-delete', { 'hash':conversion.hash }) }}" title="Delete Conversion"><i class="glyphicon glyphicon-trash"></i> Delete</a>
 
 <ul>
@@ -19,9 +19,13 @@
     <li><strong>Created At:</strong> {{ conversion.createdAt|date('H:i Y-m-d') }}</li>
     <li><strong>Updated At:</strong> {{ conversion.updatedAt|date('H:i Y-m-d') }}</li>
 </ul>
-<h2>Script <small>Language: {{ conversion.scriptLanguage }}</small></h2>
-<a href="{{ path('script-converter-editor', { 'hash':conversion.hash, 'language':conversion.scriptLanguage }) }}" title="Open editor"><i class="glyphicon glyphicon-edit"></i></a>
-<a href="{{ path("script-converter-script-download", { 'hash': conversion.hash, 'language': conversion.scriptLanguage }) }}" title="Download Script"><i class="glyphicon glyphicon-download"></i></a>
+<h2>Script 
+    <small>
+        <a href="{{ path('script-converter-editor', { 'hash':conversion.hash, 'language':conversion.scriptLanguage }) }}" title="Open editor"><i class="glyphicon glyphicon-edit"></i></a>
+        <a href="{{ path("script-converter-script-download", { 'hash': conversion.hash, 'language': conversion.scriptLanguage }) }}" title="Download Script"><i class="glyphicon glyphicon-download"></i></a>
+        Language: {{ conversion.scriptLanguage }}
+    </small>
+</h2>
 
 <h3>Abstract Workflow</h3>
 <img src="{{ asset(conversion.abstractWorkflowFileWebPath) }}">
@@ -29,17 +33,17 @@
 
 <h2>Draft Executable Workflow 
     <small>
-        <a class="btn" href="{{ path("script-converter-draft-workflow-download", { 'hash': conversion.hash }) }}" title="Download Workflow Specification"><i class="glyphicon glyphicon-download"></i></a>
+        <a href="{{ path("script-converter-draft-workflow-download", { 'hash': conversion.hash }) }}" title="Download Workflow Specification"><i class="glyphicon glyphicon-download"></i></a>
     </small>
 </h2>
 <img src="{{ asset(conversion.draftWorkflowImageFileWebPath) }}">
 
 <h2>Executable Workflow
     <small>
-        <a class="btn" href="{{ path('script-converter-upload', { 'hash':conversion.hash }) }}" title="Upload Workflow"><i class="glyphicon glyphicon-upload"></i></a>
+        <a href="{{ path('script-converter-upload', { 'hash':conversion.hash }) }}" title="Upload Workflow"><i class="glyphicon glyphicon-upload"></i></a>
         {% if conversion.workflow %} 
-        <a class="btn" href="{{ path('workflow-details', { 'workflow_uri':conversion.workflow.uri|url_encode() }) }}"><i class="glyphicon glyphicon-search"></i></a>
-        <a class="btn" href="{{ path("workflow-download", { 'hash': conversion.hash }) }}" title="Download Workflow Specification"><i class="glyphicon glyphicon-download"></i></a>        
+        <a href="{{ path('workflow-details', { 'workflow_uri':conversion.workflow.uri|url_encode() }) }}" title="Go to workflow details"><i class="glyphicon glyphicon-search"></i></a>
+        <a href="{{ path("workflow-download", { 'hash': conversion.hash }) }}" title="Download Workflow Specification"><i class="glyphicon glyphicon-download"></i></a>        
         {% endif %}
     </small>
 </h2>

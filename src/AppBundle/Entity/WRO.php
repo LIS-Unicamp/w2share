@@ -60,7 +60,6 @@ class WRO
     {
         $this->resources = new \Doctrine\Common\Collections\ArrayCollection();
         $this->annotations = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->hash = sha1(uniqid(mt_rand(), true));
         $this->created_at = new \Datetime();
         $this->updated_at = new \Datetime();
     }
@@ -110,9 +109,14 @@ class WRO
         return $this->getUploadRootDir().'/wro-bundle.zip';
     }
     
+    public function getWROFileContent()
+    {
+        return file_get_contents($this->getWROAbsolutePath());
+    }
+    
     public function getWROScriptAbsolutePath()
     {
-        return $this->getUploadRootDir().'/script.sh';
+        return $this->getUploadRootDir().'/../create-wro.sh';
     }
     
     public function getWebPath()
@@ -124,14 +128,20 @@ class WRO
     {
         // the absolute directory path where uploaded
         // documents should be saved
-        return __DIR__.'/../../../web/'.$this->getUploadDir().'/'.$this->getHash().'/wro';
+        return __DIR__.'/../../../web/'.$this->getUploadDir().'/wro';
     }
 
     protected function getUploadDir()
     {
         // get rid of the __DIR__ so it doesn't screw up
         // when displaying uploaded doc/image in the view.
-        return 'uploads/documents/w2share';
+        if ($this->getHash())
+        {
+            return 'uploads/documents/w2share/'.$this->getHash();
+        }
+        else {
+            return 'uploads/documents/wro';
+        }
     }
 
     /**
