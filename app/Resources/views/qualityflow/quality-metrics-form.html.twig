@@ -48,7 +48,7 @@
         {% else %}
             {{ form_widget(form.save, { 'label':'Add' }) }}
         {% endif %}
-        <a href="" class="btn btn-info">List</a>
+        <a href="{{ path('qualitymetrics') }}" class="btn btn-info">List</a>
     </div>
     {{ form_end(form) }}
 </div>
@@ -64,17 +64,17 @@
             </tr>
         </thead>
         <tbody>
-            {% for item in pagination %}
+            {% for qualitymetric in pagination %}
                 <tr>
                     <td>
-                        <a href="" 
-                           title="Delete quality metric" ><i class="glyphicon glyphicon-trash"></i></a> 
-                        <a href="" 
-                           title="Edit quality annotations"><i class="glyphicon glyphicon-edit"></i></a> 
+                        <a href="{{ path('delete-qualitymetric', { 'qualitymetric_uri':qualitymetric.uri|url_encode() }) }}" 
+                           title="Delete quality metric" class="delete"><i class="glyphicon glyphicon-trash"></i></a> 
+                        <a href="{{ path('edit-qualitymetric', { 'qualitymetric_uri':qualitymetric.uri|url_encode() }) }}" 
+                           title="Edit quality metric"><i class="glyphicon glyphicon-edit"></i></a> 
                     </td>
-                    <td>{{ item.metric }}</td>
-                    <td>{{ item.description }}</td>
-                    <td>{{ item.creator.name }}</td>
+                    <td>{{ qualitymetric.metric }}</td>
+                    <td>{{ qualitymetric.description }}</td>
+                    <td>{{ qualitymetric.creator.name }}</td>
                 </tr>
             {% endfor %}
         </tbody>

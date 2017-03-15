@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
-{% block title %}Quality Dimensions{% endblock %}
+{% block title %}Quality Metrics{% endblock %}
 {% block body %}
-<h1>Quality Dimensions</h1>
+<h1>Quality Metrics</h1>
 {% for flashMessage in app.session.flashbag.get('success') %}
     <div class="alert alert-success">
             <button class="close" data-dismiss="alert"></button>
@@ -15,9 +15,7 @@
     </div>            
 {% endfor %}
 <div class="row">
-    <div class="col-md-1">
-        <a class="btn btn-primary" href="{{ path('qualitydimension-add') }}">Add</a>
-    </div>
+    
     <div class="col-md-5 pull-right" id="filtrar">
         {{ form_start(form) }}
             <div class="row">                                
@@ -60,24 +58,27 @@
         <thead>
             <tr>
                 <th style="width:100px">Action</th>
-                <th>Name</th>
+                <th>Dimension</th>
+                <th>Metric</th>
                 <th>Description</th>
-                <th>Type</th>
                 <th>Creator</th>
+                
             </tr>
         </thead>
         <tbody>
-    {% for qd in pagination %}
+    {% for qualitymetric in pagination %}
         <tr>
             <td>
-                <a href="{{ path('qualitydimension-edit', { 'qualitydimension_uri':qd.uri|url_encode }) }}" title="Edit quality dimension" ><i class="glyphicon glyphicon-edit"></i></a>
-                <a href="{{ path('qualitydimension-delete', { 'qualitydimension_uri':qd.uri|url_encode }) }}" title="Delete quality dimension " class="delete"><i class="glyphicon glyphicon-trash"></i></a>
-                <a href="{{ path('add-qualitymetric', { 'qualitydimension_uri':qd.uri|url_encode() }) }}" title="Add a quality metric" ><i class="glyphicon glyphicon-plus"></i></a> 
+                <a href="{{ path('edit-qualitymetric', { 'qualitymetric_uri':qualitymetric.uri|url_encode() }) }}" 
+                        title="Edit quality metric"><i class="glyphicon glyphicon-edit"></i></a> 
+                <a href="{{ path('add-qualitymetric', { 'qualitydimension_uri':qualitymetric.qualityDimension.uri|url_encode() }) }}" 
+                        title="Add quality metric" ><i class="glyphicon glyphicon-plus"></i></a> 
             </td>
-            <td>{{ qd.name }}</td>
-            <td>{{ qd.description }}</a></td>
-            <td>{{ qd.valueType }}</td> 
-            <td>{{ qd.creator.name }}</td>
+            <td>{{ qualitymetric.qualityDimension.name }}</td>
+            <td>{{ qualitymetric.metric }}</td>
+            <td>{{ qualitymetric.description }}</td>
+            <td>{{ qualitymetric.creator.name }}</td>
+            
         </tr>
     {% endfor %}
         </tbody>

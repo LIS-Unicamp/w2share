@@ -42,8 +42,7 @@ class QualityMetric
                 <w2share:hasQualityDimension> <".$qualityDimension->getUri().">;
                 <w2share:metric> '".$metric."';
                 <rdfs:description> '".$description."';
-                <dc:creator> <".$user->getUri().">;
-                <dc:date> \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\".
+                <dc:creator> <".$user->getUri().">.
             }
         }";
         
@@ -73,7 +72,6 @@ class QualityMetric
         {
             $qualityMetric = new \AppBundle\Entity\QualityMetric();
             $qualityMetric->setUri($quality_metrics[$i]['uri']['value']);
-            //TODO: Verificar por que nao esta adicionando a metrica
             $qualityMetric->setMetric($quality_metrics[$i]['metric']['value']);
             $qualityMetric->setDescription($quality_metrics[$i]['description']['value']);
             
@@ -121,6 +119,12 @@ class QualityMetric
             $qualityMetric->setMetric($quality_metric[0]['metric']['value']);
             $qualityMetric->setDescription($quality_metric[0]['description']['value']);
             
+            $creator = new \AppBundle\Entity\Person();
+            $creator->setUri($quality_metric[0]['creator']['value']);
+            $creator->setName($quality_metric[0]['creator_name']['value']);
+            
+            $qualityMetric->setCreator($creator);
+            
             $qualityDimension = new \AppBundle\Entity\QualityDimension();
             $qualityDimension->setUri($quality_metric[0]['qualityDimension']['value']);
             $qualityDimension->setName($quality_metric[0]['qdName']['value']);
@@ -133,15 +137,122 @@ class QualityMetric
         
         return $qualityMetric;
     }
-    //TODO
-    public function updateQualityMetric(\AppBundle\Entity\QualityMetric $qualityMetric) 
+    
+    public function findUsersWithQualityMetrics()
     {
-        //TODO: verificar com Lucas. As URIs de metricas estao sendo criadas com o nomde das dimensoes
-        //$uri = Utils::convertNameToUri("Quality Metric", $qualityMetric->getQualityDimension()->getName());
-        //$qualityMetric->setUri($uri);
-        
         $query = 
-        "   MODIFY <".$this->driver->getDefaultGraph('qualitymetric')."> 
+        "SELECT * WHERE 
+        {     
+           ?uri a <w2share:QualityMetric>;
+           <dc:creator> ?creator.
+           ?creator <foaf:name> ?name.
+           
+        }";
+        
+        $user_array = array();
+        $user_quality_metrics = $this->driver->getResults($query);                
+        
+        for ($i = 0; $i < count($user_quality_metrics); $i++)
+        {
+            $creator = new \AppBundle\Entity\Person();
+            $creator->setUri($user_quality_metrics[$i]['creator']['value']);
+            $creator->setName($user_quality_metrics[$i]['name']['value']);
+            
+            $user_array[$creator->getUri()] = $creator;
+        }
+        
+        return $user_array;
+    }
+    
+    public function findQualityMetricsByUser($user)
+    {
+        $query = 
+        "SELECT * WHERE 
+        {            
+            ?uri a <w2share:QualityMetric>;
+            <w2share:metric> ?metric;
+            <rdfs:description> ?description;
+            <w2share:hasQualityDimension> ?qualityDimension.
+            ?qualityDimension <w2share:qdName> ?qdName.
+            ?uri <dc:creator> <".$user->getUri().">. 
+            <".$user->getUri()."> <foaf:name> ?creator_name.
+        }";
+        
+        $quality_metric_array = array();
+        $quality_metrics = $this->driver->getResults($query);                
+        
+        for ($i = 0; $i < count($quality_metrics); $i++)
+        {
+            $qualityMetric = new \AppBundle\Entity\QualityMetric();
+            $qualityMetric->setUri($quality_metrics[$i]['uri']['value']);
+            $qualityMetric->setMetric($quality_metrics[$i]['metric']['value']);
+            $qualityMetric->setDescription($quality_metrics[$i]['description']['value']);
+            
+            $creator = new \AppBundle\Entity\Person();
+            $creator->setUri($user->getUri());
+            $creator->setName($quality_metrics[$i]['creator_name']['value']);
+            
+            $qualityMetric->setCreator($creator);
+            
+            $qualityDimension = new \AppBundle\Entity\QualityDimension();
+            $qualityDimension->setUri($quality_metrics[$i]['qualityDimension']['value']);
+            $qualityDimension->setName($quality_metrics[$i]['qdName']['value']);
+            
+            $qualityMetric->setQualityDimension($qualityDimension);
+            
+            $quality_metric_array[] = $qualityMetric;
+        }
+        
+        return $quality_metric_array;
+    }
+
+    public function findAllQualityMetrics() 
+    {
+        $query = 
+        "SELECT * WHERE 
+        {
+            ?uri a <w2share:QualityMetric>;
+            <w2share:metric> ?metric;
+            <rdfs:description> ?description;
+            <w2share:hasQualityDimension> ?qualityDimension.
+            ?qualityDimension <w2share:qdName> ?qdName.
+            ?uri <dc:creator> ?creator.
+            ?creator <foaf:name> ?creator_name.
+
+        }";
+        
+        $quality_metric_array = array();
+        $quality_metrics = $this->driver->getResults($query);                
+        
+        for ($i = 0; $i < count($quality_metrics); $i++)
+        {
+            $qualityMetric = new \AppBundle\Entity\QualityMetric();
+            $qualityMetric->setUri($quality_metrics[$i]['uri']['value']);
+            $qualityMetric->setMetric($quality_metrics[$i]['metric']['value']);
+            $qualityMetric->setDescription($quality_metrics[$i]['description']['value']);
+            
+            $creator = new \AppBundle\Entity\Person();
+            $creator->setUri($quality_metrics[$i]['creator']['value']);
+            $creator->setName($quality_metrics[$i]['creator_name']['value']);
+            
+            $qualityMetric->setCreator($creator);
+            
+            $qualityDimension = new \AppBundle\Entity\QualityDimension();
+            $qualityDimension->setUri($quality_metrics[$i]['qualityDimension']['value']);
+            $qualityDimension->setName($quality_metrics[$i]['qdName']['value']);
+            
+            $qualityMetric->setQualityDimension($qualityDimension);
+            
+            $quality_metric_array[$qualityMetric->getUri()] = $qualityMetric;  
+        }
+        
+        return $quality_metric_array;
+    }
+
+        public function updateQualityMetric(\AppBundle\Entity\QualityMetric $qualityMetric, $user) 
+    {
+        $query = 
+        " MODIFY <".$this->driver->getDefaultGraph('qualitymetric')."> 
             DELETE 
             { 
                 <".$qualityMetric->getUri()."> a <w2share:QualityMetric>.
@@ -152,19 +263,44 @@ class QualityMetric
             }
             INSERT        
             { 
-                <".$qd->getUri()."> a <w2share:QualityDimension>.
-                <".$qd->getUri()."> <w2share:qdName> '".$qd->getName()."'.
-                <".$qd->getUri()."> <w2share:valueType> '".$qd->getValueType()."'.
-                <".$qd->getUri()."> <rdfs:description> '".$qd->getDescription()."'.
+                <".$qualityMetric->getUri()."> a <w2share:QualityMetric>.
+                <".$qualityMetric->getUri()."> <w2share:metric> '".$qualityMetric->getMetric()."'.
+                <".$qualityMetric->getUri()."> <rdfs:description> '".$qualityMetric->getDescription()."'.
+                <".$qualityMetric->getUri()."> <w2share:hasQualityDimension> <".$qualityMetric->getQualityDimension()->getUri().">.
+                <".$qualityMetric->getUri()."> <dc:creator> <".$user->getUri().">.
+                    
             }
             WHERE 
             { 
-                <".$qd->getUri()."> a <w2share:QualityDimension>.
-                <".$qd->getUri()."> <w2share:qdName> ?name.
-                <".$qd->getUri()."> <w2share:valueType> ?valueType.
-                <".$qd->getUri()."> <rdfs:description> ?description.
+                <".$qualityMetric->getUri()."> a <w2share:QualityMetric>.
+                <".$qualityMetric->getUri()."> <w2share:metric> ?metric.
+                <".$qualityMetric->getUri()."> <rdfs:description> ?description.
+                <".$qualityMetric->getUri()."> <w2share:hasQualityDimension> ?qualityDimension.
+                <".$qualityMetric->getUri()."> <dc:creator> ?creator.
             }";
         
+        return $this->driver->getResults($query);
+    }
+    
+    public function deleteQualityMetric(\AppBundle\Entity\QualityMetric $qualityMetric)
+    {
+        $query = 
+        "DELETE data FROM <".$this->driver->getDefaultGraph('qualitymetric')."> 
+            {
+                <".$qualityMetric->getUri()."> a <w2share:QualityMetric>.
+                <".$qualityMetric->getUri()."> <w2share:metric> '".$qualityMetric->getMetric()."'.
+                <".$qualityMetric->getUri()."> <rdfs:description> '".$qualityMetric->getDescription()."'.
+                <".$qualityMetric->getUri()."> <w2share:hasQualityDimension> <".$qualityMetric->getQualityDimension()->getUri().">.
+                <".$qualityMetric->getUri()."> <dc:creator> <".$qualityMetric->getQualityDimension()->getUri().">. 
+            }";
+        
+        return $this->driver->getResults($query);
+       
+    }
+    
+    public function clearGraph()
+    {
+        $query = "CLEAR GRAPH <".$this->driver->getDefaultGraph('qualitymetric').">";        
         return $this->driver->getResults($query);
     }
     
