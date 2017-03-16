@@ -4,15 +4,6 @@
 
   var MainController = function($scope, $http, $timeout, FileSaver, Blob, $window) {
 
-    var config;
-
-    var onEditorConfigReceived = function(response) {
-      config = response.data;
-    } 
-
-    $http.get("http://absflow.westus.cloudapp.azure.com/yw-editor-service/api/v1/config")
-        .then(onEditorConfigReceived);
-
     var editor = ace.edit("editor");
     editor.$blockScrolling = Infinity;
 
@@ -149,10 +140,9 @@
     }
 
     $scope.getGraph = function() {
-
-      if (config) {
+      
         $http.post(
-          "http://absflow.westus.cloudapp.azure.com" + config.graphServiceBaseUrl + "graph",
+          "http://w2share.lis.ic.unicamp.br/yw-graph-service/yw-graph-service/api/v1/graph",
           {
               language: $scope.language,
               code: editor.getValue(),
@@ -168,7 +158,6 @@
                           "graph.dotcomments = on\n"
           })
           .then(onGraphComplete);
-        }
     }
 
     var onGraphComplete = function(response) {
