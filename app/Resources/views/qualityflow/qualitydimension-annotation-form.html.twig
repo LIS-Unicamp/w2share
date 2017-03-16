@@ -123,6 +123,34 @@
                     <td>{{ annotation.value }}</td>
                     <td>{{ annotation.creator }}</td>
                 </tr>
+                <tr>
+                    <td colspan="4">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#qualityMetricModal">
+                                          Metric
+                                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                        </button>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th> Metric </th>
+                                    <th> Description </th>
+                                    <th> Play </th>
+                                    <th> Result </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
@@ -139,7 +167,23 @@
         {{ app_pagination_render(pagination) }}
     </div>
 </div>
-    
+<!-- Modal -->
+<div class="modal fade" id="qualityMetricModal" tabindex="-1" role="dialog" aria-labelledby="qualityMetricModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="qualityMetricModalLabel">Choose Quality Metric</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+       <!-- Send quality dimension URI to controller-->
+      <div class="modal-body">
+        ...
+      </div>
+    </div>
+  </div>
+</div>  
 {% endblock %}  
 {% block javascripts %}
 {% endblock %}
