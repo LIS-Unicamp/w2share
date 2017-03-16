@@ -13,11 +13,7 @@
     var graph = {}; 
     var workflow_image = {}
     var svg_native_width = 1;
-    var svg_native_height = 1;
-
-    editor.getSession().on('change', function(e) {
-        $scope.getGraph();
-    });
+    var svg_native_height = 1;   
 
     $scope.languageChange = function() {
       editor.session.setMode( "ace/mode/" + $scope.language );
@@ -162,11 +158,11 @@
 
     var onGraphComplete = function(response) {
       graph = response.data;
+      $window.toastr.success('Graph representation updated!', 'Notification');
       updateViewer();
     } 
 
     $scope.onZoomSelect = function() {
-      $scope.getGraph();
       editor.focus();
     }
     
@@ -311,6 +307,7 @@
     $scope.theme = "light";
     $scope.keybinding = "ace";
     $scope.language = $window.language;
+    editor.session.setMode( "ace/mode/" + $scope.language );
 
     $scope.fontsize="12";
     $scope.fontsizeChange();
@@ -319,7 +316,6 @@
     $scope.showGraphViewer = false;
     $scope.viewerZoom="fit";
     $scope.sampleToLoad=$window.sample;
-    $scope.languageChange();
     $scope.graphSvg = '';
 
     $scope.showProcessNodes = true;

@@ -317,10 +317,19 @@ class WRO
         $wro->setCreator($conversion->getCreator());
         $wro->setWorkflow($conversion->getWorkflow());
         $wro->setScriptConversion($conversion);
+        $this->addResources($wro);
         //$wro->addResource($resources);
         $this->saveWRO($wro);
         $this->saveWroScriptConversion($wro);
         $this->createWROScript($wro);
+    }
+    
+    public function addResources(\AppBundle\Entity\WRO $wro)
+    {
+        if ($wro->getWorkflow())
+        {
+            $wro->addResourceBuilder($wro->getWorkflow()->getUri(), basename($wro->getWorkflow()->getWorkflowAbsolutePath()), '', 'Workflow specification', 'wfdesc:Workflow');
+        }
     }
     
     /**
@@ -355,29 +364,31 @@ class WRO
     public function createWROScript(\AppBundle\Entity\WRO $wro)
     {
         //TODO: add rdf:type wf4ever:WorkflowResearchObject
-        $code = '#!/bin/bash                   
-                cd '.$wro->getUploadRootDir().'/../
-                ROBASE="wro"
+        $code = "#!/bin/bash                   
+                cd ".$wro->getUploadRootDir()."/../
+                ROBASE=\"wro\"
 
                 ro config -v \
-                  -b $ROBASE \
+                  -b ".'$ROBASE'." \
                   -r http://sandbox.wf4ever-project.org/rodl/ROs/ \
-                  -t "'.$wro->getHash().'" \
-                  -n "Lucas" \
-                  -e "lucas.carvalho@ic.unicamp.br"
+                  -t \"".$wro->getHash()."\" \
+                  -n \"Lucas\" \
+                  -e \"lucas.carvalho@ic.unicamp.br\"
 
-                mkdir  $ROBASE/test-create-RO
+                mkdir  ".'$ROBASE'."/test-create-RO
 
-                rm -rf $ROBASE/test-create-RO/.ro
-                rsync -aP --exclude=$ROBASE --exclude=create-wro.sh . $ROBASE/test-create-RO
+                rm -rf ".'$ROBASE'."/test-create-RO/.ro
+                    
+                rsync -aP --exclude=".'$ROBASE'." --exclude=create-wro.sh --exclude=conversion.py --exclude=wf.gv . ".'$ROBASE'."/test-create-RO
 
-                ro create -v "Reproducible WRO" -d $ROBASE/test-create-RO -i RO-id-testCreate
+                ro create -v \"Reproducible WRO\" -d ".'$ROBASE'."/test-create-RO -i RO-id-testCreate
 
-                ro add -v -a $ROBASE/test-create-RO -d $ROBASE/test-create-RO';
+                ro add -v -a ".'$ROBASE'."/test-create-RO -d ".'$ROBASE'."/test-create-RO\n";
 
         foreach ($wro->getResources() as $resource)
         {
-            $code .= 'ro annotate -v $ROBASE/test-create-RO/'.$resource->getFolder().'/'.$resource->getFilename().' rdf:type "'.$resource->getType().'" title "'.$resource->getDescription().'"';
+            $code .= "ro annotate -v ".'$ROBASE'."/test-create-RO/".$resource->getFolder()."/".$resource->getFilename()." rdf:type \"".$resource->getType()."\"\n";
+            $code .= "ro annotate -v ".'$ROBASE'."/test-create-RO/".$resource->getFolder()."/".$resource->getFilename()." title \"".$resource->getDescription()."\"\n";
         }
         $code .= 'cd '.$wro->getUploadRootDir().'
                 echo -n application/vnd.wf4ever.robundle+zip > '.$wro->getUploadRootDir().'/mimetype
