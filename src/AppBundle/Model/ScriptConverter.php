@@ -333,6 +333,29 @@ class ScriptConverter
         }
     }
     
+    public function createGraphServiceResponse($data)
+    {
+        $code = $data['code'];
+        $language = $data['language'];
+        $properties = $data['properties'];        
+        
+        $converter = new \AppBundle\Entity\ScriptConverter();
+        $converter->setHash('web');        
+        $converter->setScriptLanguage($language);
+        $converter->setScriptCode($code);        
+        $converter->setGraphProperties($properties);
+        $converter->createGraph();
+        
+        $json = array(
+            'svg' => file_get_contents($converter->getAbstractWorkflowFilepath()),
+            'error' => null,
+            'dot' => null,
+            'skeleton' => null
+            );
+        
+        return json_encode($json);       
+    }
+    
     private function saveWorkflowHash(\AppBundle\Entity\Workflow $workflow) 
     {      
         $query = 

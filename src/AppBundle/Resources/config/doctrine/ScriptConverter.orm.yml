@@ -12,6 +12,8 @@ AppBundle\Entity\ScriptConverter:
             type: string
         script_language:
             type: string
+        graph_properties:
+            type: string
         created_at:
             type: datetime
         updated_at:

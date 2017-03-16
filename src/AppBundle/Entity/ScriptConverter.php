@@ -230,7 +230,7 @@ class ScriptConverter
     
     public function createGraph()
     {        
-        $command = "java -jar ". __DIR__ . "/../../../src/AppBundle/Utils/yesworkflow-0.2.1.1-jar-with-dependencies.jar graph -c extract.comment='#' -c graph.layout=TB -c graph.view=COMBINED -c model.factsfile=" . $this->getUploadRootDir()."/modelfacts.txt " . $this->getScriptFilepath() . " > " . $this->getUploadRootDir() . "/wf.gv; /usr/bin/dot -Tsvg " . $this->getUploadRootDir() . "/wf.gv -o " . $this->getAbstractWorkflowFilepath();                              
+        $command = "java -jar ". __DIR__ . "/../../../src/AppBundle/Utils/yesworkflow-0.2.1.1-jar-with-dependencies.jar graph ".$this->getGraphProperties(). " " . $this->getScriptFilepath() . " > " . $this->getUploadRootDir() . "/wf.gv; /usr/bin/dot -Tsvg " . $this->getUploadRootDir() . "/wf.gv -o " . $this->getAbstractWorkflowFilepath();                              
         system($command);        
     }
     
@@ -479,5 +479,53 @@ class ScriptConverter
         // get rid of the __DIR__ so it doesn't screw up
         // when displaying uploaded doc/image in the view.
         return 'uploads/documents/w2share';
+    }
+    /**
+     * @var string
+     */
+    private $graph_properties;
+
+
+    /**
+     * Set graph_properties
+     *
+     * @param string $graphProperties
+     * @return ScriptConverter
+     */
+    public function setGraphProperties($graphProperties)
+    { 
+        $this->graph_properties = array();
+        $graphProperties = str_replace(" ", "", $graphProperties);
+        $lines = explode("\n", $graphProperties);
+        
+        for($i=0; $i<count($lines); $i++)
+        {
+            if ($lines[$i] == '') break;
+            $this->graph_properties[] = explode("=", $lines[$i]);
+        }        
+        
+        return $this;
+    }
+
+    /**
+     * Get graph_properties
+     *
+     * @return string 
+     */
+    public function getGraphProperties()
+    {
+        if (null === $this->graph_properties)
+        {
+            return " -c graph.layout=TB -c graph.view=COMBINED ";
+        }
+        else
+        {
+            $str = '';
+            for($i=0; $i < count($this->graph_properties); $i++)
+            {
+                $str .= ' -c '.$this->graph_properties[$i][0].'='.strtoupper($this->graph_properties[$i][1]);
+            }
+        }
+        return $str;
     }
 }

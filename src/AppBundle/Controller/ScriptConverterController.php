@@ -19,6 +19,20 @@ class ScriptConverterController extends Controller
     }
     
     /**
+     * @Route("/yw-graph-service/api/v1/graph", options={"expose"=true}, name="yw-graph-service")
+     */
+    public function graphServiceAPIAction(Request $request)
+    {               
+        $data = json_decode($request->getContent(), true);
+        
+        $model = $this->get('model.scriptconverter');
+        $content = $model->createGraphServiceResponse($data);
+        
+        $response = new \Symfony\Component\HttpFoundation\Response();                   
+        return $response->setContent($content);
+    }
+    
+    /**
      * @Route("/script-converter/list", name="script-converter-list")
      */
     public function listAction(Request $request)

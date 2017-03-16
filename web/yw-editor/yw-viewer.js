@@ -142,7 +142,7 @@
     $scope.getGraph = function() {
       
         $http.post(
-          "http://w2share.lis.ic.unicamp.br/yw-graph-service/yw-graph-service/api/v1/graph",
+          $window.Routing.generate('yw-graph-service'),
           {
               language: $scope.language,
               code: editor.getValue(),
