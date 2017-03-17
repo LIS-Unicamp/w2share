@@ -1,38 +1,42 @@
-<div>
-<h2>Choose Quality Metric</h2>
-
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th style="width:100px">Action</th>
-                <th>Metric</th>
-                <th>Description</th>
-                <th>Creator</th>
-            </tr>
-        </thead>
-        <tbody>
-    {% for qualityMetric in pagination %}
-        <tr>
-            <td>
-                
-            </td>
-            
-        </tr>
-    {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-{{ form_start(form) }}
-    <div class="form-actions">
-        {% if qualityDimension.uri %} 
-            {{ form_widget(form.save, { 'label':'Edit' }) }} 
-            <a class="btn btn-primary" href="{{ path('qualitydimension-add') }}">Add</a> 
-        {% else %}
-            {{ form_widget(form.save, { 'label':'Add' }) }}
-        {% endif %}
-        <a href="{{ path('qualitydimensions') }}" class="btn btn-info">List</a>
-    </div>
-    {{ form_end(form) }}
-</div>
+        <form action="{{ path('add-qualitymetric-annotation', { 'annotation_uri':annotation_uri|url_encode(), 'type': type }) }}">
+          <div class="modal-header">
+            <h5 class="modal-title" id="qualityMetricModalLabel">Choose Quality Metric</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+           <!-- Send quality dimension URI, annotation URI and type to controller-->
+          <div class="modal-body">
+              <h2>Choose Quality Metric</h2>
+              <div class="form-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Description</th>
+                                <th>Creator</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for qualityMetric in quality_metrics %}
+                                <tr>
+                                    <td>
+                                        <input type="radio" name="quality_metric" id="field{{ loop.index }}" value="{{ qualityMetric.uri }}"/>
+                                    </td>
+                                    <td> <label for="field{{ loop.index }}">{{ qualityMetric.description }}</label> </td>
+                                    <td> {{ qualityMetric.creator.name }} </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <label>Result:</label> <input type="text" name="result" value="">
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+ 

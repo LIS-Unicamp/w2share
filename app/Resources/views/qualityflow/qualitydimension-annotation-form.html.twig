@@ -130,10 +130,10 @@
                                 <tr>
                                     <th>
                                         <!-- Button trigger modal -->
-                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#qualityMetricModal">
+                                        <a href="{{ path('select-qualitymetric', { 'qualitydimension_uri':annotation.qualityDimension.uri|url_encode(), 'annotation_uri': annotation.uri|url_encode(), 'type': type }) }}" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#qualityMetricModal">
                                           Metric
                                           <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                        </button>
+                                        </a>
                                     </th>
                                 </tr>
                                 <tr>
@@ -145,7 +145,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-
+                                    
                                 </tr>
                             </tbody>
                         </table>
@@ -170,18 +170,8 @@
 <!-- Modal -->
 <div class="modal fade" id="qualityMetricModal" tabindex="-1" role="dialog" aria-labelledby="qualityMetricModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="qualityMetricModalLabel">Choose Quality Metric</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-       <!-- Send quality dimension URI to controller-->
-      <div class="modal-body">
-        ...
-      </div>
-    </div>
+        <div class="modal-content">
+        </div>
   </div>
 </div>  
 {% endblock %}  

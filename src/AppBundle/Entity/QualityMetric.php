@@ -172,4 +172,10 @@ class QualityMetric {
     {
         return $this->creator;
     }
+    
+    //TODO
+    public function __toString() {
+        return $this->description;
+    }
+    
 }

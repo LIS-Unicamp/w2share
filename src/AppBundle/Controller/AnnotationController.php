@@ -429,4 +429,59 @@ class AnnotationController extends Controller
         return $this->redirect($this->generateUrl('homepage'));
     }  
     
+    /**
+     * @Route("/qualitymetric/select/{qualitydimension_uri}/{annotation_uri}/{type}", name="select-qualitymetric")
+     */
+    public function selectQualityMetricModalAction(Request $request, $qualitydimension_uri, $annotation_uri, $type)
+    {   
+        $qualitydimension_uri = urldecode($qualitydimension_uri);
+        $annotation_uri = urldecode($annotation_uri);
+        
+        $model_qualitymetric = $this->get('model.qualitymetric');
+        
+        $quality_metrics = $model_qualitymetric->findQualityMetricByDimension($qualitydimension_uri);
+        
+        $quality_metrics_array = array();
+        
+        for ($i=0; $i< count($quality_metrics); $i++)
+        {
+            $quality_metrics_array[] = $quality_metrics[$i];
+        }
+        
+        return $this->render('qualityflow/qualitymetric-modal.html.twig', array(
+            'quality_metrics' => $quality_metrics_array,
+            'annotation_uri' => $annotation_uri,
+            'type' => $type
+        ));
+    }
+    
+    /**
+     * @Route("/annotation/qualitymetric/add/{annotation_uri}/{type}", name="add-qualitymetric-annotation")
+     */
+    public function addQualityMetricAnnotation(Request $request,  $annotation_uri, $type) 
+    {
+        $qualitymetric_uri = $request->get('quality_metric');
+        $result = $request->get('result');
+        $annotation_uri = urldecode($annotation_uri);
+        
+        $model_qualitymetric = $this->get('model.qualitymetric');
+        $model_qualitydimension= $this->get('model.qualitydimension');
+        $model_annnotation = $this->get('model.annotation');
+                
+          
+        //No modal e selecionado uma metrica.
+        //Busco essa metrica
+        $qualityMetric = $model_qualitymetric->findQualityMetric($qualitymetric_uri);
+
+        $user = $this->getUser();
+
+        $quality_annotation = $model_annnotation->findQualityAnnotationByURI($annotation_uri, $type);
+        //TODO: Associar uma anotacao de uma dimension com uma metrica
+        $quality_metric_annotation = $model_annnotation->insertQualityMetricAnnotation($annotation_uri, $qualityMetric, $result);
+            
+
+        
+        return $this->redirect;//para pagina annotation
+    }
+    
 }

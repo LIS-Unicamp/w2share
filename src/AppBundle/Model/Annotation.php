@@ -555,6 +555,12 @@ class Annotation
         return $this->driver->getResults($query);                  
     }
     
+    //TODO
+    public function insertQualityMetricAnnotation($annotation_uri, $qualityMetric, $result)
+    {
+        
+    }
+    
 }
 
 //TO-DO
