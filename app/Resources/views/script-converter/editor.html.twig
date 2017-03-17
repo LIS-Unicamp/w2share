@@ -32,10 +32,11 @@
         <label class="btn btn-default" uib-btn-radio="'graph'" 
                ng-model="viewerMode" ng-change="viewerModeChange()"
                title="View graphic representation of program">Graph</label>
-                
+        {% if app.user %} 
         <label class="btn btn-default" uib-btn-radio="'workflow'" 
                ng-model="viewerMode" ng-change="viewerModeChange()"
                title="View workflow representation of program">Workflow</label>                
+        {% endif %}
     </div>
 
   </div>
@@ -126,18 +127,18 @@
 {% block javascripts %} 
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-<script data-require="angular.js@*" data-semver="1.5.7" src="{{ app.request.basepath }}/yw-editor/lib/angular/1.5.7/angular.js"></script>
-<script src="{{ app.request.basepath }}/yw-editor/lib/angular/1.5.7/angular-animate.js"></script>
-<script src="{{ app.request.basepath }}/yw-editor/lib/angular/1.5.7/angular-sanitize.js"></script>
-<script src="{{ app.request.basepath }}/yw-editor/lib/angular-ui/ui-bootstrap-tpls-2.0.2.js"></script>
-<script src="{{ app.request.basepath }}/yw-editor/lib/ace/1.2.4/min/ace.js" type="text/javascript" charset="utf-8"></script>
-<script src="{{ app.request.basepath }}/yw-editor/lib/dragscroll/dragscroll.js"></script>
-<script src="{{ app.request.basepath }}/yw-editor/lib/divider/divider.js"></script>
-<script src="{{ app.request.basepath }}/yw-editor/lib/angular-file-saver.bundle.min.js"></script>
-<script src="{{ app.request.basepath }}/yw-editor/yw-viewer.js"></script>
+<script data-require="angular.js@*" data-semver="1.5.7" src="{{ asset("/yw-editor/lib/angular/1.5.7/angular.js") }}"></script>
+<script src="{{ asset("/yw-editor/lib/angular/1.5.7/angular-animate.js") }}"></script>
+<script src="{{ asset("/yw-editor/lib/angular/1.5.7/angular-sanitize.js") }}"></script>
+<script src="{{ asset("/yw-editor/lib/angular-ui/ui-bootstrap-tpls-2.0.2.js") }}"></script>
+<script src="{{ asset("/yw-editor/lib/ace/1.2.4/min/ace.js") }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{ asset("/yw-editor/lib/dragscroll/dragscroll.js") }}"></script>
+<script src="{{ asset("/yw-editor/lib/divider/divider.js") }}"></script>
+<script src="{{ asset("/yw-editor/lib/angular-file-saver.bundle.min.js") }}"></script>
+<script src="{{ asset("/yw-editor/yw-viewer.js") }}"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script type="text/javascript">
-    var url = '{{ app.request.basepath }}';  
+    var url = '{{ app.request.basepath}}';  
     {% if converter.scriptLanguage != '' %}
         var language = '{{ app.session.get('language') }}';
         var sample = url+'/{{ converter.scriptFileWebPath }}';
@@ -148,7 +149,7 @@
 </script>
 {% endblock %}
 {% block stylesheets %}
-<link href="{{ app.request.basepath }}/yw-editor/lib/angular-ui-select/0.19.4/select.min.css" rel="stylesheet">
-<link rel="stylesheet" href="{{ app.request.basepath }}/yw-editor/style.css" />
+<link href="{{ asset("/yw-editor/lib/angular-ui-select/0.19.4/select.min.css") }}" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset("/yw-editor/style.css") }}" />
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 {% endblock %} 

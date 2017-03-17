@@ -177,6 +177,14 @@ class ScriptConverterController extends Controller
     }
     
     /**
+     * @Route("/yesworkflow/editor", name="yesworkflow")
+     */
+    public function yesworkflowAction(Request $request)
+    {               
+        return $this->redirect($this->generateUrl('script-converter-editor'));
+    }    
+    
+    /**
      * @Route("/script-converter/restart", name="script-converter-restart")
      */
     public function restartAction(Request $request)

@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+{% block title %}Internal Server Error - Error 500{% endblock %}
+{% block body %}
+    <h1>Error 500: Internal Server Error</h1>
+    
+    <center class="background error-page-wrapper">
+        <div class="content-container shadow">
+          <div class="head-line secondary-text-color">
+            Internal Server Error
+          </div>
+          <div class="subheader primary-text-color">
+            Looks like we're having some server issues.
+          </div>
+          <div class="hr"></div>
+          <div class="context secondary-text-color">
+            <p>
+                Go back to the previous page and try again.
+                If you think something is broken, report a problem.
+            </p>
+          </div>
+          <div class="buttons-container">
+            <a class="button" href="{{ path("homepage") }}"><span class="fa fa-home"></span> Go To Homepage</a>
+            <a class="button" href="{{ path("contact") }}"><span class="fa fa-warning"></span> Report A Problem</a>
+          </div>
+        </div>
+    </center>    
+{% endblock %}
+{% block javascripts %} 
+{% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset("css/error404Page.css") }}" />
+{% endblock %} 

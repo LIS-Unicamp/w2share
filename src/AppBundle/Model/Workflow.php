@@ -314,8 +314,12 @@ class Workflow
     
     public function addWorkflow(\AppBundle\Entity\Workflow $workflow)
     {                        
-        $this->editWorkflow($workflow);
-        
+        $this->editWorkflow($workflow);                        
+        $this->saveWorkflowHash($workflow);        
+    }
+    
+    public function getURIFromWfdesc(\AppBundle\Entity\Workflow $workflow)
+    {
         \EasyRdf_Namespace::set('ro', 'http://purl.org/wf4ever/ro#');
         \EasyRdf_Namespace::set('dc', 'http://purl.org/dc/elements/1.1/');
         \EasyRdf_Namespace::set('ore', 'http://www.openarchives.org/ore/terms/');
@@ -328,8 +332,6 @@ class Workflow
         {
             $workflow->setUri($resource->getUri());
         }
-        
-        $this->saveWorkflowHash($workflow);        
     }
     
     public function editWorkflow(\AppBundle\Entity\Workflow $workflow)
@@ -344,8 +346,9 @@ class Workflow
             $workflow->createWorkflowPNG();
             $workflow->createWfdescFile();
             $this->driver->load($workflow->getWebPath()."/".basename($workflow->getWfdescAbsolutePath()));
+            $this->getURIFromWfdesc($workflow);
         }
-    }        
+    }     
     
     private function saveWorkflowHash(\AppBundle\Entity\Workflow $workflow) 
     {      
@@ -377,6 +380,18 @@ class Workflow
             }
             ";  
         $this->driver->getResults($query);
+        
+        $query = "
+            DELETE FROM <".$this->driver->getDefaultGraph('scriptconverter')."> {
+                ?subject ?property <".$workflow->getUri().">.                
+            }
+            WHERE
+            {
+               ?subject ?property  <".$workflow->getUri().">.  
+            }
+            ";  
+        $this->driver->getResults($query);
+        
         $workflow->removeUpload();        
     }        
     

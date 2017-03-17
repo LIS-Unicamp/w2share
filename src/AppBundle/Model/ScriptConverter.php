@@ -288,9 +288,9 @@ class ScriptConverter
     }
     
     public function addWorkflow(\AppBundle\Entity\Workflow $workflow)
-    {                        
-        $this->editWorkflow($workflow);
-        $this->saveWorkflowHash($workflow); 
+    {     
+        $workflow_model = $this->container->get('model.workflow');
+        $workflow_model->addWorkflow($workflow);
         $this->addWorkflowIntoConversion($workflow);
     }
     
@@ -299,39 +299,7 @@ class ScriptConverter
         $conversion = $this->findOneScriptConversionByHash($workflow->getHash());
         $conversion->setWorkflow($workflow);
         $this->updateScriptConversion($conversion);
-    }
-    
-    public function getURIFromWfdesc(\AppBundle\Entity\Workflow $workflow)
-    {
-        \EasyRdf_Namespace::set('ro', 'http://purl.org/wf4ever/ro#');
-        \EasyRdf_Namespace::set('dc', 'http://purl.org/dc/elements/1.1/');
-        \EasyRdf_Namespace::set('ore', 'http://www.openarchives.org/ore/terms/');
-        
-        $graph = new \EasyRdf_Graph();
-        $graph->parseFile($workflow->getWfdescAbsolutePath());
-        $resources = $graph->allOfType('http://purl.org/wf4ever/wfdesc#Workflow');
-        
-        foreach ($resources as $resource)
-        {
-            $workflow->setUri($resource->getUri());
-        }
-    }
-    
-    public function editWorkflow(\AppBundle\Entity\Workflow $workflow)
-    {       
-        if ($workflow->getProvenanceFile())
-        {
-            $this->driver->load($workflow->getWebPath()."/".basename($workflow->getProvenanceAbsolutePath()));
-        }                
-        
-        if ($workflow->getWorkflowFile())
-        {
-            $workflow->createWorkflowPNG();
-            $workflow->createWfdescFile();
-            $this->driver->load($workflow->getWebPath()."/".basename($workflow->getWfdescAbsolutePath()));
-            $this->getURIFromWfdesc($workflow);
-        }
-    }
+    }        
     
     public function createGraphServiceResponse($data)
     {
@@ -354,21 +322,7 @@ class ScriptConverter
             );
         
         return json_encode($json);       
-    }
-    
-    private function saveWorkflowHash(\AppBundle\Entity\Workflow $workflow) 
-    {      
-        $query = 
-        "        
-        INSERT        
-        { 
-            GRAPH <".$this->driver->getDefaultGraph()."> 
-            { 
-                <".$workflow->getUri()."> <w2share:hash> '".$workflow->getHash()."'. 
-            }
-        }"; 
-        $this->driver->getResults($query);       
-    } 
+    }        
     
     public function clearGraph()
     {

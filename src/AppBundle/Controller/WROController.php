@@ -28,6 +28,15 @@ class WROController extends Controller
         ));
     }          
     
+    
+    /**
+     * @Route("/wro/refresh/{wro_uri}", name="wro-refresh")
+     */
+    public function refreshWROAction(Request $request, $wro_uri)
+    {  
+        
+    }
+    
     /**
      * @Route("/wro/add", name="wro-add")
      */
