@@ -57,7 +57,18 @@ class ScriptConverterController extends Controller
      */
     public function uploadAction(Request $request)
     {        
-        $hash = $request->get('hash');
+        if ($request->get("hash"))
+        {
+            $hash = $request->get('hash');
+        }
+        else if ($this->get('session')->get('hash'))
+        {
+            $hash = $this->get('session')->get('hash'); 
+        }
+        
+        $model = $this->get('model.scriptconverter');
+        $conversion = $model->findOneScriptConversionByHash($hash);
+        
         $workflow = new \AppBundle\Entity\Workflow();
         $form = $this->createForm(new \AppBundle\Form\ScriptConverterUploadType(), $workflow, array(
             'method' => 'POST'
@@ -81,6 +92,7 @@ class ScriptConverterController extends Controller
                     
         return $this->render('script-converter/upload.html.twig', array(
             'form' => $form->createView(),
+            'conversion' => $conversion
         ));
     }  
     

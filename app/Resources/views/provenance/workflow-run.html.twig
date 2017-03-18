@@ -6,20 +6,7 @@
         2. o tempo de execução de cada processo
         3. as entradas e saídas de cada processo
     -->
-    <h1>Workflow
-        <small>
-            <button class="btn btn-xs copy" data-clipboard-text="{{ workflowRun.workflow.uri }}">
-                <i class="glyphicon glyphicon-copy"></i>
-            </button>
-            <a href="{{ path('workflow-details', { 'workflow_uri': workflowRun.workflow.uri|url_encode() }) }}" class="btn btn-xs" title="Go to workflow"><i class="glyphicon glyphicon-search"></i></a>
-        </small>
-    </h1>
-    <ul>
-        <li><strong>Title:</strong> {{ workflowRun.workflow.title }}</li>
-        <li><strong>Creator:</strong> {{ workflowRun.workflow.creator }}</li>
-        <li><strong>Description:</strong> {{ workflowRun.workflow.description }}</li>
-        <li><strong>Label:</strong> {{ workflowRun.workflow.label }}</li>
-    </ul>
+    {{ include('workflow/workflow_info.html.twig', { 'workflow': workflowRun.workflow }) }}
     
     <h2>Workflow Run <small><button class="btn btn-xs copy" data-clipboard-text="{{ workflowRun.uri }}">
                     <i class="glyphicon glyphicon-copy"></i>

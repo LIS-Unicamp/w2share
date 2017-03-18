@@ -201,21 +201,16 @@ class ScriptConverter
         DELETE 
         { 
             <".$conversion->getUri()."> a <w2share:ScriptConversion>.
-            <".$conversion->getUri()."> <w2share:hash> ?hash.
             <".$conversion->getUri()."> <w2share:scriptLanguage> ?scriptLanguage.
-            <".$conversion->getUri()."> <w2share:createdAt> ?createdAt.
             <".$conversion->getUri()."> <w2share:updatedAt> ?updatedAt.
             <".$conversion->getUri()."> <w2share:hasWorkflow> ?workflow.
             <".$conversion->getUri()."> <w2share:hasWorkflowResearchObject> ?wro.
-            <".$conversion->getUri()."> <w2share:updatedAt> ?updatedAt.
             <".$conversion->getUri()."> <dc:creator> ?creator. 
         }
         INSERT
         {
             <".$conversion->getUri()."> a <w2share:ScriptConversion>.
-            <".$conversion->getUri()."> <w2share:hash> '".$conversion->getHash()."'.
             <".$conversion->getUri()."> <w2share:scriptLanguage> '".$conversion->getScriptLanguage()."'.
-            <".$conversion->getUri()."> <w2share:createdAt> '".$conversion->getCreatedAt()->format(\DateTime::ISO8601)."'.
             <".$conversion->getUri()."> <w2share:updatedAt> '".$now->format(\DateTime::ISO8601)."'.
             <".$conversion->getUri()."> <dc:creator> <".$conversion->getCreator()->getUri().">.
         ";

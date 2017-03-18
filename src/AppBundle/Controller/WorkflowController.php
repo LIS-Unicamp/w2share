@@ -176,7 +176,7 @@ class WorkflowController extends Controller
         $process_outputs = $model->findProcessOutputs($process_uri);
         $process = $model->findProcess($process_uri);
         $workflow = $model->findWorkflow($process->getWorkflow()->getUri());
-        
+                
         $model_provenance = $this->get('model.provenance');             
         $processRuns = $model_provenance->findProcessRunsByProcess($process_uri);
                 

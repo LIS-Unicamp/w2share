@@ -2,14 +2,37 @@
 {% block title %}Script Converter{% endblock %}
 {% block body %}
 <h1>Script Converter <small>Step 2 & 3</small></h1>
-<div class="alert alert-info"><p>After editing the initial workflow provided by W2Share in the SWfMS, please upload the workflow specification into the system.</p></div>
+<ul>
+    <li><strong>Creator:</strong> <a href="{{ path('security-user', { 'user_uri':conversion.creator.uri|url_encode() }) }}" title="Go to user profile"><i class="glyphicon glyphicon-search"></i></a> {{ conversion.creator }}</li>
+    <li><strong>Description:</strong> {{ conversion.description }}</li>
+    <li><strong>Title:</strong> {{ conversion.title }}</li>   
+    <li><strong>Created At:</strong> {{ conversion.createdAt|date('H:i Y-m-d') }}</li>
+    <li><strong>Updated At:</strong> {{ conversion.updatedAt|date('H:i Y-m-d') }}</li>
+    <li><strong>Draft Executable Workflow:</strong> 
+        <a href="{{ path("script-converter-draft-workflow-download", { 'hash': conversion.hash }) }}" title="Download Workflow Specification"><i class="glyphicon glyphicon-download"></i></a>
+    </li>
+{% if conversion.workflow %}    
+    <li><strong>Executable Workflow</strong>: 
+        <a href="{{ path('workflow-details', { 'workflow_uri':conversion.workflow.uri|url_encode() }) }}" title="Go to workflow details"><i class="glyphicon glyphicon-search"></i></a> 
+        <a href="{{ path("workflow-download", { 'hash': conversion.hash }) }}" title="Download Workflow Specification"><i class="glyphicon glyphicon-download"></i></a>                
+    </li>
+{% endif %}
+</ul>
+
+<div class="well well-sm"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;After editing the initial workflow provided by W2Share in the SWfMS, please upload the workflow specification into the system.</div>
 <p>
     <a class="btn btn-success" href="{{ path('script-converter-editor') }}"><i class="glyphicon glyphicon-plus"></i> Editor</a>
     <a class="btn btn-info" href="{{ path('script-converter-list') }}"><i class="glyphicon glyphicon-list-alt"></i> List</a>
+    {% if conversion.workflow %}
+        <a class="btn btn-default" href="{{ path("workflow-details",{ 'workflow_uri':conversion.workflow.uri|url_encode() }) }}"><i class="fa fa-forward"></i> Next</a>
+    {% endif %}
 </p>
 
+
 {{ form_start(form) }}
-    <div class="form-body">
+<div class="panel panel-default">
+    <div class="panel-heading">Upload Form</div>
+    <div class="panel-body">        
         {% for flashMessage in app.session.flashbag.get('success') %}
             <div class="alert alert-success">
                     <button class="close" data-dismiss="alert"></button>
@@ -23,29 +46,24 @@
             </div>            
         {% endfor %}
         {{ form_errors(form) }}
-        <div class="row">
-            <div class="col-md-12">               
-                <div class="row">
-                    <div class="form-group">
-                        {{ form_label(form.workflow_file) }}
-                        {{ form_widget(form.workflow_file, { 'attr': { 'class':'form-control' } }) }}
-                        {{ form_errors(form.workflow_file) }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group">
-                        {{ form_label(form.provenance_file) }}
-                        {{ form_widget(form.provenance_file, { 'attr': { 'class':'form-control' } }) }}
-                        {{ form_errors(form.provenance_file) }}
-                    </div>
-                </div>
-            </div>
+        <div class="form-group">
+            {{ form_label(form.workflow_file) }}
+            {{ form_widget(form.workflow_file, { 'attr': { 'class':'form-control' } }) }}
+            {{ form_errors(form.workflow_file) }}
         </div>
+
+        <div class="form-group">
+            {{ form_label(form.provenance_file) }}
+            {{ form_widget(form.provenance_file, { 'attr': { 'class':'form-control' } }) }}
+            {{ form_errors(form.provenance_file) }}
+        </div>
+                
     </div>
-    <div class="form-actions">
+    <div class="panel-footer">
             {{ form_widget(form.send) }}             
     </div>
-    {{ form_end(form) }}
+    {{ form_end(form) }}    
+</div>
 {% endblock %}  
 {% block javascripts %}  
 {% endblock %}

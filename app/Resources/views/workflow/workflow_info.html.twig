@@ -1,0 +1,15 @@
+<h1>Workflow
+        <small>
+            <button class="btn btn-xs copy" data-clipboard-text="{{ workflow.uri }}">
+                <i class="glyphicon glyphicon-copy"></i>
+            </button>
+            <a href="{{ path('workflow-details', { 'workflow_uri': workflow.uri|url_encode() }) }}" class="btn btn-xs" title="Go to workflow"><i class="glyphicon glyphicon-search"></i></a>
+        </small>
+        
+    </h1>
+    <ul>
+        <li><strong>Title:</strong> {{ workflow.title }}</li>
+        <li><strong>Creator:</strong> {{ workflow.creator }}</li>
+        <li><strong>Description:</strong> {{ workflow.description }}</li>
+        <li><strong>Label:</strong> {{ workflow.label }}</li>
+    </ul>

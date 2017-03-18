@@ -63,6 +63,7 @@
                 <a href="{{ path('script-converter-upload', { 'hash':row.hash }) }}" title="Upload Workflow"><i class="glyphicon glyphicon-upload"></i></a>
                 {% if row.workflow %}                    
                 <a href="{{ path('workflow-details', { 'workflow_uri':row.workflow.uri|url_encode() }) }}" title="Go to workflow details"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('provenance-workflow', { 'workflow_uri':row.workflow.uri|url_encode() }) }}" title="Go to Workflow Runs"><i class="glyphicon glyphicon-fast-backward"></i></a>
                 <a href="{{ path('workflow-delete', { 'workflow_uri':row.workflow.uri|url_encode() }) }}" title="Delete workflow" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
                 &nbsp;{{ row.workflow.title }}                
                     <label class="dropdown">

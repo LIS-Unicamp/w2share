@@ -69,7 +69,7 @@ class Workflow
             SELECT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
                 <".$workflow_uri."> a wfdesc:Workflow.
                 OPTIONAL { <".$workflow_uri."> dc:creator ?creator. }
-                <".$workflow_uri."> <w2share:hash> ?hash.
+                OPTIONAL { <".$workflow_uri."> <w2share:hash> ?hash. }
                 OPTIONAL { <".$workflow_uri."> rdfs:label ?label. }
                 OPTIONAL { <".$workflow_uri."> dcterms:description ?description. }
                 OPTIONAL { <".$workflow_uri."> dcterms:title ?title. }
@@ -299,7 +299,11 @@ class Workflow
         {
             $process = new \AppBundle\Entity\Process();
             $process->setUri($process_uri);
-            $process->setDescription($process_array[0]['description']['value']);
+            
+            if (array_key_exists('description', $process_array[0]))
+            {
+                $process->setDescription($process_array[0]['description']['value']);
+            }
             $process->setLabel($process_array[0]['label']['value']);            
                 
             $workflow = new \AppBundle\Entity\Workflow();
