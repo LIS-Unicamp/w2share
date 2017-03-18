@@ -8,11 +8,14 @@
         </button>           
     </small>
 </h1>
-<a class="btn btn-success" href="{{ path('script-converter-restart') }}" title="New conversion"><i class="glyphicon glyphicon-plus"></i> New</a>
-<a class="btn btn-info" href="{{ path('script-converter-list') }}" title="Go to conversion list"><i class="glyphicon glyphicon-list"></i> List</a>
-<a class="btn btn-danger delete" href="{{ path('script-converter-delete', { 'hash':conversion.hash }) }}" title="Delete Conversion"><i class="glyphicon glyphicon-trash"></i> Delete</a>
-
-<ul>
+<div class="btn-toolbar" role="toolbar" style="margin: 20px 0">
+    <div class="btn-group">
+        <a class="btn btn-success" href="{{ path('script-converter-restart') }}" title="New conversion"><i class="glyphicon glyphicon-plus"></i></a>
+        <a class="btn btn-info" href="{{ path('script-converter-list') }}" title="Go to conversion list"><i class="glyphicon glyphicon-list"></i></a>
+        <a class="btn btn-danger delete" href="{{ path('script-converter-delete', { 'hash':conversion.hash }) }}" title="Delete Conversion"><i class="glyphicon glyphicon-trash"></i></a>
+    </div>
+</div>
+<ul style="margin: 20px 0">
     <li><strong>Creator:</strong> <a href="{{ path('security-user', { 'user_uri':conversion.creator.uri|url_encode() }) }}" title="Go to user profile"><i class="glyphicon glyphicon-search"></i></a> {{ conversion.creator }}</li>
     <li><strong>Description:</strong> {{ conversion.description }}</li>
     <li><strong>Title:</strong> {{ conversion.title }}</li>   

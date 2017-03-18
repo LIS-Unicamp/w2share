@@ -71,8 +71,12 @@ services:
         arguments: [@app.rest_api, @service_container] 
         
     model.scriptconverter:
-        class: AppBundle\Model\ScriptConverter
-        arguments: ["@app.rest_api", @service_container]
+        class: AppBundle\Model\ScriptConverterModel
+        arguments: [@service_container]
+    
+    dao.scriptconverter:
+        class: AppBundle\Dao\ScriptConverterDAO
+        arguments: [@app.rest_api, @service_container]
                     
     app.user_provider:
         class: AppBundle\Security\UserProvider

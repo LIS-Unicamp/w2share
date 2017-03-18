@@ -37,8 +37,8 @@ class ScriptConverterController extends Controller
      */
     public function listAction(Request $request)
     {  
-        $model = $this->get('model.scriptconverter');
-        $conversions = $model->findScriptConversions();
+        $dao = $this->get('dao.scriptconverter');
+        $conversions = $dao->findScriptConversions();
         
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
@@ -66,8 +66,8 @@ class ScriptConverterController extends Controller
             $hash = $this->get('session')->get('hash'); 
         }
         
-        $model = $this->get('model.scriptconverter');
-        $conversion = $model->findOneScriptConversionByHash($hash);
+        $dao = $this->get('dao.scriptconverter');
+        $conversion = $dao->findOneScriptConversionByHash($hash);
         
         $workflow = new \AppBundle\Entity\Workflow();
         $form = $this->createForm(new \AppBundle\Form\ScriptConverterUploadType(), $workflow, array(
@@ -102,9 +102,9 @@ class ScriptConverterController extends Controller
     public function detailsAction(Request $request)
     {                       
         $hash = $request->get('hash');                        
-        $model = $this->get('model.scriptconverter');
+        $dao = $this->get('dao.scriptconverter');
         
-        $conversion = $model->findOneScriptConversionByHash($hash);        
+        $conversion = $dao->findOneScriptConversionByHash($hash);        
         
         return $this->render('script-converter/details.html.twig', array(
             'conversion' => $conversion,
@@ -169,17 +169,17 @@ class ScriptConverterController extends Controller
         $converter->setScriptCode($code);  
         $converter->createWorkflow();
         
-        $model = $this->get('model.scriptconverter');
+        $dao = $this->get('dao.scriptconverter');
         
-        $previous = $model->findOneScriptConversionByHash($hash);
+        $previous = $dao->findOneScriptConversionByHash($hash);
         if ($previous)
         {
             $converter->setUri($previous->getUri());
             $converter->setCreatedAt($previous->getCreatedAt());
-            $model->updateScriptConversion($converter);
+            $dao->updateScriptConversion($converter);
         }
         else {
-            $model->insertScriptConversion($converter, $user);
+            $dao->insertScriptConversion($converter, $user);
         }
         
         
@@ -212,7 +212,7 @@ class ScriptConverterController extends Controller
     public function createWROAction(Request $request)
     {   
         $model = $this->get('model.wro');
-        $conversion = $this->get('model.scriptconverter')->findOneScriptConversionByHash($request->get('hash'));
+        $conversion = $this->get('dao.scriptconverter')->findOneScriptConversionByHash($request->get('hash'));
         $model->createWRO($conversion);
         $this->get('session')
                 ->getFlashBag()
@@ -229,7 +229,7 @@ class ScriptConverterController extends Controller
     {               
         $hash = $request->get('hash');
         
-        $model = $this->get('model.scriptconverter');
+        $model = $this->get('dao.scriptconverter');
         $conversion = $model->findOneScriptConversionByHash($hash);
         
         if (null == $conversion)

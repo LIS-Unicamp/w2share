@@ -38,23 +38,22 @@ class Utils
         }
     }
     
-    public static function unlinkr($dir, $pattern = "*") 
+    public static function unlinkr($src) 
     {
-        // find all files and folders matching pattern
-        $files = glob($dir . "/$pattern"); 
-
-        //interate thorugh the files and folders
-        foreach($files as $file){ 
-        //if it is a directory then re-call unlinkr function to delete files inside this directory     
-            if (is_dir($file) and !in_array($file, array('..', '.')))  {
-                self::unlinkr($file, $pattern);
-                //remove the directory itself
-                rmdir($file);
-            } else if(is_file($file) and ($file != __FILE__)) {
-                // make sure you don't delete the current script
-                unlink($file); 
+        $dir = opendir($src);
+        while(false !== ( $file = readdir($dir)) ) {
+            if (( $file != '.' ) && ( $file != '..' )) {
+                $full = $src . '/' . $file;
+                if ( is_dir($full) ) {
+                    self::unlinkr($full);
+                }
+                else {
+                    unlink($full);
+                }
             }
         }
+        closedir($dir);
+        rmdir($src);
     } 
 
 }

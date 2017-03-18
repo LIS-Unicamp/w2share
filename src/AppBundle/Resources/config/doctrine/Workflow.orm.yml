@@ -10,6 +10,9 @@ AppBundle\Entity\Workflow:
             type: string
         title:
             type: string
+    oneToOne:
+        script_conversion:
+            targetEntity: ScriptConverter
     oneToMany:
         workflow_runs:
             targetEntity: WorkflowRun

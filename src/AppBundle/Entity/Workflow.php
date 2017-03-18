@@ -623,4 +623,32 @@ class Workflow
     {
         return $this->quality_annotation;
     }
+    /**
+     * @var \AppBundle\Entity\ScriptConverter
+     */
+    private $script_conversion;
+
+
+    /**
+     * Set script_conversion
+     *
+     * @param \AppBundle\Entity\ScriptConverter $scriptConversion
+     * @return Workflow
+     */
+    public function setScriptConversion(\AppBundle\Entity\ScriptConverter $scriptConversion = null)
+    {
+        $this->script_conversion = $scriptConversion;
+    
+        return $this;
+    }
+
+    /**
+     * Get script_conversion
+     *
+     * @return \AppBundle\Entity\ScriptConverter 
+     */
+    public function getScriptConversion()
+    {
+        return $this->script_conversion;
+    }
 }

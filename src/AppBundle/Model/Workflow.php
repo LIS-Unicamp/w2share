@@ -66,14 +66,16 @@ class Workflow
     public function findWorkflow($workflow_uri)
     {
         $query = "
-            SELECT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
+            SELECT * WHERE {
                 <".$workflow_uri."> a wfdesc:Workflow.
+                OPTIONAL { ?workflowRun wfprov:describedByWorkflow <".$workflow_uri.">. }
+                OPTIONAL { ?scriptConversion <w2share:hasWorkflow> <".$workflow_uri.">. }
                 OPTIONAL { <".$workflow_uri."> dc:creator ?creator. }
-                OPTIONAL { <".$workflow_uri."> <w2share:hash> ?hash. }
-                OPTIONAL { <".$workflow_uri."> rdfs:label ?label. }
+                <".$workflow_uri."> <w2share:hash> ?hash.
+                <".$workflow_uri."> rdfs:label ?label.
                 OPTIONAL { <".$workflow_uri."> dcterms:description ?description. }
                 OPTIONAL { <".$workflow_uri."> dcterms:title ?title. }
-            }}
+            }
             ";
         
         $workflow_array = $this->driver->getResults($query);   
@@ -96,6 +98,19 @@ class Workflow
                 $workflow->setCreator($workflow_array[0]['creator']['value']); 
             }
             $workflow->setHash($workflow_array[0]['hash']['value']);
+            if (array_key_exists('workflowRun', $workflow_array[0]))
+            {
+                $workflowRun = new \AppBundle\Entity\WorkflowRun();
+                $workflowRun->setUri($workflow_array[0]['workflowRun']['value']);
+                $workflow->setWorkflowRuns(array($workflowRun)); 
+            }
+ 
+            if (array_key_exists('scriptConversion', $workflow_array[0]))
+            {                
+                $scriptConversion = new \AppBundle\Entity\ScriptConverter();
+                $scriptConversion->setUri($workflow_array[0]['scriptConversion']['value']);
+                $workflow->setScriptConversion($scriptConversion); 
+            }
             return $workflow;
         }
         
