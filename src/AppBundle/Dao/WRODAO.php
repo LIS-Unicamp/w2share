@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Model;
+namespace AppBundle\Dao;
 
 /**
  * Description of the Research Object model

@@ -42,36 +42,36 @@
         </tbody>
     </table>
 </div> 
-  
-<div>
-    {{ form_start(form) }}
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{{ form_errors(form) }}  
+
+{{ form_start(form) }}
     
     <!-- TO-DO: Tentar agrupar todos estes elementos numa so fila -->
-        <div class="form-body">
-            {% for flashMessage in app.session.flashbag.get('success') %}
-                <div class="alert alert-success">
-                        <button class="close" data-dismiss="alert"></button>
-                        {{ flashMessage }}
-                </div>
-            {% endfor %}
-            {% for flashMessage in app.session.flashbag.get('error') %}
-                <div class="alert alert-danger">
-                        <button class="close" data-dismiss="alert"></button>
-                        {{ flashMessage }}
-                </div>            
-            {% endfor %}
-            {{ form_errors(form) }}
+<div class="panel panel-default">
+    <div class="panel-heading">Form</div>
+    <div class="panel-body"> 
+            
              <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
                         {{ form_label(form.quality_dimension) }}
                         <select id="qualityannotation_quality_dimension" name="qualityannotation[quality_dimension]" required="required" class="form-control select">
-                            {% if not qualityAnnotation.qualityDimension %}
-                                <option value=""></option>
-                            {% endif %}
-                        {% for qd in quality_dimensions %}
-                            <option value="{{ qd.uri }}" {% if qualityAnnotation.qualityDimension and qd.uri == qualityAnnotation.qualityDimension.uri %}selected="selected"{% endif %}>{{ qd.name }}</option>
-                        {% endfor %}
+                            <option value=""></option>
+                            {% for qd in quality_dimensions %}
+                                <option value="{{ qd.uri }}" {% if qualityAnnotation.qualityDimension and qd.uri == qualityAnnotation.qualityDimension.uri %}selected="selected"{% endif %}>{{ qd.name }}</option>                            
+                            {% endfor %}
                         </select>
                         {{ form_errors(form.quality_dimension) }}
                     </div>
@@ -87,18 +87,13 @@
             </div>
 
         </div>
-                    
-        <div class="form-actions">
-            {% if qualityAnnotation.uri %}
-                {{ form_widget(form.save, { 'label':'Edit' }) }} 
-            {% else %}
-                {{ form_widget(form.save) }} 
-            {% endif %}
-            <a href="{{ path('quality-annotations') }}" class="btn btn-info">List</a>
+        <div class="panel-footer">
+            {{ form_widget(form.save) }} 
+            <a href="{{ path('quality-annotations') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
         </div>
         {{ form_widget(form._token) }}
-    </form>
 </div>
+</form>
 
 <div class="table-responsive">
     <table class="table table-striped">
@@ -126,16 +121,7 @@
                 <tr>
                     <td colspan="4">
                         <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <!-- Button trigger modal -->
-                                        <a href="{{ path('select-qualitymetric', { 'qualitydimension_uri':annotation.qualityDimension.uri|url_encode(), 'annotation_uri': annotation.uri|url_encode(), 'type': type }) }}" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#qualityMetricModal">
-                                          Metric
-                                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                        </a>
-                                    </th>
-                                </tr>
+                            <thead>                                
                                 <tr>
                                     <th> Metric </th>
                                     <th> Description </th>
@@ -144,9 +130,23 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {% if false and annotation.annotationMetric %}
                                 <tr>
-                                    
+                                    <td>{{ annotation.annotationMetric.metric.metric }}</td>
+                                    <td>{{ annotation.annotationMetric.metric.description }}</td>
+                                    <td></td>
+                                    <td>{{ annotation.annotationMetric.result }}</td>
                                 </tr>
+                                {% else %}
+                                <tr>
+                                    <th>
+                                        <a href="{{ path('select-qualitymetric', { 'qualitydimension_uri':annotation.qualityDimension.uri|url_encode(), 'annotation_uri': annotation.uri|url_encode(), 'type': type }) }}" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#qualityMetricModal">
+                                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                          Metric                                          
+                                        </a>
+                                    </th>
+                                </tr>
+                                {% endif %}
                             </tbody>
                         </table>
                     </td>

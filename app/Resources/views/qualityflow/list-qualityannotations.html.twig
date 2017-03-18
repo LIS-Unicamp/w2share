@@ -38,14 +38,14 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-5">
+                            <div class="btn-group">
                                 <button class="btn btn-info reset">
                                     <i class="glyphicon glyphicon-erase"></i> Reset
                                 </button>
-                        </div>
-                        <div class="col-md-2">
-                            {{ form_widget(form.filter) }}
-                        </div>
+                                {{ form_widget(form.filter) }}
+                            </div>
+                        </div> 
                     </div>
                 </div>
             </div>
@@ -56,7 +56,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>URI Annotation</th>
+                <th>Action</th>
                 <th>Element</th>
                 <th>Dimension</th>
                 <th>Value</th>
@@ -67,7 +67,9 @@
         <tbody>
     {% for annotation in pagination %}
         <tr>
-            <td>{{ annotation.uri }}</td>
+            <td>
+                <a href="{{ annotation.uri }}" title="Go to annotation details"><i class="glyphicon glyphicon-search"></i></a>
+            </td>
             {% if annotation.workflow %}
                 <td>Workflow: {{ annotation.workflow.title }}</td>                
             {% elseif annotation.processRun %}

@@ -3,9 +3,11 @@
 {% block body %}
 
 <div>
-<h2>{% if qualityDimension.uri %}Edit{% else %}Add{% endif %} <small>quality dimension</small></h2>
+<h2>Quality Dimension <small>{% if qualityDimension.uri %}Edit{% else %}Add{% endif %}</small></h2>
 {{ form_start(form) }}
-    <div class="form-body">
+<div class="panel panel-default">
+    <div class="panel-heading">Form</div>
+    <div class="panel-body">
         {% for flashMessage in app.session.flashbag.get('success') %}
             <div class="alert alert-success">
                     <button class="close" data-dismiss="alert"></button>
@@ -43,18 +45,15 @@
             </div>
         </div>
     </div>
-    <div class="form-actions">
+    <div class="panel-footer">
+        {{ form_widget(form.save) }}
         {% if qualityDimension.uri %} 
-            {{ form_widget(form.save, { 'label':'Edit' }) }} 
-            <a class="btn btn-primary" href="{{ path('qualitydimension-add') }}">Add</a> 
-        {% else %}
-            {{ form_widget(form.save, { 'label':'Add' }) }}
-        {% endif %}
-        <a href="{{ path('qualitydimensions') }}" class="btn btn-info">List</a>
-    </div>
-    {{ form_end(form) }}
+            <a class="btn btn-success" href="{{ path('qualitydimension-add') }}"><i class="glyphicon glyphicon-plus"></i> New</a>                     
+        {% endif %}        
+        <a href="{{ path('qualitydimensions') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
+    </div>    
 </div>
-    
+{{ form_end(form) }}    
 {% endblock %}  
 {% block javascripts %}
 {% endblock %}

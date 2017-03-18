@@ -43,7 +43,11 @@ services:
         arguments: ["@app.rest_api"]
         
     model.wro:
-        class: AppBundle\Model\WRO
+        class: AppBundle\Model\WROModel
+        arguments: [@service_container]
+        
+    dao.wro:
+        class: AppBundle\Dao\WRODAO
         arguments: [@app.rest_api, @service_container]
         
     model.search:

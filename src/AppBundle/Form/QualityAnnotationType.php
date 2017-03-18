@@ -27,7 +27,7 @@ class QualityAnnotationType extends AbstractType
                     'label'=>'Quality Dimension')) 
             ->add('value', 'text', array('label' => 'Value'))
             ->add('save', 'submit', array(
-                    'label' => 'Add',
+                    'label' => 'Save',
                     'icon' => 'glyphicon glyphicon-floppy-disk',
                     'attr' => array('class' => 'btn btn-primary')
                 ))

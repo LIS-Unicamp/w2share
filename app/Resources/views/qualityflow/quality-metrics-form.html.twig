@@ -2,29 +2,30 @@
 {% block title %}Add Quality Metric{% endblock %}
 {% block body %}
 
-<h1>Quality dimension <button class="btn btn-xs copy" data-clipboard-text="{{ quality_dimension.uri }}"> <i class="glyphicon glyphicon-copy"></i></h1>
+<h1>Quality Dimension <button class="btn btn-xs copy" data-clipboard-text="{{ quality_dimension.uri }}"> <i class="glyphicon glyphicon-copy"></i></h1>
     
-    <ul>
-        <li><strong>Name:</strong> {{ quality_dimension.name }}</li>
-        <li><strong>Description:</strong> {{ quality_dimension.description }}</li>
-    </ul>
+<ul>
+    <li><strong>Name:</strong> {{ quality_dimension.name }}</li>
+    <li><strong>Description:</strong> {{ quality_dimension.description }}</li>
+</ul>
 
-<div>
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{{ form_errors(form) }}
 {{ form_start(form) }}
-    <div class="form-body">
-        {% for flashMessage in app.session.flashbag.get('success') %}
-            <div class="alert alert-success">
-                    <button class="close" data-dismiss="alert"></button>
-                    {{ flashMessage }}
-            </div>            
-        {% endfor %}
-        {% for flashMessage in app.session.flashbag.get('error') %}
-            <div class="alert alert-danger">
-                    <button class="close" data-dismiss="alert"></button>
-                    {{ flashMessage }}
-            </div>            
-        {% endfor %}
-        {{ form_errors(form) }}
+<div class="panel panel-default">
+    <div class="panel-heading">Quality Metric form</div>
+    <div class="panel-body">        
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
@@ -42,16 +43,12 @@
             </div>
         </div>
     </div>
-    <div class="form-actions">
-        {% if qualityMetric.uri %} 
-            {{ form_widget(form.save, { 'label':'Edit' }) }} 
-        {% else %}
-            {{ form_widget(form.save, { 'label':'Add' }) }}
-        {% endif %}
-        <a href="{{ path('qualitymetrics') }}" class="btn btn-info">List</a>
-    </div>
-    {{ form_end(form) }}
+    <div class="panel-footer">        
+        {{ form_widget(form.save) }}
+        <a href="{{ path('qualitymetrics') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
+    </div>    
 </div>
+{{ form_end(form) }}
 
 <div class="table-responsive">
     <table class="table table-striped">

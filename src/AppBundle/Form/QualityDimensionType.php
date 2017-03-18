@@ -19,7 +19,8 @@ class QualityDimensionType extends AbstractType
             ->add('description', 'textarea', array('label' => 'Description'))
             ->add('valueType', 'text', array('label' => 'Type'))
             ->add('save', 'submit', array(
-                    'label' => 'Add',
+                    'label' => 'Save',
+                    'icon' => 'glyphicon glyphicon-floppy-disk',
                     'attr' => array('class' => 'btn btn-primary')
                 ))
         ;

@@ -7,7 +7,6 @@
           </div>
            <!-- Send quality dimension URI, annotation URI and type to controller-->
           <div class="modal-body">
-              <h2>Choose Quality Metric</h2>
               <div class="form-body">
                 <div class="table-responsive">
                     <table class="table table-striped">
@@ -30,7 +29,9 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    <label>Result:</label> <input type="text" name="result" value="">
+                    <div class="form-group">
+                        <label>Result:</label> <input type="text" name="result" value="" class="form-control">
+                    </div>
                 </div>
             </div>
           </div>

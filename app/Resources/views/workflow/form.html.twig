@@ -12,54 +12,45 @@
         <li><strong>Label:</strong> {{ workflow.label }}</li>
     </ul>
     {% endif %}
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{{ form_errors(form) }}
+
 {{ form_start(form) }}
-    <div class="form-body">
-        {% for flashMessage in app.session.flashbag.get('success') %}
-            <div class="alert alert-success">
-                    <button class="close" data-dismiss="alert"></button>
-                    {{ flashMessage }}
-            </div>            
-        {% endfor %}
-        {% for flashMessage in app.session.flashbag.get('error') %}
-            <div class="alert alert-danger">
-                    <button class="close" data-dismiss="alert"></button>
-                    {{ flashMessage }}
-            </div>            
-        {% endfor %}
-        {{ form_errors(form) }}
-        <div class="row">
-            <div class="col-md-12">
-                
-                
-                <div class="row">
-                    <div class="form-group">
-                        {{ form_label(form.workflow_file) }}
-                        {{ form_widget(form.workflow_file, { 'attr': { 'class':'form-control' } }) }}
-                        {{ form_errors(form.workflow_file) }}
-                    </div>
-                </div>                              
-                <div class="row">
-                    <div class="form-group">
-                        {{ form_label(form.provenance_file) }}
-                        {{ form_widget(form.provenance_file, { 'attr': { 'class':'form-control' } }) }}
-                        {{ form_errors(form.provenance_file) }}
-                    </div>
-                </div>
-            </div>
+<div class="panel panel-default">
+    <div class="panel-heading">Upload Form</div>
+    <div class="panel-body">            
+        <div class="form-group">
+            {{ form_label(form.workflow_file) }}
+            {{ form_widget(form.workflow_file, { 'attr': { 'class':'form-control' } }) }}
+            {{ form_errors(form.workflow_file) }}
         </div>
+
+        <div class="form-group">
+            {{ form_label(form.provenance_file) }}
+            {{ form_widget(form.provenance_file, { 'attr': { 'class':'form-control' } }) }}
+            {{ form_errors(form.provenance_file) }}
+        </div>                
     </div>
-    <div class="form-actions">
-            {% if workflow.uri %}
-                {{ form_widget(form.save, { 'label':'Edit' }) }} 
-            {% else %}
-                {{ form_widget(form.save) }} 
-            {% endif %}
+    <div class="panel-footer">
+            {{ form_widget(form.save) }} 
             <a href="{{ path('workflows') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
             {% if workflow.uri %}
                 <a href="{{ path('workflow-details', { 'workflow_uri':workflow.uri|url_encode() }) }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-search"></i></a>                
             {% endif %}
     </div>
-    {{ form_end(form) }}                
+</div>
+{{ form_end(form) }}                
 
 {% endblock %}  
 {% block javascripts %}            

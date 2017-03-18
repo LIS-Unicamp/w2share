@@ -15,7 +15,7 @@ class QualityMetricType extends AbstractType
             ->add('metric', 'text', array('label' => 'Metric'))
             ->add('description', 'textarea', array('label' => 'Description'))
             ->add('save', 'submit', array(
-                    'label' => 'Add',
+                    'label' => 'Save',
                     'icon' => 'glyphicon glyphicon-floppy-disk',
                     'attr' => array('class' => 'btn btn-primary')
                 ))

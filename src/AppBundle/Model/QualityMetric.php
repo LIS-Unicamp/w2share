@@ -114,7 +114,8 @@ class QualityMetric
         
         $qualityMetric = new \AppBundle\Entity\QualityMetric();
         
-        try {
+        if (count($quality_metric) > 0) 
+        {
             $qualityMetric->setUri($uri);
             $qualityMetric->setMetric($quality_metric[0]['metric']['value']);
             $qualityMetric->setDescription($quality_metric[0]['description']['value']);
@@ -131,11 +132,10 @@ class QualityMetric
             
             $qualityMetric->setQualityDimension($qualityDimension);
             
-        } catch (\Symfony\Component\Debug\Exception\ContextErrorException $ex) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Metric not found!");
-        }
+            return $qualityMetric;
+        } 
         
-        return $qualityMetric;
+        return null;
     }
     
     public function findUsersWithQualityMetrics()

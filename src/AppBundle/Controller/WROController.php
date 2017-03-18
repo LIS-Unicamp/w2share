@@ -13,8 +13,8 @@ class WROController extends Controller
      */
     public function listAction(Request $request)
     {         
-        $model = $this->get('model.wro');         
-        $wros = $model->findAll();
+        $dao = $this->get('dao.wro');         
+        $wros = $dao->findAll();
         
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
@@ -80,7 +80,8 @@ class WROController extends Controller
         $wro_uri = urldecode($wro_uri);
                 
         $model = $this->get('model.wro'); 
-        $wro = $model->findWRO($wro_uri);
+        $dao = $this->get('dao.wro'); 
+        $wro = $dao->findWRO($wro_uri);
 
         if ($wro)
         {
@@ -110,7 +111,8 @@ class WROController extends Controller
         $wro_uri = urldecode($wro_uri);
         
         $model = $this->get('model.wro');                                   
-        $wro = $model->findWRO($wro_uri);
+        $dao = $this->get('dao.wro');                                   
+        $wro = $dao->findWRO($wro_uri);
         
         if (null === $wro)
         {
@@ -126,7 +128,6 @@ class WROController extends Controller
             $wro->preUpload();            
             $wro->upload();
             
-            $model = $this->get('model.wro'); 
             $model->editWRO($wro);
             
             $this->get('session')
@@ -148,8 +149,8 @@ class WROController extends Controller
     {       
         $wro_uri = urldecode($wro_uri);
         
-        $model = $this->get('model.wro');                                   
-        $wro = $model->findWRO($wro_uri);
+        $dao = $this->get('dao.wro');                                   
+        $wro = $dao->findWRO($wro_uri);
         $file_path = $wro->getWROAbsolutePath();
         $content = $wro->getWROFileContent();
                 
@@ -174,8 +175,8 @@ class WROController extends Controller
     {       
         $wro_uri = urldecode($wro_uri);
         
-        $model = $this->get('model.wro');                                   
-        $wro = $model->findWRO($wro_uri);
+        $dao = $this->get('dao.wro');                                   
+        $wro = $dao->findWRO($wro_uri);
         
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(

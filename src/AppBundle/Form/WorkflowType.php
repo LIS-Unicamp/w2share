@@ -13,7 +13,7 @@ class WorkflowType extends AbstractType
             ->add('provenance_file', 'file', array('label' => 'Provenance File', 'required' => false))
             ->add('workflow_file', 'file', array('label' => 'Workflow Spec (T2Flow) File', 'required' => false))
             ->add('save', 'submit', array(
-                    'label' => 'Add',
+                    'label' => 'Save',
                     'icon' => 'glyphicon glyphicon-floppy-disk',
                     'attr' => array('class' => 'btn btn-primary')
                 ))

@@ -16,7 +16,7 @@
 {% endfor %}
 <div class="row">
     <div class="col-md-1">
-        <a class="btn btn-primary" href="{{ path('qualitydimension-add') }}">Add</a>
+        <a class="btn btn-success" href="{{ path('qualitydimension-add') }}"><i class="glyphicon glyphicon-plus"></i> New</a>
     </div>
     <div class="col-md-5 pull-right" id="filtrar">
         {{ form_start(form) }}
@@ -41,14 +41,14 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-5">
+                            <div class="btn-group">
                                 <button class="btn btn-info reset">
                                     <i class="glyphicon glyphicon-erase"></i> Reset
                                 </button>
-                        </div>
-                        <div class="col-md-2">
-                            {{ form_widget(form.filter) }}
-                        </div>
+                                {{ form_widget(form.filter) }}
+                            </div>
+                        </div>                        
                     </div>
                 </div>
             </div>

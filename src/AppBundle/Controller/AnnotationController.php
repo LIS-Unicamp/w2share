@@ -421,7 +421,7 @@ class AnnotationController extends Controller
     /**
      * @Route("/annotatation/reset", name="annotation-reset")
      */
-    public function annotatationResetAction(Request $request)
+    public function annotationResetAction(Request $request)
     {                
         $model = $this->get('model.annotation'); 
         $model->clearGraph();
@@ -495,7 +495,7 @@ class AnnotationController extends Controller
         //TODO: como recupero o $quality_metric_annotation para renderizar as informacoes no template?.
         // O redirect me envia a um controlador. 
         return $this->redirect($this->generateUrl('element-qualitydimension-annotation', array(
-                            'element_uri' => $element_uri,
+                            'element_uri' => urlencode($element_uri),
                             'type' => $type
                         )));
         
