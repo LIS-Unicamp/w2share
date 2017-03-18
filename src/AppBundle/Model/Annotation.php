@@ -556,8 +556,61 @@ class Annotation
     }
     
     //TODO
-    public function insertQualityMetricAnnotation($annotation_uri, $qualityMetric, $result)
+    public function insertQualityMetricAnnotation($uri, \AppBundle\Entity\QualityMetric $qualityMetric, $result, $user)
     {
+        $now = new \DateTime();
+        //TODO: uri
+            //Inicialmente nao iremos criar uma URI para a anotacao de QualityMetric
+        
+        $query = 
+        "INSERT        
+        { 
+            GRAPH <".$this->driver->getDefaultGraph('qualitymetric-annotation')."> 
+            { 
+                <".$uri."> a w2share:QualityAnnotation;
+                oa:hasBody [ 
+                             w2share:hasQualityMetric <".$qualityMetric->getUri()."> ;
+                             w2share:hasQualityMetricResult '".$result."' ].
+                <".$uri."> oa:annotatedAt \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\".
+                <".$uri."> oa:annotatedBy <".$user->getUri().">. 
+            }
+        }";
+        
+        return $this->driver->getResults($query);    
+    }
+    
+    public function findQualityMetricAnnotation($uri)
+    {
+        $query =
+        "SELECT DISTINCT ?creator ?metric_uri ?result ?metric ?description ?creator_name WHERE
+            {
+                 <".$uri."> a w2share:QualityAnnotation;
+                 oa:hasBody ?body;
+                 oa:annotatedBy ?creator.
+                 ?body w2share:hasQualityMetric ?metric_uri. 
+                 ?body w2share:hasQualityMetricResult ?result.
+                 ?metric_uri <w2share:metric> ?metric.
+                 ?metric_uri <rdfs:description> ?description.
+                 ?creator <foaf:name> ?creator_name.
+            }";
+        
+        $quality_metric_annotation = $this->driver->getResults($query);
+        
+        //TODO: QualityMetricAnnotation() Entity: uri, metric, description, creator, result.
+        $qualityMetricAnnotation = new \AppBundle\Entity\QualityMetric();
+        
+        $qualityMetricAnnotation->setUri($quality_metric_annotation[0]['metric_uri']['value']);
+        $qualityMetricAnnotation->setMetric($quality_metric_annotation[0]['metric']['value']);
+        $qualityMetricAnnotation->setDescription($quality_metric_annotation[0]['description']['value']);
+        $qualityMetricAnnotation->setResult($quality_metric_annotation[0]['result']['value']);
+        
+        $creator = new \AppBundle\Entity\Person();
+        $creator->setUri($quality_metric_annotation[0]['creator']['value']);
+        $creator->setName($quality_metric_annotation[0]['creator_name']['value']);
+
+        $qualityMetricAnnotation->setCreator($creator);
+        
+        return $qualityMetricAnnotation;
         
     }
     

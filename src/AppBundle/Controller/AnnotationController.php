@@ -462,26 +462,43 @@ class AnnotationController extends Controller
     {
         $qualitymetric_uri = $request->get('quality_metric');
         $result = $request->get('result');
+        
         $annotation_uri = urldecode($annotation_uri);
+        $user = $this->getUser();
         
         $model_qualitymetric = $this->get('model.qualitymetric');
         $model_qualitydimension= $this->get('model.qualitydimension');
         $model_annnotation = $this->get('model.annotation');
-                
-          
-        //No modal e selecionado uma metrica.
-        //Busco essa metrica
+        
         $qualityMetric = $model_qualitymetric->findQualityMetric($qualitymetric_uri);
 
-        $user = $this->getUser();
-
         $quality_annotation = $model_annnotation->findQualityAnnotationByURI($annotation_uri, $type);
-        //TODO: Associar uma anotacao de uma dimension com uma metrica
-        $quality_metric_annotation = $model_annnotation->insertQualityMetricAnnotation($annotation_uri, $qualityMetric, $result);
-            
-
         
-        return $this->redirect;//para pagina annotation
+        $element_uri = "";
+        if ($quality_annotation->getWorkflow()->getUri() != null)
+        {
+            $element_uri = $quality_annotation->getWorkflow()->getUri();
+        }
+        elseif ($quality_annotation->ProcessRun()->getUri() != null) 
+        {
+             $element_uri = $quality_annotation->ProcessRun()->getUri();
+        }
+        else
+        {
+            $element_uri = $quality_annotation->getOutputRun()->getUri();
+        }
+        
+        $model_annnotation->insertQualityMetricAnnotation($annotation_uri, $qualityMetric, $result, $user);
+        
+        $quality_metric_annotation = $model_annnotation->findQualityMetricAnnotation($annotation_uri);
+        
+        //TODO: como recupero o $quality_metric_annotation para renderizar as informacoes no template?.
+        // O redirect me envia a um controlador. 
+        return $this->redirect($this->generateUrl('element-qualitydimension-annotation', array(
+                            'element_uri' => $element_uri,
+                            'type' => $type
+                        )));
+        
     }
     
 }
