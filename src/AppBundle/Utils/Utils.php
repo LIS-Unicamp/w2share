@@ -25,18 +25,7 @@ class Utils
          $str = self::friendlyURL($module).'/'.self::friendlyURL($name);
 
          return 'http://www.lis.ic.unicamp.br/w2share/'.$str;
-    }
-    
-    public static function findIndexSession($uri, $qualityDimensions) 
-    {
-        foreach ($qualityDimensions as $index=>$value) 
-        {
-            if ($value == $uri)
-            {
-                return $index;
-            }
-        }
-    }
+    }        
     
     public static function unlinkr($src) 
     {

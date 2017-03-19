@@ -2,25 +2,26 @@
 {% block title %}Add Quality Dimension{% endblock %}
 {% block body %}
 
-<div>
 <h2>Quality Dimension <small>{% if qualityDimension.uri %}Edit{% else %}Add{% endif %}</small></h2>
+
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{{ form_errors(form) }}
+
 {{ form_start(form) }}
 <div class="panel panel-default">
     <div class="panel-heading">Form</div>
-    <div class="panel-body">
-        {% for flashMessage in app.session.flashbag.get('success') %}
-            <div class="alert alert-success">
-                    <button class="close" data-dismiss="alert"></button>
-                    {{ flashMessage }}
-            </div>            
-        {% endfor %}
-        {% for flashMessage in app.session.flashbag.get('error') %}
-            <div class="alert alert-danger">
-                    <button class="close" data-dismiss="alert"></button>
-                    {{ flashMessage }}
-            </div>            
-        {% endfor %}
-        {{ form_errors(form) }}
+    <div class="panel-body">        
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
@@ -48,9 +49,9 @@
     <div class="panel-footer">
         {{ form_widget(form.save) }}
         {% if qualityDimension.uri %} 
-            <a class="btn btn-success" href="{{ path('qualitydimension-add') }}"><i class="glyphicon glyphicon-plus"></i> New</a>                     
+            <a class="btn btn-success" href="{{ path('quality-dimension-add') }}"><i class="glyphicon glyphicon-plus"></i> New</a>                     
         {% endif %}        
-        <a href="{{ path('qualitydimensions') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
+        <a href="{{ path('quality-dimension-list') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
     </div>    
 </div>
 {{ form_end(form) }}    

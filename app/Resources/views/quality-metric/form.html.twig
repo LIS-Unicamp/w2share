@@ -45,7 +45,7 @@
     </div>
     <div class="panel-footer">        
         {{ form_widget(form.save) }}
-        <a href="{{ path('qualitymetrics') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
+        <a href="{{ path('quality-metric-list') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
     </div>    
 </div>
 {{ form_end(form) }}
@@ -64,9 +64,9 @@
             {% for qualitymetric in pagination %}
                 <tr>
                     <td>
-                        <a href="{{ path('delete-qualitymetric', { 'qualitymetric_uri':qualitymetric.uri|url_encode() }) }}" 
+                        <a href="{{ path('quality-metric-delete', { 'qualitymetric_uri':qualitymetric.uri|url_encode() }) }}" 
                            title="Delete quality metric" class="delete"><i class="glyphicon glyphicon-trash"></i></a> 
-                        <a href="{{ path('edit-qualitymetric', { 'qualitymetric_uri':qualitymetric.uri|url_encode() }) }}" 
+                        <a href="{{ path('quality-metric-edit', { 'qualitymetric_uri':qualitymetric.uri|url_encode() }) }}" 
                            title="Edit quality metric"><i class="glyphicon glyphicon-edit"></i></a> 
                     </td>
                     <td>{{ qualitymetric.metric }}</td>

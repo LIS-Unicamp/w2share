@@ -82,7 +82,7 @@
               </a>
               <ul class="dropdown-menu">
                 <li><a href="{{ path('workflow-add') }}"><i class="glyphicon glyphicon-plus"></i> Add</a></li>
-                <li><a href="{{ path('workflows') }}"><i class="glyphicon glyphicon-list"></i> List</a></li>
+                <li><a href="{{ path('workflow-list') }}"><i class="glyphicon glyphicon-list"></i> List</a></li>
               </ul>
             </li>
             <li{% if get_controller_name() == 'provenance' %} class="active"{% endif %}><a href="{{ path('provenance-workflows-run') }}">Provenance</a></li>
@@ -91,8 +91,8 @@
                   Quality Flow <span class="caret"></span>
               </a>
                <ul class="dropdown-menu">
-                <li><a href="{{ path('qualitydimensions') }}">Quality Dimensions </a></li>
-                <li><a href="{{ path('quality-annotations') }}">Quality Annotations</a></li> 
+                <li><a href="{{ path('quality-dimension-list') }}">Quality Dimensions </a></li>
+                <li><a href="{{ path('quality-annotation-list') }}">Quality Annotations</a></li> 
               </ul>
             </li> 
             <li{% if get_controller_name() == 'default' and get_action_name() == 'about' %} class="active"{% endif %}><a href="{{ path('about') }}">About</a></li>
@@ -141,8 +141,8 @@
                         <li><a href="{{ path('wro-reset') }}" class="reset">WRO</a></li>
                         <li><a href="{{ path('provenance-reset') }}" class="reset">Provenance Data</a></li>
                         <li><a href="{{ path('annotation-reset') }}" class="reset">Annotations </a></li>
-                        <li><a href="{{ path('qualitydimension-reset') }}" class="reset">Quality Dimensions </a></li>
-                        <li><a href="{{ path('qualitymetric-reset') }}" class="reset">Quality Metrics </a></li>
+                        <li><a href="{{ path('quality-dimension-reset') }}" class="reset">Quality Dimensions </a></li>
+                        <li><a href="{{ path('quality-metric-reset') }}" class="reset">Quality Metrics </a></li>
                         <li><a href="{{ path('quality-annotation-reset') }}" class="reset">Quality Annotations </a></li>
                         <li><a href="{{ path('script-converter-reset') }}" class="reset">Script Conversions </a></li>
                         <li><a href="{{ path('security-reset') }}" class="reset">Users </a></li>

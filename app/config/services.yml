@@ -60,7 +60,11 @@ services:
         
     model.annotation:
         class: AppBundle\Model\Annotation
-        arguments: ["@app.rest_api"]   
+        arguments: ["@app.rest_api"] 
+        
+    model.qualityannotation:
+        class: AppBundle\Model\QualityAnnotation
+        arguments: ["@app.rest_api"]
         
     model.qualitydimension:
         class: AppBundle\Model\QualityDimension

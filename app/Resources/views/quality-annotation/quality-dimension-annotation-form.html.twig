@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+{% block title %}Manage Quality Annotation{% endblock %}
+{% block body %}
+<h2>Manage Quality Annotations</h2>
+
+{{ render(controller(
+        'AppBundle:QualityAnnotation:elementInfo',
+        { 'element_uri': element_uri, 'type':type }
+    )) }}
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{{ form_errors(form) }}  
+
+{{ form_start(form) }}
+    
+    <!-- TO-DO: Tentar agrupar todos estes elementos numa so fila -->
+<div class="panel panel-default">
+    <div class="panel-heading">Form</div>
+    <div class="panel-body"> 
+            
+             <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        {{ form_label(form.quality_dimension) }}
+                        <select id="qualityannotation_quality_dimension" name="qualityannotation[quality_dimension]" required="required" class="form-control select">
+                            <option value=""></option>
+                            {% for qd in quality_dimensions %}
+                                <option value="{{ qd.uri }}" {% if qualityAnnotation.qualityDimension and qd.uri == qualityAnnotation.qualityDimension.uri %}selected="selected"{% endif %}>{{ qd.name }}</option>                            
+                            {% endfor %}
+                        </select>
+                        {{ form_errors(form.quality_dimension) }}
+                    </div>
+                </div>
+            
+                <div class="col-md-3">
+                    <div class="form-group">
+                        {{ form_label(form.value) }}
+                        {{ form_widget(form.value, { 'attr': { 'class':'form-control' } }) }}
+                        {{ form_errors(form.value) }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="panel-footer">
+            {{ form_widget(form.save) }} 
+            <a href="{{ path('element-quality-dimension-annotation-list', { 'element_uri':element_uri|url_encode(), 'type':type }) }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
+        </div>
+        {{ form_widget(form._token) }}
+</div>
+</form>
+{% endblock %}  
+{% block javascripts %}
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 

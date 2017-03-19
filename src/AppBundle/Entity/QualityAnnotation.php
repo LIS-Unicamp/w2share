@@ -250,4 +250,75 @@ class QualityAnnotation {
     {
         return $this->output_run;
     }
+    /**
+     * @var string
+     */
+    private $type;
+
+    /**
+     * @var string
+     */
+    private $element_uri;
+
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     * @return QualityAnnotation
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string 
+     */
+    public function getType()
+    {
+        if ($this->type)
+        {
+            return $this->type;
+        }
+        else if ($this->getWorkflow())
+        {
+            return 'workflow';
+        }
+        else if ($this->getOutputRun())
+        {
+            return 'outputrun';
+        }
+        else if ($this->getProcessRun())
+        {
+            return 'processrun';
+        }
+        return null;
+    }   
+
+    /**
+     * Get element_uri
+     *
+     * @return string 
+     */
+    public function getElementUri()
+    {
+        if ($this->getWorkflow())
+        {
+            return $this->getWorkflow()->getUri();
+        }
+        else if ($this->getOutputRun())
+        {
+            return $this->getOutputRun()->getUri();
+        }
+        else if ($this->getProcessRun())
+        {
+            return $this->getProcessRun()->getUri();
+        }
+        return $this->element_uri;
+    }
 }

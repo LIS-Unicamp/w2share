@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 class QualityDimensionController extends Controller
 {    
     /**
-     * @Route("/qualitydimensions", name="qualitydimensions")
+     * @Route("/quality-dimension/list", name="quality-dimension-list")
      */
     public function indexAction(Request $request)
     {         
@@ -22,7 +22,7 @@ class QualityDimensionController extends Controller
         $users = $model->findUsersWithQualityDimensions();
 
         $form = $this->createForm(new \AppBundle\Form\QualityDimensionFilterType($users), null, array(
-            'action' => $this->generateUrl('qualitydimensions'),
+            'action' => $this->generateUrl('quality-dimension-list'),
             'method' => 'GET'
         ));
         $form->handleRequest($request);             
@@ -46,14 +46,14 @@ class QualityDimensionController extends Controller
             10 /*limit per page*/
         );
         
-        return $this->render('qualityflow/list-qualitydimension.html.twig', array(
+        return $this->render('quality-dimension/list.html.twig', array(
             'pagination' => $pagination,
             'form' => $form->createView()
         ));       
     }
 
     /**
-     * @Route("/qualitydimension/add", name="qualitydimension-add")
+     * @Route("/quality-dimension/add", name="quality-dimension-add")
      */
     public function addAction(Request $request) {
         
@@ -63,7 +63,7 @@ class QualityDimensionController extends Controller
         $form = $this->createForm(new \AppBundle\Form\QualityDimensionType(),
                                   $qualityDimension, 
                                   array(
-                                  'action' => $this->generateUrl('qualitydimension-add'),
+                                  'action' => $this->generateUrl('quality-dimension-add'),
                                   'method' => 'POST'
                                   ));
         
@@ -77,26 +77,18 @@ class QualityDimensionController extends Controller
                 ->getFlashBag()
                 ->add('success', 'Quality Dimension added!')
             ; 
-            $qualityDimensions = $this->get('session')->get('qualityDimensions',null);
-            if ($qualityDimensions)
-            {
-                $qualityDimensions[] = $qualityDimension;
-            }
-            else {
-                $qualityDimensions = array($qualityDimension);
-            }
-            $this->get('session')->set('qualityDimensions',$qualityDimensions);
-            return $this->redirect($this->generateUrl('qualitydimension-add'));
+            
+            return $this->redirect($this->generateUrl('quality-dimension-add'));
         }
         
-        return $this->render('qualityflow/form.html.twig', array(
+        return $this->render('quality-dimension/form.html.twig', array(
             'form' => $form->createView(),
             'qualityDimension' => $qualityDimension
         ));
     }
     
     /**
-     * @Route("/qualitydimension/edit/{qualitydimension_uri}", name="qualitydimension-edit")
+     * @Route("/quality-dimension/edit/{qualitydimension_uri}", name="quality-dimension-edit")
      */
     public function editAction(Request $request, $qualitydimension_uri)
     {        
@@ -110,28 +102,22 @@ class QualityDimensionController extends Controller
                 
         if ($form->isValid()) 
         {           
-            $model->updateQualityDimension($qualityDimension);
+            $model->updateQualityDimension($qualityDimension);                        
             
-            //Remove qualityDimension from the session variable
-            $qualityDimensions = $this->get('session')->get('qualityDimensions');
-            $session_index = \AppBundle\Utils\Utils::findIndexSession($uri, $qualityDimensions);
-            $qualityDimensions[$session_index] = $qualityDimension;
-            
-            $this->get('session')->set('qualityDimensions',$qualityDimensions);
             $this->get('session')
                 ->getFlashBag()
                 ->add('success', 'Quality dimension edited!')
             ;
         }
         
-        return $this->render('qualityflow/form.html.twig', array(
+        return $this->render('quality-dimension/form.html.twig', array(
             'form' => $form->createView(),
             'qualityDimension' => $qualityDimension
         ));
     }
     
     /**
-     * @Route("/qualitydimension/delete/{qualitydimension_uri}", name="qualitydimension-delete")
+     * @Route("/quality-dimension/delete/{qualitydimension_uri}", name="quality-dimension-delete")
      */
     
     public function removeAction(Request $request, $qualitydimension_uri)
@@ -151,17 +137,17 @@ class QualityDimensionController extends Controller
             ;
         }
         //TO-DO verificar
-        return $this->redirect($this->generateUrl('qualitydimensions'));
+        return $this->redirect($this->generateUrl('quality-dimension-list'));
     }
     
     /**
-     * @Route("/qualitydimension/reset", name="qualitydimension-reset")
+     * @Route("/quality-dimension/reset", name="quality-dimension-reset")
      */
     public function resetAction(Request $request)
     {                   
         $model_provenance = $this->get('model.qualitydimension');         
         $model_provenance->clearGraph();                
                     
-        return $this->redirect($this->generateUrl('qualitydimensions'));
+        return $this->redirect($this->generateUrl('quality-dimension-list'));
     }            
 }

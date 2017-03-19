@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 class WorkflowController extends Controller
 {        
     /**
-     * @Route("/workflows", name="workflows")
+     * @Route("/workflow/list", name="workflow-list")
      */
     public function listAction(Request $request)
     {         

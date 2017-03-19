@@ -51,7 +51,7 @@ class QualityMetric
         return $qualityMetric;
     }
     
-    public function findQualityMetricByDimension($uri)
+    public function findQualityMetricsByDimension($uri)
     {
         $query = 
         "SELECT * WHERE        

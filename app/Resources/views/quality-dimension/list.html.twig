@@ -16,7 +16,7 @@
 {% endfor %}
 <div class="row">
     <div class="col-md-1">
-        <a class="btn btn-success" href="{{ path('qualitydimension-add') }}"><i class="glyphicon glyphicon-plus"></i> New</a>
+        <a class="btn btn-success" href="{{ path('quality-dimension-add') }}"><i class="glyphicon glyphicon-plus"></i> New</a>
     </div>
     <div class="col-md-5 pull-right" id="filtrar">
         {{ form_start(form) }}
@@ -70,9 +70,9 @@
     {% for qd in pagination %}
         <tr>
             <td>
-                <a href="{{ path('qualitydimension-edit', { 'qualitydimension_uri':qd.uri|url_encode }) }}" title="Edit quality dimension" ><i class="glyphicon glyphicon-edit"></i></a>
-                <a href="{{ path('qualitydimension-delete', { 'qualitydimension_uri':qd.uri|url_encode }) }}" title="Delete quality dimension " class="delete"><i class="glyphicon glyphicon-trash"></i></a>
-                <a href="{{ path('add-qualitymetric', { 'qualitydimension_uri':qd.uri|url_encode() }) }}" title="Add a quality metric" ><i class="glyphicon glyphicon-plus"></i></a> 
+                <a href="{{ path('quality-dimension-edit', { 'qualitydimension_uri':qd.uri|url_encode }) }}" title="Edit quality dimension" ><i class="glyphicon glyphicon-edit"></i></a>
+                <a href="{{ path('quality-dimension-delete', { 'qualitydimension_uri':qd.uri|url_encode }) }}" title="Delete quality dimension " class="delete"><i class="glyphicon glyphicon-trash"></i></a>
+                <a href="{{ path('quality-metric-add', { 'qualitydimension_uri':qd.uri|url_encode() }) }}" title="Add a quality metric" ><i class="glyphicon glyphicon-plus"></i></a> 
             </td>
             <td>{{ qd.name }}</td>
             <td>{{ qd.description }}</a></td>

@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+{% block title %}Manage Quality Annotation{% endblock %}
+{% block body %}
+<h2>Manage Quality Annotations</h2>
+
+{{ render(controller(
+        'AppBundle:QualityAnnotation:elementInfo',
+        { 'element_uri': element_uri, 'type':type }
+    )) }}
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+<a class="btn btn-success" href="{{ path('element-quality-dimension-annotation-add', { 'element_uri':element_uri|url_encode(), 'type': type }) }}"><i class="glyphicon glyphicon-plus"></i> New</a> 
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Actions</th>
+                <th>Dimension</th>
+                <th>Value</th>
+                <th>Author</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for annotation in pagination %}
+                <tr>
+                    <td>
+                        <a href="{{ path('quality-dimension-annotation-delete', { 'annotation_uri':annotation.uri|url_encode(), 'type': type }) }}" 
+                           title="Delete quality annotations" class="delete"><i class="glyphicon glyphicon-trash"></i></a> 
+                        <a href="{{ path('quality-dimension-annotation-edit', { 'annotation_uri':annotation.uri|url_encode(), 'type': type }) }}" 
+                           title="Edit quality annotations"><i class="glyphicon glyphicon-edit"></i></a> 
+                    </td>
+                    <td>{{ annotation.qualityDimension.name }}</td>
+                    <td>{{ annotation.value }}</td>
+                    <td>{{ annotation.creator }}</td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <table class="table">
+                            <thead>                                
+                                <tr>
+                                    <th> Metric </th>
+                                    <th> Description </th>
+                                    <th> Play </th>
+                                    <th> Result </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if false and annotation.annotationMetric %}
+                                <tr>
+                                    <td>{{ annotation.annotationMetric.metric.metric }}</td>
+                                    <td>{{ annotation.annotationMetric.metric.description }}</td>
+                                    <td></td>
+                                    <td>{{ annotation.annotationMetric.result }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <th>
+                                        <a href="{{ path('quality-metric-select', { 'qualitydimension_uri':annotation.qualityDimension.uri|url_encode(), 'annotation_uri': annotation.uri|url_encode(), 'type': type }) }}" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#qualityMetricModal">
+                                          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                          Metric                                          
+                                        </a>
+                                    </th>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div> 
+<div class="row">
+    <div class="col-sm-12">
+        <div class="navigation">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        {{ app_pagination_render(pagination) }}
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="qualityMetricModal" tabindex="-1" role="dialog" aria-labelledby="qualityMetricModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        </div>
+  </div>
+</div>  
+{% endblock %}  
+{% block javascripts %}
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 
