@@ -18,7 +18,6 @@ class QualityAnnotation
         
     public function insertQualityAnnotation($element_uri, $type, \AppBundle\Entity\QualityDimension $qualityDimension, $value, $user)
     {   //$element_uri = $object->getUri();
-       
         $now = new \Datetime();
         $uri = Utils::convertNameToUri("Quality Annotation", $qualityDimension->getName().'/'.$now->format('Ymdhis'));
         
@@ -71,28 +70,9 @@ class QualityAnnotation
             
             $qualityAnnotation->setValue($quality_annotation[0]['value']['value']);
             
-            switch ($type)
-            {
-                case 'workflow':
-                    $workflow = new \AppBundle\Entity\Workflow();
-                    $workflow->setUri($quality_annotation[0]['element']['value']);
+            $qualityAnnotation->setType($type);
+            $qualityAnnotation->setElementUri($quality_annotation[0]['element']['value']);
 
-                    $qualityAnnotation->setWorkflow($workflow);
-                    break;
-                case 'process_run':
-                    $process_run = new \AppBundle\Entity\ProcessRun();
-                    $process_run->setUri($quality_annotation[0]['element']['value']);
-                    
-                    $qualityAnnotation->setProcessRun($process_run);
-                    break;
-                case 'output_run':
-                    $output_run = new \AppBundle\Entity\OutputRun();
-                    $output_run->setUri($quality_annotation[0]['element']['value']);
-                    
-                    $qualityAnnotation->setOutputRun($output_run);
-                    break;
-            }
-            
             return $qualityAnnotation;  
         } 
         
@@ -102,52 +82,66 @@ class QualityAnnotation
     public function findQualityAnnotationsByElement($uri, $type)
     {
         $query = 
-        "SELECT * WHERE        
+        "SELECT DISTINCT ?uri ?qualityDimension ?qdValue ?qdName 
+                         ?creator ?metric_uri ?result ?metric ?description ?creator_name 
+         WHERE        
         { 
             ?uri a w2share:QualityAnnotation.
             ?uri oa:hasTarget <".$uri.">.
-            ?uri w2share:hasValue ?value.
+            ?uri w2share:hasValue ?qdValue.
             ?uri w2share:hasQualityDimension ?qualityDimension.
             ?qualityDimension <w2share:qdName> ?qdName.
+            ?uri oa:annotatedBy ?creator.
+            ?creator <foaf:name> ?creator_name.
+            OPTIONAL {  ?uri oa:hasBody ?body.
+                        ?body w2share:hasQualityMetric ?metric_uri. 
+                        ?body w2share:hasQualityMetricResult ?result.
+                        ?metric_uri <w2share:metric> ?metric.
+                        ?metric_uri <rdfs:description> ?description.
+                      }
         }"; 
         
         $quality_annotation_array = array();
-        $quality_annotations = $this->driver->getResults($query);                
+        $quality_annotations = $this->driver->getResults($query);   
         
+        $qualityAnnotation = new \AppBundle\Entity\QualityAnnotation();
+        
+        $qualityAnnotation->setType($type);
+        $qualityAnnotation->setElementUri($uri);
+                
         for ($i = 0; $i < count($quality_annotations); $i++)
         {
             $qualityAnnotation = new \AppBundle\Entity\QualityAnnotation();
             $qualityAnnotation->setUri($quality_annotations[$i]['uri']['value']);
-            
-            switch ($type)
-            {
-                case 'workflow':
-                    $workflow = new \AppBundle\Entity\Workflow();
-                    $workflow->setUri($uri);
-
-                    $qualityAnnotation->setWorkflow($workflow);
-                    break;
-                case 'process_run':
-                    $process_run = new \AppBundle\Entity\ProcessRun();
-                    $process_run->setUri($uri);
-                    
-                    $qualityAnnotation->setProcessRun($process_run);
-                    break;
-                case 'output_run':
-                    $output_run = new \AppBundle\Entity\OutputRun();
-                    $output_run->setUri($uri);
-                    
-                    $qualityAnnotation->setOutputRun($output_run);
-                    break;
-            }
             
             $qualityDimension = new \AppBundle\Entity\QualityDimension();
             $qualityDimension->setUri($quality_annotations[$i]['qualityDimension']['value']);
             $qualityDimension->setName($quality_annotations[$i]['qdName']['value']);
             
             $qualityAnnotation->setQualityDimension($qualityDimension);
+            $qualityAnnotation->setValue($quality_annotations[$i]['qdValue']['value']);
             
-            $qualityAnnotation->setValue($quality_annotations[$i]['value']['value']);
+            if ( array_key_exists('metric_uri', $quality_annotations[$i]) )
+            {
+                $qualityMetric = new \AppBundle\Entity\QualityMetric();
+                $qualityMetric->setUri($quality_annotations[$i]['metric_uri']['value']);
+                $qualityMetric->setMetric($quality_annotations[$i]['metric']['value']);
+                $qualityMetric->setDescription($quality_annotations[$i]['description']['value']);
+
+                $qualityMetricAnnotation = new \AppBundle\Entity\QualityMetricAnnotation();
+                //TODO: Por agora, a quality metric annotation nao tem URI.
+                //$qualityMetricAnnotation->setUri(?);
+                $qualityMetricAnnotation->setQualityMetric($qualityMetric);
+                $qualityMetricAnnotation->setResult($quality_annotations[$i]['result']['value']);
+
+                $qualityAnnotation->setQualityMetricAnnotation($qualityMetricAnnotation);
+            }
+            
+            $creator = new \AppBundle\Entity\Person();
+            $creator->setUri($quality_annotations[$i]['creator']['value']);
+            $creator->setName($quality_annotations[$i]['creator_name']['value']);
+
+            $qualityAnnotation->setCreator($creator);
             
             $quality_annotation_array[] = $qualityAnnotation;  
         }
@@ -387,23 +381,9 @@ class QualityAnnotation
         return $quality_annotation_array;
     }
     
-    public function updateQualityAnnotation(\AppBundle\Entity\QualityAnnotation $qualityAnnotation, $type) 
+    public function updateQualityAnnotation(\AppBundle\Entity\QualityAnnotation $qualityAnnotation) 
     {        
-        $uri = $qualityAnnotation->getUri();
-        $element_uri = "";
-        
-        switch ($type)
-        {
-            case 'workflow':
-                $element_uri = $qualityAnnotation->getWorkflow()->getUri();
-                break;
-            case 'process_run':
-                $element_uri = $qualityAnnotation->getProcessRun()->getUri();
-                break;
-            case 'output_run':
-                $element_uri = $qualityAnnotation->getOutputRun()->getUri();
-                break;
-        }
+        $element_uri = $qualityAnnotation->getElementUri();
         
         $query = 
         "   MODIFY <".$this->driver->getDefaultGraph('qualitydimension-annotation')."> 
@@ -419,7 +399,7 @@ class QualityAnnotation
             { 
                 <".$qualityAnnotation->getUri()."> a w2share:QualityAnnotation.
                 <".$qualityAnnotation->getUri()."> oa:hasTarget <".$element_uri.">.
-                <".$qualityAnnotation->getUri()."> w2share:hasValue ?value.    
+                <".$qualityAnnotation->getUri()."> w2share:hasValue '".$qualityAnnotation->getValue()."'.   
                 <".$qualityAnnotation->getUri()."> w2share:hasQualityDimension ?qualityDimension.
                 ?qualityDimension <w2share:qdName> ?qdName.
             }
@@ -431,26 +411,13 @@ class QualityAnnotation
                 <".$qualityAnnotation->getUri()."> w2share:hasQualityDimension ?qualityDimension.
                 ?qualityDimension <w2share:qdName> ?qdName.
             }";
-        return $this->driver->getResults($query);
         
+        return $this->driver->getResults($query);
     }
     
-    public function deleteQualityAnnotation(\AppBundle\Entity\QualityAnnotation $qualityAnnotation, $type)
+    public function deleteQualityAnnotation(\AppBundle\Entity\QualityAnnotation $qualityAnnotation)
     { 
-        $element_uri = "";
-        
-        switch ($type)
-        {
-            case 'workflow':
-                $element_uri = $qualityAnnotation->getWorkflow()->getUri();
-                break;
-            case 'process_run':
-                $element_uri = $qualityAnnotation->getProcessRun()->getUri();
-                break;
-            case 'output_run':
-                $element_uri = $qualityAnnotation->getOutputRun()->getUri();
-                break;
-        }
+        $element_uri = $qualityAnnotation->getElementUri();
         
        $query = 
         "DELETE data FROM <".$this->driver->getDefaultGraph('qualitydimension-annotation')."> 
@@ -471,7 +438,6 @@ class QualityAnnotation
         return $this->driver->getResults($query);                  
     }
     
-    //TODO
     public function insertQualityMetricAnnotation($uri, \AppBundle\Entity\QualityMetric $qualityMetric, $result, $user)
     {
         $now = new \DateTime();
@@ -495,44 +461,4 @@ class QualityAnnotation
         return $this->driver->getResults($query);    
     }
     
-    public function findQualityMetricAnnotation($uri)
-    {
-        $query =
-        "SELECT DISTINCT ?creator ?metric_uri ?result ?metric ?description ?creator_name WHERE
-            {
-                 <".$uri."> a w2share:QualityAnnotation;
-                 oa:hasBody ?body;
-                 oa:annotatedBy ?creator.
-                 ?body w2share:hasQualityMetric ?metric_uri. 
-                 ?body w2share:hasQualityMetricResult ?result.
-                 ?metric_uri <w2share:metric> ?metric.
-                 ?metric_uri <rdfs:description> ?description.
-                 ?creator <foaf:name> ?creator_name.
-            }";
-        
-        $quality_metric_annotation = $this->driver->getResults($query);
-        
-        //TODO: QualityMetricAnnotation() Entity: uri, metric, description, creator, result.
-        $qualityMetricAnnotation = new \AppBundle\Entity\QualityMetric();
-        
-        $qualityMetricAnnotation->setUri($quality_metric_annotation[0]['metric_uri']['value']);
-        $qualityMetricAnnotation->setMetric($quality_metric_annotation[0]['metric']['value']);
-        $qualityMetricAnnotation->setDescription($quality_metric_annotation[0]['description']['value']);
-        $qualityMetricAnnotation->setResult($quality_metric_annotation[0]['result']['value']);
-        
-        $creator = new \AppBundle\Entity\Person();
-        $creator->setUri($quality_metric_annotation[0]['creator']['value']);
-        $creator->setName($quality_metric_annotation[0]['creator_name']['value']);
-
-        $qualityMetricAnnotation->setCreator($creator);
-        
-        return $qualityMetricAnnotation;
-        
-    }
-    
 }
-
-//TO-DO
-//Listar as qualityannotations que existem
-//No formulario listar as qualityannotation para o workflow/processo/resultado/fonte
-//um clear graph mais robusto para apagar todos os grafos

@@ -20,7 +20,7 @@ class QualityAnnotationController extends Controller
         $users = $model->findUsersWithQualityAnnotations();
         
         $form = $this->createForm(new \AppBundle\Form\QualityAnnotationFilterType($users), null, array(
-            'action' => $this->generateUrl('quality-annotations'),
+            'action' => $this->generateUrl('quality-annotation-list'),
             'method' => 'GET'
         ));
         $form->handleRequest($request);             
@@ -90,7 +90,7 @@ class QualityAnnotationController extends Controller
      * 
      * @Route("/annotation/quality-dimension/list/{element_uri}/{type}", name="element-quality-dimension-annotation-list")
      */
-    public function qualityAnnotationsByElementAction(Request $request, $element_uri, $type)
+    public function qualityAnnotationsByElementListAction(Request $request, $element_uri, $type)
     {
         $element_uri = urldecode($element_uri);                                      
         
@@ -182,7 +182,7 @@ class QualityAnnotationController extends Controller
                 
         if ($form->isValid()) 
         {   
-            $model->updateQualityAnnotation($qualityAnnotation, $type);
+            $model->updateQualityAnnotation($qualityAnnotation);
             
             $this->get('session')
                 ->getFlashBag()
@@ -201,7 +201,6 @@ class QualityAnnotationController extends Controller
     
     public function elementInfoAction(Request $request, $element_uri, $type)
     {
-        $model = $this->get('model.qualityannotation'); 
         $model_workflow = $this->get('model.workflow');
         $model_provenance = $this->get('model.provenance');
         
@@ -217,8 +216,8 @@ class QualityAnnotationController extends Controller
             case 'process_run':
                 $process_run = $model_provenance->findProcessRun($element_uri);
                 $process_uri = $process_run->getProcess()->getUri();
-                $process = $model->findProcess($process_uri);
-                $workflow_of_process = $model->findWorkflow($process->getWorkflow()->getUri());  
+                $process = $model_workflow->findProcess($process_uri);
+                $workflow_of_process = $model_workflow->findWorkflow($process->getWorkflow()->getUri());  
                 $process->setWorkflow($workflow_of_process);
                 $process_run->setProcess($process); 
                 break;
@@ -243,19 +242,22 @@ class QualityAnnotationController extends Controller
     {   
         $model = $this->get('model.qualityannotation'); 
         
-        $uri = urldecode($annotation_uri);
-        $qualityAnnotation = $model->findQualityAnnotationByURI($uri, $type);                              
+        $annotation_uri = urldecode($annotation_uri);
+        $qualityAnnotation = $model->findQualityAnnotationByURI($annotation_uri, $type);        
         
+        $element_uri = $qualityAnnotation->getElementUri();
+
         if ($qualityAnnotation)
         {                   
-            $model->deleteQualityAnnotation($qualityAnnotation, $type);
+            $model->deleteQualityAnnotation($qualityAnnotation);
             
             $this->get('session')
                 ->getFlashBag()
-                ->add('success', 'Quality annotation deleted!');
-            
-            return $this->redirect($this->generateUrl('element-quality-dimension-annotation', array('type'=>$type, 'element_uri'=>$qualityAnnotation->getElementUri())));            
-        }                                                
+                ->add('success', 'Quality annotation deleted!');            
+        } 
+        
+        return $this->redirect($this->generateUrl('element-quality-dimension-annotation-list', array('type'=>$type, 'element_uri'=> urlencode($element_uri))));  
+           
     }
     
     /**
@@ -281,36 +283,20 @@ class QualityAnnotationController extends Controller
         $user = $this->getUser();
         
         $model_qualitymetric = $this->get('model.qualitymetric');
-        $model_qualitydimension= $this->get('model.qualitydimension');
         $model_annnotation = $this->get('model.qualityannotation');
         
         $qualityMetric = $model_qualitymetric->findQualityMetric($qualitymetric_uri);
 
-        $quality_annotation = $model_annnotation->findQualityAnnotationByURI($annotation_uri, $type);
+        $qualityAnnotation = $model_annnotation->findQualityAnnotationByURI($annotation_uri, $type);
         
-        $element_uri = "";
-        if ($quality_annotation->getWorkflow()->getUri() != null)
-        {
-            $element_uri = $quality_annotation->getWorkflow()->getUri();
-        }
-        elseif ($quality_annotation->ProcessRun()->getUri() != null) 
-        {
-             $element_uri = $quality_annotation->ProcessRun()->getUri();
-        }
-        else
-        {
-            $element_uri = $quality_annotation->getOutputRun()->getUri();
-        }
+        $element_uri = $qualityAnnotation->getElementUri();
         
         $model_annnotation->insertQualityMetricAnnotation($annotation_uri, $qualityMetric, $result, $user);
-        
-        $quality_metric_annotation = $model_annnotation->findQualityMetricAnnotation($annotation_uri);
-        
-        //TODO: como recupero o $quality_metric_annotation para renderizar as informacoes no template?.
-        // O redirect me envia a um controlador. 
-        return $this->redirect($this->generateUrl('element-quality-dimension-annotation', array(
+               
+        return $this->redirect($this->generateUrl('element-quality-dimension-annotation-list', array(
                             'element_uri' => urlencode($element_uri),
                             'type' => $type
                         )));        
-    }    
+    }  
+    
 }

@@ -190,7 +190,7 @@ class QualityMetricController extends Controller
         
         $model_qualitymetric = $this->get('model.qualitymetric');
         
-        $quality_metrics = $model_qualitymetric->findQualityMetricByDimension($qualitydimension_uri);
+        $quality_metrics = $model_qualitymetric->findQualityMetricsByDimension($qualitydimension_uri);
         
         $quality_metrics_array = array();
         

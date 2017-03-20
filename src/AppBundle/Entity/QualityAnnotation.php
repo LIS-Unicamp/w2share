@@ -321,4 +321,61 @@ class QualityAnnotation {
         }
         return $this->element_uri;
     }
+    /**
+     * @var \AppBundle\Entity\QualityMetricAnnotation
+     */
+    private $quality_metric_annotation;
+
+
+    /**
+     * Set element_uri
+     *
+     * @param string $elementUri
+     * @return QualityAnnotation
+     */
+    public function setElementUri($elementUri)
+    {
+        $this->element_uri = $elementUri;
+        
+        switch ($this->getType())
+        {
+            case 'workflow':
+                $workflow = new \AppBundle\Entity\Workflow();
+                $this->setWorkflow($workflow->setUri($elementUri));
+                break;
+            case 'process_run':
+                $process_run = new \AppBundle\Entity\ProcessRun();
+                $this->setProcessRun($process_run->setUri($elementUri));
+                break;
+            case 'output_run':
+                $output_run = new \AppBundle\Entity\OutputRun();
+                $this->setOutputRun($output_run->setUri($elementUri));
+                break;
+        }
+    
+        return $this;
+    }
+
+    /**
+     * Set quality_metric_annotation
+     *
+     * @param \AppBundle\Entity\QualityMetricAnnotation $qualityMetricAnnotation
+     * @return QualityAnnotation
+     */
+    public function setQualityMetricAnnotation(\AppBundle\Entity\QualityMetricAnnotation $qualityMetricAnnotation = null)
+    {
+        $this->quality_metric_annotation = $qualityMetricAnnotation;
+    
+        return $this;
+    }
+
+    /**
+     * Get quality_metric_annotation
+     *
+     * @return \AppBundle\Entity\QualityMetricAnnotation 
+     */
+    public function getQualityMetricAnnotation()
+    {
+        return $this->quality_metric_annotation;
+    }
 }

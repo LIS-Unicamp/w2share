@@ -4,8 +4,6 @@ AppBundle\Entity\QualityAnnotation:
         uri:
             type: string
     fields: 
-        qualityDimension:
-            type: object
         value:
             type: string
         created_at_time:
@@ -16,6 +14,9 @@ AppBundle\Entity\QualityAnnotation:
             type: string
         creator:
             type: string
+    oneToOne:
+        quality_metric_annotation:
+            targetEntity: QualityMetricAnnotation
     manyToOne:
         quality_dimension:
             targetEntity: QualityDimension

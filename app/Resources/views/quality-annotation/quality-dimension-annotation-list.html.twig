@@ -49,18 +49,18 @@
                             <thead>                                
                                 <tr>
                                     <th> Metric </th>
-                                    <th> Description </th>
+                                    <th style="width:300px"> Description </th>
                                     <th> Play </th>
                                     <th> Result </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% if false and annotation.annotationMetric %}
+                                {% if annotation.qualityMetricAnnotation %}
                                 <tr>
-                                    <td>{{ annotation.annotationMetric.metric.metric }}</td>
-                                    <td>{{ annotation.annotationMetric.metric.description }}</td>
+                                    <td>{{ annotation.qualityMetricAnnotation.qualityMetric.metric }}</td>
+                                    <td>{{ annotation.qualityMetricAnnotation.qualityMetric.description }}</td>
                                     <td></td>
-                                    <td>{{ annotation.annotationMetric.result }}</td>
+                                    <td>{{ annotation.qualityMetricAnnotation.result }}</td>
                                 </tr>
                                 {% else %}
                                 <tr>

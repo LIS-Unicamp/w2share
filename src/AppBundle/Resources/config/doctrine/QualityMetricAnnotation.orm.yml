@@ -1,0 +1,11 @@
+AppBundle\Entity\QualityMetricAnnotation: 
+    type: entity    
+    id:
+        uri:
+            type: string
+    fields: 
+        result:
+            type: string
+    manyToOne:
+        quality_metric:
+            targetEntity: QualityMetric

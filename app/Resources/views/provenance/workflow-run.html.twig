@@ -29,7 +29,7 @@
                     <button class="btn btn-xs copy" data-clipboard-text="{{ processRun.uri }}">
                         <i class="glyphicon glyphicon-copy"></i>
                     </button>
-                    <a href="{{ path('element-qualitydimension-annotation-list', { 'element_uri':processRun.uri|url_encode(), 'type':'process_run' }) }}" title="Go to Quality Annotations"><i class="glyphicon glyphicon-pencil"></i></a>
+                    <a href="{{ path('element-quality-dimension-annotation-list', { 'element_uri':processRun.uri|url_encode(), 'type':'process_run' }) }}" title="Go to Quality Annotations"><i class="glyphicon glyphicon-pencil"></i></a>
                     <a href="{{ path('provenance-process-run', { 'process_run_uri': processRun.uri|url_encode }) }}" title="Go to Process Run">{{ processRun.label }}</a></td>
                 <td>
                     {{ processRun.startedAtTime|date('H:i:s.v m-d-Y') }} (<strong>Started</strong>)

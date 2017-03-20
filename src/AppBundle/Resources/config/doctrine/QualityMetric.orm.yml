@@ -8,8 +8,6 @@ AppBundle\Entity\QualityMetric:
             type: string
         description:
             type: string
-        result:
-            type: string
     manyToOne:
         quality_dimension:
             targetEntity: QualityDimension
