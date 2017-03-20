@@ -17,19 +17,20 @@ class WROModel
     
     public function addWRO(\AppBundle\Entity\WRO $wro)
     {
+        $dao = $this->container->get('dao.wro');
         $this->unzipWROBundle($wro);
         $this->findManifest($wro);
         //$this->loadFiles($wro);
-        $this->saveWROHash($wro);        
+        $dao->saveWROHash($wro);        
     }          
     
     private function findManifest(\AppBundle\Entity\WRO $wro)
     {
-        if (file_exists($this->getWRODirPath($wro)."/.ro/manifest.json"))
+        if (file_exists($wro->getUploadRootDir()."/.ro/manifest.json"))
         {
             $this->loadManifestJSON($wro); 
         }
-        else if (file_exists($this->getWRODirPath($wro)."/.ro/manifest.rdf"))
+        else if (file_exists($wro->getUploadRootDir()."/.ro/manifest.rdf"))
         {            
             $this->loadManifestRDF($wro);
         }
@@ -37,7 +38,7 @@ class WROModel
     
     private function loadManifestJSON(\AppBundle\Entity\WRO $wro)
     {
-        $str = file_get_contents($this->getWRODirPath($wro)."/.ro/manifest.json");
+        $str = file_get_contents($wro->getUploadRootDir()."/.ro/manifest.json");
         $manifest_data = json_decode($str, true); // decode the JSON into an associative array
 
         foreach ($manifest_data['aggregates'] as $aggregate)
@@ -66,7 +67,7 @@ class WROModel
     
     private function loadManifestRDF(\AppBundle\Entity\WRO $wro)
     {
-        $path_url = $this->getWRODirPath($wro)."/.ro/manifest.rdf";
+        $path_url = $wro->getUploadRootDir()."/.ro/manifest.rdf";
         
         \EasyRdf_Namespace::set('ro', 'http://purl.org/wf4ever/ro#');
         \EasyRdf_Namespace::set('dc', 'http://purl.org/dc/elements/1.1/');
@@ -87,13 +88,13 @@ class WROModel
     
     private function unzipWFBundle(\AppBundle\Entity\WRO $wro, $wfbundle_filename)
     {            
-        $wfbundle_path = $this->getWRODirPath($wro).$wfbundle_filename;
+        $wfbundle_path = $wro->getUploadRootDir().$wfbundle_filename;
         $zip = new \ZipArchive; 
         if ($zip->open($wfbundle_path))
         { 
             try 
             {
-                $zip->extractTo($this->getWRODirPath($wro)); 
+                $zip->extractTo($wro->getUploadRootDir()); 
                 $zip->close(); 
             }
             catch(\Symfony\Component\Debug\Exception\ContextErrorException $e)
@@ -111,18 +112,21 @@ class WROModel
         $zip = new \ZipArchive; 
         if ($zip->open($wro->getWROAbsolutePath()))
         { 
-            $zip->extractTo($this->getWRODirPath($wro)); 
+            $zip->extractTo($wro->getUploadRootDir()); 
             $zip->close(); 
         }
         unlink($wro->getWROAbsolutePath());
-    }
+    }    
     
-    private function getWRODirPath(\AppBundle\Entity\WRO $wro)
+    /**
+     * @param type Workflow
+     */
+    public function deleteWRO(\AppBundle\Entity\WRO $wro)
     {
-        $wroot_path = $this->container->get('kernel')->getRootDir();
-
-        return $wroot_path."/../web/uploads/documents/wro/".$wro->getHash();
-    }                   
+        $wro->removeUpload(); 
+        $dao = $this->container->get('dao.wro');
+        $dao->deleteWRO($wro);
+    }
     
     public function clearUploads()
     {
@@ -131,6 +135,8 @@ class WROModel
     
     public function createWRO(\AppBundle\Entity\ScriptConverter $conversion)
     {
+        $dao = $this->container->get('dao.wro');
+        
         $wro = new \AppBundle\Entity\WRO();        
         $wro->setHash($conversion->getHash());
         $wro_uri = $uri = \AppBundle\Utils\Utils::convertNameToUri("Workflow Research Object", $wro->getHash());
@@ -140,8 +146,8 @@ class WROModel
         $wro->setScriptConversion($conversion);
         $this->addResources($wro);
         //$wro->addResource($resources);
-        $this->saveWRO($wro);
-        $this->saveWROScriptConversion($wro);
+        $dao->saveWRO($wro);
+        $dao->saveWROScriptConversion($wro);
         $this->createWROScript($wro);
     }
     

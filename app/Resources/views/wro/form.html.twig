@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
-{% block title %}{% if wro.uri %}Edit{% else %}Add{% endif %} Workflow Research Object{% endblock %}
+{% block title %}{% if wro.uri %}Edit{% else %}New{% endif %} Workflow Research Object{% endblock %}
 {% block body %}
 <h1>WRO <small>{% if wro.uri %}<button class="btn btn-xs copy" data-clipboard-text="{{ wro.uri }}">
                 <i class="glyphicon glyphicon-copy"></i>
-            </button> Edit{% else %}Add{% endif %}</small></h1>
+            </button> Edit{% else %}New{% endif %}</small></h1>
     {% if wro.uri %}
     <ul>
         <li><strong>Title:</strong> {{ wro.title }}</li>

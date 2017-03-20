@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 {% block title %}Process Run{% endblock %}
 {% block body %}
-{{ include('workflow/workflow_info.html.twig', { 'workflow': processRun.process.workflow }) }}
+{{ include('workflow/workflow-info.html.twig', { 'workflow': processRun.process.workflow }) }}
 
-{{ include('workflow/process_info.html.twig', { 'process': processRun.process }) }}
+{{ include('workflow/process-info.html.twig', { 'process': processRun.process }) }}
     
 <h3>Process Run <small><button class="btn btn-xs copy" data-clipboard-text="{{ processRun.uri }}">
                         <i class="glyphicon glyphicon-copy"></i>

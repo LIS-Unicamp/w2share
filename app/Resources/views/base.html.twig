@@ -76,15 +76,7 @@
             <li{% if get_controller_name() == 'default' and get_action_name() == 'homepage' %} class="active"{% endif %}><a href="{{ path('homepage') }}">Home</a></li>
             <li{% if get_controller_name() == 'scriptconverter' %} class="active"{% endif %}><a href="{{ path('script-converter') }}">Script Converter</a></li>
             <li{% if get_controller_name() == 'wro' %} class="active"{% endif %}><a href="{{ path('wro-list') }}" title="Workflow Research Object">WRO</a></li>
-            <li class="dropdown{% if get_controller_name() == 'workflow' %} active{% endif %}">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                  Workflows <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu">
-                <li><a href="{{ path('workflow-add') }}"><i class="glyphicon glyphicon-plus"></i> Add</a></li>
-                <li><a href="{{ path('workflow-list') }}"><i class="glyphicon glyphicon-list"></i> List</a></li>
-              </ul>
-            </li>
+            <li{% if get_controller_name() == 'workflow' %} class="active"{% endif %}><a href="{{ path('workflow-list') }}">Workflows</a></li>
             <li{% if get_controller_name() == 'provenance' %} class="active"{% endif %}><a href="{{ path('provenance-workflows-run') }}">Provenance</a></li>
             <li class="dropdown{% if get_controller_name() == 'qualitydimension' %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">

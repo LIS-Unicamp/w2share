@@ -121,7 +121,7 @@ class WRODAO
         return null;
     }        
     
-    private function saveWROScriptConversion(\AppBundle\Entity\WRO $wro) 
+    public function saveWROScriptConversion(\AppBundle\Entity\WRO $wro) 
     {      
         $query = 
         "        
@@ -199,7 +199,6 @@ class WRODAO
      */
     public function deleteWRO(\AppBundle\Entity\WRO $wro)
     {
-        $wro->removeUpload(); 
         $query = "
             DELETE FROM <".$this->driver->getDefaultGraph('wro')."> {
                 <".$wro->getUri()."> ?property ?object.                
