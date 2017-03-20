@@ -50,6 +50,8 @@ class ScriptConverterDAO
             <".$uri."> <w2share:createdAt> ?createdAt.
             <".$uri."> <w2share:updatedAt> ?updatedAt.
             OPTIONAL { ?uri <w2share:hasWorkflow> ?workflow. }
+            OPTIONAL { ?uri <w2share:hasWorkflow> ?workflow.
+                       ?workflowRun wfprov:describedByWorkflow ?workflow. }
             OPTIONAL { ?uri <w2share:hasWorkflowResearchObject> ?wro. }
             <".$uri."> <dc:creator> ?creator. 
             ?creator <foaf:name> ?name.            
@@ -71,7 +73,14 @@ class ScriptConverterDAO
                 $workflow = new \AppBundle\Entity\Workflow();
                 $workflow->setUri($result_array[0]['workflow']['value']);
                 $converter->setWorkflow($workflow);
-            }
+                
+                if (array_key_exists('workflowRun', $result_array[0]))
+                {
+                    $workflowRun = new \AppBundle\Entity\WorkflowRun();
+                    $workflowRun->setUri($result_array[0]['workflowRun']['value']);
+                    $workflow->setWorkflowRuns(array($workflowRun));
+                }
+            }                        
             
             if (array_key_exists('wro', $result_array[0]))
             {
@@ -101,6 +110,8 @@ class ScriptConverterDAO
             ?uri <w2share:createdAt> ?createdAt.
             ?uri <w2share:updatedAt> ?updatedAt.
             OPTIONAL { ?uri <w2share:hasWorkflow> ?workflow. }
+            OPTIONAL { ?uri <w2share:hasWorkflow> ?workflow.
+                       ?workflowRun wfprov:describedByWorkflow ?workflow. }
             OPTIONAL { ?uri <w2share:hasWorkflowResearchObject> ?wro. }
             ?uri <dc:creator> ?creator. 
             ?creator <foaf:name> ?name.
@@ -122,6 +133,13 @@ class ScriptConverterDAO
                 $workflow = new \AppBundle\Entity\Workflow();
                 $workflow->setUri($result_array[0]['workflow']['value']);
                 $converter->setWorkflow($workflow);
+                
+                if (array_key_exists('workflowRun', $result_array[0]))
+                {
+                    $workflowRun = new \AppBundle\Entity\WorkflowRun();
+                    $workflowRun->setUri($result_array[0]['workflowRun']['value']);
+                    $workflow->setWorkflowRuns(array($workflowRun));
+                }
             }
             
             if (array_key_exists('wro', $result_array[0]))

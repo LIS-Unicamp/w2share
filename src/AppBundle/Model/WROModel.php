@@ -144,30 +144,36 @@ class WROModel
         $wro->setCreator($conversion->getCreator());
         $wro->setWorkflow($conversion->getWorkflow());
         $wro->setScriptConversion($conversion);
-        $this->addResources($wro);
+        $this->addDefaultResources($wro);
         //$wro->addResource($resources);
         $dao->saveWRO($wro);
         $dao->saveWROScriptConversion($wro);
+        $dao->saveWROResources($wro);
         $this->createWROScript($wro);
     }
     
-    public function addResources(\AppBundle\Entity\WRO $wro)
+    public function addDefaultResources(\AppBundle\Entity\WRO $wro)
     {
         if ($wro->getWorkflow())
         {
             $wro->addResourceBuilder($wro->getWorkflow()->getUri(), basename($wro->getWorkflow()->getWorkflowAbsolutePath()), '', 'Workflow specification', 'wfdesc:Workflow');
+            $wro->addResourceBuilder($wro->getWorkflow()->getUri(), basename($wro->getWorkflow()->getWorkflowImageFilepath()), '', 'Workflow Image', 'wf4ever:Image');
         }
         $conversion = $wro->getScriptConversion();
-        if ($wro->getWorkflow()->getWorkflowRuns())
+        if ($conversion->getWorkflow()->getWorkflowRuns())
         {
-            $file_path = $wro->getScriptConversion()->getWorkflow()->getProvenanceAbsolutePath();
+            $file_path = $conversion->getWorkflow()->getProvenanceAbsolutePath();
             $wro->addResourceBuilder(basename($file_path), basename($file_path), '', 'Provenance Data', 'wfprov:WorkflowRun');
         }
         if ($conversion)
         {
-            $file_path = $wro->getScriptConversion()->getScriptFilepath();
+            $file_path = $conversion->getScriptFilepath();
             $wro->addResourceBuilder(basename($file_path), basename($file_path), '', 'Script', 'wf4ever:Script');
+            
+            $file_path = $conversion->getAbstractWorkflowFilepath();
+            $wro->addResourceBuilder(basename($file_path), basename($file_path), '', 'Workflow-like view of the script', 'wf4ever:Image');
         }
+        
     }        
     
     public function createWROScript(\AppBundle\Entity\WRO $wro)
@@ -188,7 +194,7 @@ class WROModel
 
                 rm -rf ".'$ROBASE'."/test-create-RO/.ro
                     
-                rsync -aP --exclude=".'$ROBASE'." --exclude=create-wro.sh --exclude=conversion.py --exclude=wf.gv . ".'$ROBASE'."/test-create-RO
+                rsync -aP --exclude=".'$ROBASE'." --exclude=create-wro.sh --exclude=debug.log --exclude=conversion.py --exclude=wf.gv . ".'$ROBASE'."/test-create-RO
 
                 ro create -v \"Reproducible WRO\" -d ".'$ROBASE'."/test-create-RO -i RO-id-testCreate
 
@@ -209,6 +215,7 @@ class WROModel
         $fs = new \Symfony\Component\Filesystem\Filesystem();    
         $fs->mkdir($wro->getUploadRootDir());
         $fs->dumpFile($wro->getWROScriptAbsolutePath(), $code);
-        exec('sh '.$wro->getWROScriptAbsolutePath());
+        $command = 'sh '.$wro->getWROScriptAbsolutePath().' > '.$wro->getUploadRootDir().'/debug.log 2>&1';
+        shell_exec($command);
     }
 }

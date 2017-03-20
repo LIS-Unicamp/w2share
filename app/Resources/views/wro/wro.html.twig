@@ -20,13 +20,26 @@
     <li><strong>Title:</strong> {{ wro.title }}</li>
 </ul>
 
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
 <h2>Resources</h2>
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
             <tr>
                 <th style="width:100px">Action</th>
-                <th>File</th>       
+                <th>File</th>
+                <th>Title</th>  
                 <th>Type</th> 
                 <th>Description</th>                               
             </tr>
@@ -34,8 +47,13 @@
         <tbody>
     {% for resource in pagination %}
         <tr>   
-            <td><a href="{{ resource.uri }}" title="Go to annotations"><i class="glyphicon glyphicon-search"></i></a></td>
+            <td>
+                <a href="{{ resource.uri }}" title="Go to resource details"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('wro-resource-edit', { 'resource_uri':resource.uri|url_encode()}) }}" title="Edit resource"><i class="glyphicon glyphicon-edit"></i></a>
+                <a href="{{ path('wro-resource-delete', { 'resource_uri':resource.uri|url_encode()}) }}" title="Delete resource" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
+            </td>
             <td>{{ resource.folder }}/{{ resource.filename }}</td> 
+            <td>{{ resource.title }}</td>
             <td>{{ resource.type }}</td>
             <td>{{ resource.description }}</a></td>
         </tr>

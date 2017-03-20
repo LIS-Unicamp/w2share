@@ -252,12 +252,13 @@ class WRO
      * @param \AppBundle\Entity\WROResource $resources
      * @return ResearchObject
      */
-    public function addResourceBuilder($uri, $filename, $folder, $description, $type)
+    public function addResourceBuilder($uri, $filename, $folder, $description, $type, $title = null)
     {
         $resource = new WROResource();
         $resource->setFilename($filename);
         $resource->setDescription($description);
         $resource->setFolder($folder);
+        $resource->setTitle($title);
         $resource->setUri($uri);
         $resource->setType($type);
         $this->resources[] = $resource;

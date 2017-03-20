@@ -102,6 +102,73 @@ class WROController extends Controller
         
         return $this->redirect($this->generateUrl('wro-list'));
     }
+       
+    /**
+     * @Route("/wro/resource/delete/{resource_uri}", name="wro-resource-delete")
+     */
+    public function removeResourceAction($resource_uri)
+    {                
+        $resource_uri = urldecode($resource_uri);
+                
+        $dao = $this->get('dao.wro');
+        $resource = $dao->findResource($resource_uri);        
+        
+        if ($resource)
+        {
+            $dao->deleteWROResource($resource_uri);
+
+            $this->get('session')
+                    ->getFlashBag()
+                    ->add('success', 'Resource deleted!')
+                ;
+        }
+        else 
+        {
+            $this->get('session')
+                    ->getFlashBag()
+                    ->add('error', 'Resource not found!')
+                ;
+        }
+        
+        return $this->redirect($this->generateUrl('wro-details', array('wro_uri'=>  urlencode($resource->getWro()->getUri()))));
+    }        
+    
+    /**
+     * @Route("/wro/resource/edit/{resource_uri}", name="wro-resource-edit")
+     */
+    public function editResourceAction(Request $request, $resource_uri)
+    {             
+        $resource_uri = urldecode($resource_uri);
+        
+        $model = $this->get('model.wro');                                   
+        $dao = $this->get('dao.wro');                                   
+        $resource = $dao->findResource($resource_uri);
+        
+        if (null === $resource)
+        {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Resource not found!');
+        }
+        
+        $form = $this->createForm(new \AppBundle\Form\WROResourceType(), $resource);
+        
+        $form->handleRequest($request);
+                
+        if ($form->isValid()) 
+        {                                                 
+            $dao->updateResource($resource);
+            
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Resource edited!')
+            ; 
+        }
+        
+        return $this->render('wro/resource-form.html.twig', array(
+            'form' => $form->createView(),
+            'resource' => $resource
+        ));
+    } 
+    
     
     /**
      * @Route("/wro/edit/{wro_uri}", name="wro-edit")
@@ -196,9 +263,10 @@ class WROController extends Controller
      */
     public function resetAction(Request $request)
     {                                   
-        $model_wro = $this->get('model.wro'); 
-        $model_wro->clearGraph();
-        $model_wro->clearUploads();
+        $model = $this->get('model.wro'); 
+        $dao = $this->get('dao.wro');
+        $dao->clearGraph();
+        $model->clearUploads();
                     
         return $this->redirect($this->generateUrl('wro-list'));
     }   

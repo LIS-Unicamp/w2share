@@ -57,7 +57,9 @@ class WRODAO
         { 
             <".$wro->getUri()."> a ro:ResearchObject, wf4ever:WorkflowResearchObject.
             <".$wro->getUri()."> ore:aggregates ?resource.
-            ?resource a ?type. 
+            ?resource a ?type.
+            ?resource dc:description ?description.
+            ?resource dc:title ?title.
         }";
        
         $result_array = $this->driver->getResults($query);
@@ -68,12 +70,76 @@ class WRODAO
         {   
             $resource = new \AppBundle\Entity\WROResource();            
             $resource->setUri($result_array[$i]['resource']['value']);
-            $resource->setType($result_array[$i]['type']['value']);            
+            $resource->setType($result_array[$i]['type']['value']); 
+            
+            if (array_key_exists('description', $result_array[$i]))
+            {
+                $resource->setDescription($result_array[$i]['description']['value']);
+            }
+            if (array_key_exists('title', $result_array[$i]))
+            {
+                $resource->setTitle($result_array[$i]['title']['value']);
+            }
             
             $results_array[] = $resource;
         } 
         
         return $results_array;
+    }
+    
+    public function findResource($uri)
+    {
+        $query = 
+        "SELECT * WHERE        
+        { 
+            ?wro a ro:ResearchObject, wf4ever:WorkflowResearchObject.
+            ?wro ore:aggregates <".$uri.">.
+            ?resource a ?type.
+            ?resource dc:description ?description.
+            ?resource dc:title ?title.
+        }";
+       
+        $result_array = $this->driver->getResults($query);
+                
+        if (count($result_array) > 0)
+        {   
+            $resource = new \AppBundle\Entity\WROResource();            
+            $resource->setUri($uri);
+            $resource->setType($result_array[0]['type']['value']); 
+            
+            if (array_key_exists('description', $result_array[0]))
+            {
+                $resource->setDescription($result_array[0]['description']['value']);
+            }
+            if (array_key_exists('title', $result_array[0]))
+            {
+                $resource->setTitle($result_array[0]['title']['value']);
+            }
+            
+            $wro = new \AppBundle\Entity\WRO();
+            $wro->setUri($result_array[0]['wro']['value']);
+            
+            $resource->setWro($wro);
+            
+            return $resource;
+        } 
+        
+        return null;
+    }
+    
+    public function updateResource(\AppBundle\Entity\WROResource $resource)
+    {
+        $query = 
+        "SELECT * WHERE        
+        { 
+            ?wro a ro:ResearchObject, wf4ever:WorkflowResearchObject.
+            ?wro ore:aggregates <".$uri.">.
+            ?resource a ?type.
+            ?resource dc:description ?description.
+            ?resource dc:title ?title.
+        }";
+       
+        $this->driver->getResults($query);
     }
     
     public function findWRO($uri)
@@ -178,6 +244,28 @@ class WRODAO
         $this->driver->getResults($query); 
     }
     
+    public function saveWROResources(\AppBundle\Entity\WRO $wro)
+    {
+        $query = "        
+        INSERT        
+        { 
+            GRAPH <".$this->driver->getDefaultGraph('wro')."> 
+            {\n";
+        
+            foreach($wro->getResources() as $resource)
+            {
+                $query .= "<".$wro->getUri()."> ore:aggregates <".$resource->getFilename().">.\n"; 
+                $query .= "<".$resource->getFilename()."> dc:description '".$resource->getDescription()."'.\n";
+                $query .= "<".$resource->getFilename()."> dc:title '".$resource->getTitle()."'.\n";
+                $query .= "<".$resource->getFilename()."> a ".$resource->getType().".\n";
+            }
+            
+        $query .= "   }
+        }";                
+
+        $this->driver->getResults($query);
+    }
+    
     public function addWorkflowWRO(\AppBundle\Entity\WRO $wro)
     {
         $query = "        
@@ -219,5 +307,29 @@ class WRODAO
             }
             ";  
         $this->driver->getResults($query);               
-    }        
+    }
+        
+    public function deleteWROResource($uri)
+    {
+        $query = "
+            DELETE FROM <".$this->driver->getDefaultGraph('wro')."> {
+                <".$uri."> ?property ?object.                
+            }
+            WHERE {
+                <".$uri."> ?property ?object.  
+            }
+            ";  
+        $this->driver->getResults($query);
+        
+        $query = "
+            DELETE FROM <".$this->driver->getDefaultGraph('wro')."> {
+                ?subject ?property <".$uri.">.                
+            }
+            WHERE {
+                ?subject ?property <".$uri.">.  
+            }
+            "; 
+ 
+        $this->driver->getResults($query);               
+    }
 }

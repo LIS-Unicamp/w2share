@@ -12,6 +12,8 @@ AppBundle\Entity\WROResource:
             type: string
         description:
             type: string
+        title:
+            type: string
         created_at:
             type: datetime
         
