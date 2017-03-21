@@ -224,10 +224,9 @@ class WROController extends Controller
                 
         if ($form->isValid()) 
         {                                     
-            $wro->preUpload();            
             $wro->upload();
             
-            $model->editWRO($wro);
+            $dao->updateWRO($wro);
             
             $this->get('session')
                 ->getFlashBag()

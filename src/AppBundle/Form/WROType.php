@@ -10,7 +10,9 @@ class WROType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('wro_file', 'file', array('label' => 'WRO Bundle File', 'required' => true))
+            ->add('wro_file', 'file', array('label' => 'WRO Bundle File', 'required' => false))
+            ->add('title', 'text')
+            ->add('description', 'textarea')
             ->add('save', 'submit', array(
                     'label' => 'Save',
                     'icon' => 'glyphicon glyphicon-floppy-disk',

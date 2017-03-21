@@ -25,8 +25,10 @@ class WRODAO
         { 
             ?uri a ro:ResearchObject.
             ?uri dc:created ?createdAt.
-            ?uri dc:creator ?creator. 
+            ?uri dc:creator ?creator.             
             ?creator <foaf:name> ?name.
+            OPTIONAL { ?uri dc:description ?description. }
+            OPTIONAL { ?uri dc:title ?title. }
         }";
        
         $wros = $this->driver->getResults($query);
@@ -42,7 +44,17 @@ class WRODAO
             $creator->setUri($wros[$i]['creator']['value']);
             $creator->setName($wros[$i]['name']['value']);
             
-            $wro->setCreator($creator);                        
+            $wro->setCreator($creator);     
+            
+            if (array_key_exists('description', $wros[0]))
+            {
+                $wro->setDescription($wros[$i]['description']['value']);
+            }
+            
+            if (array_key_exists('title', $wros[0]))
+            {
+                $wro->setTitle($wros[$i]['title']['value']);
+            }
             
             $wro_array[] = $wro;
         } 
@@ -184,6 +196,29 @@ class WRODAO
         return $resource;
     }
     
+    public function updateWRO(\AppBundle\Entity\WRO $wro)
+    {        
+        $query = 
+        "MODIFY <".$this->driver->getDefaultGraph('wro').">
+        DELETE
+        {
+            <".$wro->getUri()."> dc:title ?title.
+            <".$wro->getUri()."> dc:title ?description.         
+        }
+        INSERT
+        {
+            <".$wro->getUri()."> dc:title '".$wro->getTitle()."'.
+            <".$wro->getUri()."> dc:description '".$wro->getDescription()."'.          
+        }
+        WHERE
+        {
+            OPTIONAL { <".$wro->getUri()."> dc:title ?title. }
+            OPTIONAL { <".$wro->getUri()."> dc:title ?description. }    
+        }";
+       
+        $this->driver->getResults($query);
+    }
+    
     public function findWRO($uri)
     {
         $query = 
@@ -191,8 +226,10 @@ class WRODAO
         { 
             <".$uri."> a ro:ResearchObject, wf4ever:WorkflowResearchObject.
             <".$uri."> dc:created ?createdAt.
-            <".$uri."> dc:creator ?creator. 
+            <".$uri."> dc:creator ?creator.            
             ?creator <foaf:name> ?name.
+            OPTIONAL { <".$uri."> dc:title ?title. }
+            OPTIONAL { <".$uri."> dc:title ?description. }
             OPTIONAL {  ?conversion <w2share:hasWorkflowResearchObject> <".$uri.">.
                         ?conversion <w2share:hash> ?hash 
                     }
@@ -210,6 +247,16 @@ class WRODAO
             $creator->setName($result_array[0]['name']['value']);
 
             $wro->setCreator($creator); 
+            
+            if (array_key_exists('description', $result_array[0]))
+            {
+                $wro->setDescription($result_array[0]['description']['value']);
+            }
+            
+            if (array_key_exists('title', $result_array[0]))
+            {
+                $wro->setTitle($result_array[0]['title']['value']);
+            }
             
             if (array_key_exists('conversion', $result_array[0]))
             {
