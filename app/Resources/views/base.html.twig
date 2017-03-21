@@ -75,16 +75,23 @@
           <ul class="nav navbar-nav">
             <li{% if get_controller_name() == 'default' and get_action_name() == 'homepage' %} class="active"{% endif %}><a href="{{ path('homepage') }}">Home</a></li>
             <li{% if get_controller_name() == 'scriptconverter' %} class="active"{% endif %}><a href="{{ path('script-converter') }}">Script Converter</a></li>
-            <li{% if get_controller_name() == 'wro' %} class="active"{% endif %}><a href="{{ path('wro-list') }}" title="Workflow Research Object">WRO</a></li>
-            <li{% if get_controller_name() == 'workflow' %} class="active"{% endif %}><a href="{{ path('workflow-list') }}">Workflows</a></li>
-            <li{% if get_controller_name() == 'provenance' %} class="active"{% endif %}><a href="{{ path('provenance-workflows-run') }}">Provenance</a></li>
-            <li class="dropdown{% if get_controller_name() == 'qualitydimension' %} active{% endif %}">
+            <li class="dropdown{% if get_controller_name() in ['wro','workflow','provenance'] %} active{% endif %}" title="Workflow Research Object">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    WRO <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">    
+                    <li{% if get_controller_name() == 'wro' %} class="active"{% endif %}><a href="{{ path('wro-list') }}">List</a></li>
+                    <li{% if get_controller_name() == 'workflow' %} class="active"{% endif %}><a href="{{ path('workflow-list') }}">Workflows</a></li>
+                    <li{% if get_controller_name() == 'provenance' %} class="active"{% endif %}><a href="{{ path('provenance-workflows-run') }}">Workflow Runs</a></li>
+                </ul>
+            </li>
+            <li class="dropdown{% if get_controller_name() in ['qualitymetric','qualityannotation','qualitydimension'] %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                   Quality Flow <span class="caret"></span>
               </a>
                <ul class="dropdown-menu">
-                <li><a href="{{ path('quality-dimension-list') }}">Quality Dimensions </a></li>
-                <li><a href="{{ path('quality-annotation-list') }}">Quality Annotations</a></li> 
+                <li{% if get_controller_name() == 'qualitydimension' %} class="active"{% endif %}><a href="{{ path('quality-dimension-list') }}">Quality Dimensions </a></li>
+                <li{% if get_controller_name() == 'qualityannotation' %} class="active"{% endif %}><a href="{{ path('quality-annotation-list') }}">Quality Annotations</a></li> 
               </ul>
             </li> 
             <li{% if get_controller_name() == 'default' and get_action_name() == 'about' %} class="active"{% endif %}><a href="{{ path('about') }}">About</a></li>

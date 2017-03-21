@@ -38,6 +38,7 @@ class WROResourceType extends AbstractType
             ->add('description', 'text', array('required' => true))
             ->add('type', 'choice', array(                    
                     'expanded' => false,
+                    'empty_value' => '',
                     'multiple' => false,
                     'choices' => $this->concepts)
                 ) 

@@ -101,12 +101,13 @@ class WRO
 
     public function removeUpload()
     {
-        \AppBundle\Utils\Utils::unlinkr($this->getUploadRootDir());               
+        //@\AppBundle\Utils\Utils::unlinkr($this->getUploadRootDir());               
+        @unlink($this->getWROScriptAbsolutePath());
     }
     
     public function getWROAbsolutePath()
     {
-        return $this->getUploadRootDir().'/wro-bundle.zip';
+        return $this->getUploadRootDir().'/../wro-bundle.zip';
     }
     
     public function getWROFileContent()
@@ -121,7 +122,7 @@ class WRO
     
     public function getWebPath()
     {
-        return $this->getUploadDir().'/wro-bundle.zip';
+        return $this->getUploadDir().'/../wro-bundle.zip';
     }
 
     public function getUploadRootDir()

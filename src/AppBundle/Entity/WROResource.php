@@ -2,8 +2,6 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * ROResource
  */
@@ -61,7 +59,7 @@ class WROResource
      * @return string 
      */
     public function getUri()
-    {
+    {                
         return $this->uri;
     }
 
@@ -202,6 +200,10 @@ class WROResource
      */
     public function getFilename()
     {
+        if (null == $this->filename)
+        {
+            return basename($this->getUri());
+        }
         return $this->filename;
     }
 

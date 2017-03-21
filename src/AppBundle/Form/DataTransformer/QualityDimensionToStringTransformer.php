@@ -48,8 +48,6 @@ class QualityDimensionToStringTransformer implements DataTransformerInterface
             ->findOneQualityDimension($uri)
         ;
         
-        echo 'oi';
-
         if (null === $obj) {
             // causes a validation error
             // this message is not shown to the user

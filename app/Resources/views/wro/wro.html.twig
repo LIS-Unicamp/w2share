@@ -55,7 +55,7 @@
             </td>
             <td>{{ resource.folder }}/{{ resource.filename }}</td> 
             <td>{{ resource.title }}</td>
-            <td>{{ resource.type }}</td>
+            <td>{{ resource.type|split('#')|last }}</td>
             <td>{{ resource.description }}</a></td>
         </tr>
     {% endfor %}

@@ -295,10 +295,8 @@ class WROController extends Controller
      */
     public function resetAction(Request $request)
     {                                   
-        $model = $this->get('model.wro'); 
-        $dao = $this->get('dao.wro');
-        $dao->clearGraph();
-        $model->clearUploads();
+        $model = $this->get('model.wro');         
+        $model->resetData();
                     
         return $this->redirect($this->generateUrl('wro-list'));
     }   

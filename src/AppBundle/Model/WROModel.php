@@ -128,6 +128,14 @@ class WROModel
         $dao->deleteWRO($wro);
     }
     
+    public function resetData()
+    {
+        $dao = $this->container->get('dao.wro');        
+        $dao->clearGraph();        
+        $dao->resetWROScriptConversion();
+        $this->clearUploads();        
+    }
+    
     public function clearUploads()
     {
         \AppBundle\Utils\Utils::unlinkr(__DIR__."/../../../web/uploads/documents/wro");
@@ -194,28 +202,31 @@ class WROModel
 
                 rm -rf ".'$ROBASE'."/test-create-RO/.ro
                     
-                rsync -aP --exclude=".'$ROBASE'." --exclude=create-wro.sh --exclude=debug.log --exclude=conversion.py --exclude=wf.gv . ".'$ROBASE'."/test-create-RO
+                rsync -aP --exclude=".'$ROBASE'." --exclude=".basename($wro->getWROAbsolutePath())." --exclude=create-wro.sh --exclude=debug.log --exclude=conversion.py --exclude=wf.gv . ".'$ROBASE'."/test-create-RO
 
                 ro create -v \"Reproducible WRO\" -d ".'$ROBASE'."/test-create-RO -i RO-id-testCreate
 
-                ro add -v -a ".'$ROBASE'."/test-create-RO -d ".'$ROBASE'."/test-create-RO\n";
+                ro add -v -a ".'$ROBASE'."/test-create-RO -d ".'$ROBASE'."/test-create-RO
+                
+                ro annotate -v ".'$ROBASE'."/test-create-RO/ rdf:type \"wf4ever:WorkflowResearchObject\"\n";
 
         foreach ($wro->getResources() as $resource)
         {
             $code .= "ro annotate -v ".'$ROBASE'."/test-create-RO/".$resource->getFolder()."/".$resource->getFilename()." rdf:type \"".$resource->getType()."\"\n";
             $code .= "ro annotate -v ".'$ROBASE'."/test-create-RO/".$resource->getFolder()."/".$resource->getFilename()." title \"".$resource->getDescription()."\"\n";
         }
-        $code .= 'cd '.$wro->getUploadRootDir().'
-                echo -n application/vnd.wf4ever.robundle+zip > '.$wro->getUploadRootDir().'/mimetype
+        $code .= 'cd '.$wro->getUploadRootDir().'/../
 
-                zip -0 -X '.$wro->getWROAbsolutePath().' mimetype  
-
-                zip -X -r '.$wro->getWROAbsolutePath().' . -x mimetype';
+                zip -X -r '.$wro->getWROAbsolutePath().' wro/*';
         
         $fs = new \Symfony\Component\Filesystem\Filesystem();    
         $fs->mkdir($wro->getUploadRootDir());
         $fs->dumpFile($wro->getWROScriptAbsolutePath(), $code);
-        $command = 'sh '.$wro->getWROScriptAbsolutePath().' > '.$wro->getUploadRootDir().'/debug.log 2>&1';
+        $command = 'sh '.$wro->getWROScriptAbsolutePath().' > '.$wro->getUploadRootDir().'/../debug.log 2>&1';
         shell_exec($command);
+        
+        unlink($wro->getWROScriptAbsolutePath());
+        \AppBundle\Utils\Utils::unlinkr($wro->getUploadRootDir());
+        $fs->mkdir($wro->getUploadRootDir());        
     }
 }

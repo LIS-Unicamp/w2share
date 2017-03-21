@@ -53,13 +53,17 @@ class WRODAO
     public function findAllResourcesByWRO(\AppBundle\Entity\WRO $wro)
     {
         $query = 
-        "SELECT * WHERE        
+        "SELECT DISTINCT ?resource ?type ?description ?title WHERE        
         { 
-            <".$wro->getUri()."> a ro:ResearchObject, wf4ever:WorkflowResearchObject.
-            <".$wro->getUri()."> ore:aggregates ?resource.
-            ?resource a ?type.
-            ?resource dc:description ?description.
-            ?resource dc:title ?title.
+            GRAPH <".$this->driver->getDefaultGraph('wro')."> 
+            { 
+                <".$wro->getUri()."> a ro:ResearchObject, wf4ever:WorkflowResearchObject.
+                <".$wro->getUri()."> ore:aggregates ?resource.
+                ?resource a ro:Resource, ?type.
+                FILTER ( ! regex(?type, \"Resource\", \"i\" ))
+                OPTIONAL { ?resource dc:description ?description. }
+                OPTIONAL { ?resource dc:title ?title. }
+            }
         }";
        
         $result_array = $this->driver->getResults($query);
@@ -90,13 +94,15 @@ class WRODAO
     public function findResource($uri)
     {
         $query = 
-        "SELECT * WHERE        
-        { 
-            ?wro a ro:ResearchObject, wf4ever:WorkflowResearchObject.
-            ?wro ore:aggregates <".$uri.">.
-            ?resource a ?type.
-            ?resource dc:description ?description.
-            ?resource dc:title ?title.
+        "SELECT * WHERE { 
+            GRAPH <".$this->driver->getDefaultGraph('wro')."> 
+            { 
+                ?wro a ro:ResearchObject, wf4ever:WorkflowResearchObject.
+                ?wro ore:aggregates <".$uri.">.
+                <".$uri."> a ro:Resource, ?type.
+                OPTIONAL { <".$uri."> dc:description ?description. }
+                OPTIONAL { <".$uri."> dc:title ?title. }
+            }
         }";
        
         $result_array = $this->driver->getResults($query);
@@ -130,16 +136,52 @@ class WRODAO
     public function updateResource(\AppBundle\Entity\WROResource $resource)
     {
         $query = 
-        "SELECT * WHERE        
-        { 
-            ?wro a ro:ResearchObject, wf4ever:WorkflowResearchObject.
-            ?wro ore:aggregates <".$uri.">.
-            ?resource a ?type.
+        "MODIFY <".$this->driver->getDefaultGraph('wro').">
+        DELETE
+        {
+            <".$resource->getWro()->getUri()."> ore:aggregates ?resource.
+            ?resource a ro:Resource, ?type.
             ?resource dc:description ?description.
             ?resource dc:title ?title.
+        }
+        INSERT
+        {             
+            <".$resource->getWro()->getUri()."> ore:aggregates <".$resource->getUri().">.
+            <".$resource->getUri()."> a ro:Resource, <".$resource->getType().">.
+            <".$resource->getUri()."> dc:description '".$resource->getDescription()."'.
+            <".$resource->getUri()."> dc:title '".$resource->getTitle()."'.
+        }
+        WHERE
+        {
+            <".$resource->getWro()->getUri()."> ore:aggregates ?resource.
+            ?resource a ro:Resource, ?type.
+            OPTIONAL { ?resource dc:description ?description. }
+            OPTIONAL { ?resource dc:title ?title. }
         }";
        
         $this->driver->getResults($query);
+    }
+    
+    public function addResource(\AppBundle\Entity\WROResource $resource)
+    {
+        $uri = \AppBundle\Utils\Utils::convertNameToUri('wro', '/'.$resource->getWro()->getHash().'/'.$resource->getFilename());
+        $resource->setUri($uri);        
+        
+        $query = 
+        "INSERT        
+        { 
+            GRAPH <".$this->driver->getDefaultGraph('wro')."> 
+            { 
+                <".$resource->getWro()->getUri()."> ore:aggregates <".$resource->getUri().">.
+                <".$resource->getUri()."> a ro:Resource, <".$resource->getType().">.
+                <".$resource->getUri()."> dc:description '".$resource->getDescription()."'.
+                <".$resource->getUri()."> dc:title '".$resource->getTitle()."'.
+            }
+        }";
+       
+        $this->driver->getResults($query);
+        
+        return $resource;
     }
     
     public function findWRO($uri)
@@ -279,7 +321,7 @@ class WRODAO
         }"; 
 
         return $this->driver->getResults($query);         
-    }        
+    } 
     
     /**
      * Delete triples related to a workflow URI
@@ -304,6 +346,19 @@ class WRODAO
             WHERE
             {
                ?subject ?property  <".$wro->getUri().">.  
+            }
+            ";  
+        $this->driver->getResults($query);               
+    }
+    
+    public function resetWROScriptConversion()
+    {
+        $query = "
+            DELETE FROM <".$this->driver->getDefaultGraph('scriptconverter')."> {
+                ?conversion <w2share:hasWorkflowResearchObject> ?wro.                
+            }
+            WHERE {
+                ?conversion <w2share:hasWorkflowResearchObject> ?wro.     
             }
             ";  
         $this->driver->getResults($query);               
