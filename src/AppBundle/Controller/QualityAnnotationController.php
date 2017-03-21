@@ -145,7 +145,7 @@ class QualityAnnotationController extends Controller
             $quality_dimension = $form->get('quality_dimension')->getData();
             $user = $this->getUser();
             
-            $model_annotation->insertQualityAnnotation($element_uri, $type, $quality_dimensions[$quality_dimension], $value, $user);
+            $model_annotation->insertQualityAnnotation($element_uri, $type, $quality_dimension, $value, $user);
             
             $this->get('session')
                 ->getFlashBag()

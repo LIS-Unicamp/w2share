@@ -12,7 +12,7 @@ class QualityAnnotationType extends AbstractType
     
     public function __construct($quality_dimensions)
     {
-        $this->quality_dimensions = $quality_dimensions;
+        $this->quality_dimensions = array_combine($quality_dimensions, $quality_dimensions);
     }
     
     public function buildForm(FormBuilderInterface $builder, array $options) 
@@ -20,8 +20,6 @@ class QualityAnnotationType extends AbstractType
         $builder
             ->add('quality_dimension', 'choice', array(                    
                     'expanded' => false,
-                    'empty_value' => '',
-                    'mapped' => false,  
                     'multiple' => false,
                     'choices' => $this->quality_dimensions,
                     'label'=>'Quality Dimension')) 

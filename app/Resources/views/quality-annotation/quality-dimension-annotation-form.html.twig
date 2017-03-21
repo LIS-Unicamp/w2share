@@ -32,12 +32,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         {{ form_label(form.quality_dimension) }}
-                        <select id="qualityannotation_quality_dimension" name="qualityannotation[quality_dimension]" required="required" class="form-control select">
-                            <option value=""></option>
-                            {% for qd in quality_dimensions %}
-                                <option value="{{ qd.uri }}" {% if qualityAnnotation.qualityDimension and qd.uri == qualityAnnotation.qualityDimension.uri %}selected="selected"{% endif %}>{{ qd.name }}</option>                            
-                            {% endfor %}
-                        </select>
+                        {{ form_widget(form.quality_dimension, { 'attr': { 'class':'form-control select' } }) }}
                         {{ form_errors(form.quality_dimension) }}
                     </div>
                 </div>
