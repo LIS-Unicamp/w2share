@@ -49,17 +49,7 @@ class QualityMetricController extends Controller
                 ->add('success', 'Quality metric added!');
         }
         
-        $quality_metrics = $model_qualitymetric->findQualityMetricsByDimension($qualitydimension_uri);
-
-        $paginator  = $this->get('knp_paginator');
-        $pagination = $paginator->paginate(
-            $quality_metrics, /* query NOT result */
-            $request->query->getInt('page', 1), /*page number*/
-            10 /*limit per page*/
-        );
-        
         return $this->render('quality-metric/form.html.twig', array(
-            'pagination' => $pagination,
             'form' => $form->createView(),
             'quality_dimension' => $quality_dimension,
             'qualityMetric' => $qualityMetric
@@ -133,8 +123,8 @@ class QualityMetricController extends Controller
                 ->getFlashBag()
                 ->add('success', 'Quality metric deleted!');
         }
-                
-        return $this->redirect($this->generateUrl('quality-metric-add', array('qualitydimension_uri' => urlencode($quality_dimension->getUri()))));
+             
+        return $this->redirect($this->generateUrl('quality-metric-dimension-list', array('qualitydimension_uri' => urlencode($quality_dimension->getUri()))));
         
     }
     
@@ -178,6 +168,50 @@ class QualityMetricController extends Controller
             'pagination' => $pagination,
             'form' => $form->createView()
         ));              
+    }
+    
+    /**
+     * @Route("/quality-metric/dimension/list/{qualitydimension_uri}", name="quality-metric-dimension-list")
+     */
+    public function listQualityMetricsByDimension(Request $request, $qualitydimension_uri) 
+    {
+        $qualitydimension_uri = urldecode($qualitydimension_uri);
+        $model_qualitymetric = $this->get('model.qualitymetric');
+        
+        $users = $model_qualitymetric->findUsersWithQualityMetrics();
+
+        $form = $this->createForm(new \AppBundle\Form\QualityMetricFilterType($users), null, array(
+            'action' => $this->generateUrl('quality-metric-dimension-list', array(
+                                                            'qualitydimension_uri' => urlencode($qualitydimension_uri))),
+            'method' => 'GET'
+        ));
+        
+        $form->handleRequest($request);             
+        $user_uri = $form->get('user')->getViewData();
+
+        if ($form->isSubmitted() && $user_uri) 
+        {                                    
+            $user = new \AppBundle\Entity\Person();
+            $user->setUri($user_uri);
+            $query = $model_qualitymetric->findQualityMetricsByUserAndDimension($user, $qualitydimension_uri);
+        }
+        else
+        {
+            $query = $model_qualitymetric->findQualityMetricsByDimension($qualitydimension_uri);
+        }
+
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+
+        return $this->render('quality-metric/list.html.twig', array(
+            'pagination' => $pagination,
+            'form' => $form->createView(),
+            'qualitydimension_uri' => $qualitydimension_uri
+        ));          
     }
     
     /**

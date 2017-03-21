@@ -15,7 +15,9 @@
     </div>            
 {% endfor %}
 <div class="row">
-    
+    <div class="col-md-1">
+        <a class="btn btn-success" href="{{ path('quality-metric-add', {'qualitydimension_uri':qualitydimension_uri|url_encode()} ) }}"><i class="glyphicon glyphicon-plus"></i> New</a>
+    </div>
     <div class="col-md-5 pull-right" id="filtrar">
         {{ form_start(form) }}
             <div class="row">                                
@@ -71,8 +73,8 @@
             <td>
                 <a href="{{ path('quality-metric-edit', { 'qualitymetric_uri':qualitymetric.uri|url_encode() }) }}" 
                         title="Edit quality metric"><i class="glyphicon glyphicon-edit"></i></a> 
-                <a href="{{ path('quality-metric-add', { 'qualitydimension_uri':qualitymetric.qualityDimension.uri|url_encode() }) }}" 
-                        title="Add quality metric" ><i class="glyphicon glyphicon-plus"></i></a> 
+                <a href="{{ path('quality-metric-delete', { 'qualitymetric_uri':qualitymetric.uri|url_encode() }) }}" 
+                        title="Delete quality metric" class="delete"><i class="glyphicon glyphicon-trash"></i></a> 
             </td>
             <td>{{ qualitymetric.qualityDimension.name }}</td>
             <td>{{ qualitymetric.metric }}</td>

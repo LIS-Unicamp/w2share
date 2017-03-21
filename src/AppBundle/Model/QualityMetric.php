@@ -54,7 +54,7 @@ class QualityMetric
     public function findQualityMetricsByDimension($uri)
     {
         $query = 
-        "SELECT * WHERE        
+        "SELECT DISTINCT ?uri ?metric ?description ?qdName ?creator ?creator_name WHERE        
         { 
             ?uri a <w2share:QualityMetric>.
             ?uri <w2share:metric> ?metric.
@@ -89,7 +89,7 @@ class QualityMetric
             $quality_metric_array[] = $qualityMetric;
             
         }
-        
+        //echo $query; exit;
         $this->driver->getResults($query); 
         
         return $quality_metric_array;
@@ -196,6 +196,48 @@ class QualityMetric
             
             $qualityDimension = new \AppBundle\Entity\QualityDimension();
             $qualityDimension->setUri($quality_metrics[$i]['qualityDimension']['value']);
+            $qualityDimension->setName($quality_metrics[$i]['qdName']['value']);
+            
+            $qualityMetric->setQualityDimension($qualityDimension);
+            
+            $quality_metric_array[] = $qualityMetric;
+        }
+        
+        return $quality_metric_array;
+    }
+    
+    public function findQualityMetricsByUserAndDimension($user, $qualitydimension_uri)
+    {
+        $query = 
+        "SELECT DISTINCT ?uri ?metric ?description ?qdName ?creator_name WHERE 
+        {            
+            ?uri a <w2share:QualityMetric>;
+            <w2share:metric> ?metric;
+            <rdfs:description> ?description;
+            <w2share:hasQualityDimension> <".$qualitydimension_uri.">.
+            <".$qualitydimension_uri."> <w2share:qdName> ?qdName.
+            ?uri <dc:creator> <".$user->getUri().">. 
+            <".$user->getUri()."> <foaf:name> ?creator_name.
+        }";
+        
+        $quality_metric_array = array();
+        $quality_metrics = $this->driver->getResults($query);                
+        
+        for ($i = 0; $i < count($quality_metrics); $i++)
+        {
+            $qualityMetric = new \AppBundle\Entity\QualityMetric();
+            $qualityMetric->setUri($quality_metrics[$i]['uri']['value']);
+            $qualityMetric->setMetric($quality_metrics[$i]['metric']['value']);
+            $qualityMetric->setDescription($quality_metrics[$i]['description']['value']);
+            
+            $creator = new \AppBundle\Entity\Person();
+            $creator->setUri($user->getUri());
+            $creator->setName($quality_metrics[$i]['creator_name']['value']);
+            
+            $qualityMetric->setCreator($creator);
+            
+            $qualityDimension = new \AppBundle\Entity\QualityDimension();
+            $qualityDimension->setUri($qualitydimension_uri);
             $qualityDimension->setName($quality_metrics[$i]['qdName']['value']);
             
             $qualityMetric->setQualityDimension($qualityDimension);

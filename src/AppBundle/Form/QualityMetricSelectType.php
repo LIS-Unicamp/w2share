@@ -5,7 +5,7 @@ namespace AppBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
+//Esta clase nao esta sendo utilizada. O formulario foi construido a mao!
 class QualityMetricSelectType extends AbstractType
 {
     protected $quality_metrics;
@@ -35,14 +35,10 @@ class QualityMetricSelectType extends AbstractType
         ;
     }
     
-    /**
-     * @param OptionsResolverInterface $resolver
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'csrf_protection'   => false,
-            'required' => false,
+            'data_class' => 'AppBundle\Entity\QualityMetric',
         ));
     }
     
@@ -51,6 +47,6 @@ class QualityMetricSelectType extends AbstractType
      */
     public function getName()
     {
-        return 'qualitymetric_annotation_select';
+        return 'qualitymetric_select';
     }
 }

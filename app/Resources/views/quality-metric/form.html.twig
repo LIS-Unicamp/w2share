@@ -2,7 +2,10 @@
 {% block title %}Add Quality Metric{% endblock %}
 {% block body %}
 
-<h1>Quality Dimension <button class="btn btn-xs copy" data-clipboard-text="{{ quality_dimension.uri }}"> <i class="glyphicon glyphicon-copy"></i></h1>
+    <h2>Quality Dimension <small>{% if qualityMetric.uri %}Edit{% else %}Add{% endif %}</small>
+        <button class="btn btn-xs copy" data-clipboard-text="{{ quality_dimension.uri }}"> <i class="glyphicon glyphicon-copy"></i></button>
+        
+</h2>
     
 <ul>
     <li><strong>Name:</strong> {{ quality_dimension.name }}</li>
@@ -45,50 +48,13 @@
     </div>
     <div class="panel-footer">        
         {{ form_widget(form.save) }}
-        <a href="{{ path('quality-metric-list') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
+        {% if qualityMetric.uri %} 
+            <a class="btn btn-success" href="{{ path('quality-metric-add', {'qualitydimension_uri':quality_dimension.uri|url_encode()} ) }}"><i class="glyphicon glyphicon-plus"></i> New</a>                     
+        {% endif %} 
+        <a href="{{ path('quality-metric-dimension-list', {'qualitydimension_uri':quality_dimension.uri|url_encode()} ) }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
     </div>    
 </div>
 {{ form_end(form) }}
-
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th style="width:100px">Action</th>
-                <th>Metric</th>
-                <th>Description</th>
-                <th>Author</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for qualitymetric in pagination %}
-                <tr>
-                    <td>
-                        <a href="{{ path('quality-metric-delete', { 'qualitymetric_uri':qualitymetric.uri|url_encode() }) }}" 
-                           title="Delete quality metric" class="delete"><i class="glyphicon glyphicon-trash"></i></a> 
-                        <a href="{{ path('quality-metric-edit', { 'qualitymetric_uri':qualitymetric.uri|url_encode() }) }}" 
-                           title="Edit quality metric"><i class="glyphicon glyphicon-edit"></i></a> 
-                    </td>
-                    <td>{{ qualitymetric.metric }}</td>
-                    <td>{{ qualitymetric.description }}</td>
-                    <td>{{ qualitymetric.creator.name }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div> 
-<div class="row">
-    <div class="col-sm-12">
-        <div class="navigation">
-            {{ knp_pagination_render(pagination) }}
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-12">
-        {{ app_pagination_render(pagination) }}
-    </div>
-</div>
     
 {% endblock %}  
 {% block javascripts %}
