@@ -59,7 +59,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th style="width:100px">Action</th>
+                <th style="width:120px">Action</th>
                 <th>Name</th>
                 <th>Description</th>
                 <th>Type</th>
@@ -73,6 +73,7 @@
                 <a href="{{ path('quality-dimension-edit', { 'qualitydimension_uri':qd.uri|url_encode }) }}" title="Edit quality dimension" ><i class="glyphicon glyphicon-edit"></i></a>
                 <a href="{{ path('quality-dimension-delete', { 'qualitydimension_uri':qd.uri|url_encode }) }}" title="Delete quality dimension " class="delete"><i class="glyphicon glyphicon-trash"></i></a>
                 <a href="{{ path('quality-metric-add', { 'qualitydimension_uri':qd.uri|url_encode() }) }}" title="Add a quality metric" ><i class="glyphicon glyphicon-plus"></i></a> 
+                <a href="{{ path('quality-metric-dimension-list', {'qualitydimension_uri':qd.uri|url_encode()} ) }}" title="List quality metrics"><i class="glyphicon glyphicon-list"></i></a>
             </td>
             <td>{{ qd.name }}</td>
             <td>{{ qd.description }}</a></td>
