@@ -134,13 +134,45 @@ class WROController extends Controller
     }        
     
     /**
+     * @Route("/wro/resource/add/{wro_uri}", name="wro-resource-add")
+     */
+    public function addResourceAction(Request $request, $wro_uri)
+    {             
+        $wro_uri = urldecode($wro_uri);
+        
+        $dao = $this->get('dao.wro');  
+        $wro = $dao->findWRO($wro_uri);
+        
+        $resource = new \AppBundle\Entity\WROResource();
+        $resource->setWro($wro);
+        
+        $form = $this->createForm(new \AppBundle\Form\WROResourceType(), $resource);
+        
+        $form->handleRequest($request);
+                
+        if ($form->isValid()) 
+        {                                                 
+            $dao->addResource($resource);
+            
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Resource created!')
+            ; 
+        }
+        
+        return $this->render('wro/resource-form.html.twig', array(
+            'form' => $form->createView(),
+            'resource' => $resource
+        ));
+    }
+    
+    /**
      * @Route("/wro/resource/edit/{resource_uri}", name="wro-resource-edit")
      */
     public function editResourceAction(Request $request, $resource_uri)
     {             
         $resource_uri = urldecode($resource_uri);
         
-        $model = $this->get('model.wro');                                   
         $dao = $this->get('dao.wro');                                   
         $resource = $dao->findResource($resource_uri);
         

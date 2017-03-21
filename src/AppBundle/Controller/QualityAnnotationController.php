@@ -122,20 +122,14 @@ class QualityAnnotationController extends Controller
         
         //Info from Quality dimension
         $model_qualitydimension = $this->get('model.qualitydimension'); 
-        $quality_dimensions = $model_qualitydimension->findAllQualityDimensions();
+        $quality_dimensions = $model_qualitydimension->findAllQualityDimensionsForm();
         
         //Annotation quality dimension and value
         $qualityAnnotation = new \AppBundle\Entity\QualityAnnotation();
         
         $model_annotation = $this->get('model.qualityannotation');
         
-        $form = $this->createForm(new \AppBundle\Form\QualityAnnotationType($quality_dimensions), $qualityAnnotation,
-                                  array(
-                                  'action' => $this->generateUrl('element-quality-dimension-annotation-add', 
-                                                                  array('element_uri' => urlencode($element_uri),
-                                                                        'type' => $type)),
-                                  'method' => 'POST'
-                                  ));
+        $form = $this->createForm(new \AppBundle\Form\QualityAnnotationType($quality_dimensions, $model_qualitydimension), $qualityAnnotation);
         
         $form->handleRequest($request);
         
@@ -174,7 +168,7 @@ class QualityAnnotationController extends Controller
                 
         //Info from Quality dimension
         $model_qualitydimension = $this->get('model.qualitydimension'); 
-        $quality_dimensions = $model_qualitydimension->findAllQualityDimensions();
+        $quality_dimensions = $model_qualitydimension->findAllQualityDimensionsForm();
                 
         $form = $this->createForm(new \AppBundle\Form\QualityAnnotationType($quality_dimensions), $qualityAnnotation);
         

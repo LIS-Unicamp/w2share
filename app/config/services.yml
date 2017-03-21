@@ -21,7 +21,7 @@ services:
         calls:
             - [setRequest, ["@?request="]]
         tags:
-            - { name: twig.extension }
+            - { name: twig.extension }            
         
     app.form.icon_button_extension:
         class: AppBundle\Form\Extension\IconButtonExtension

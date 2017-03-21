@@ -107,6 +107,26 @@ class QualityDimension
         return $quality_dimension_array;
     }
     
+    public function findAllQualityDimensionsForm() 
+    {
+        $query = 
+        "SELECT * WHERE 
+        {
+            ?uri a <w2share:QualityDimension>;
+            <w2share:qdName> ?name.
+        }";
+        
+        $quality_dimension_array = array();
+        $quality_dimensions = $this->driver->getResults($query);                
+        
+        for ($i = 0; $i < count($quality_dimensions); $i++)
+        {           
+            $quality_dimension_array[$quality_dimensions[$i]['uri']['value']] = $quality_dimensions[$i]['name']['value'];  
+        }
+        
+        return $quality_dimension_array;
+    }
+    
     /*
      * Find quality dimensions from an specific user
      */

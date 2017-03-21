@@ -1,9 +1,7 @@
 {% extends 'base.html.twig' %}
-{% block title %}{% if resource.uri %}Edit{% else %}New{% endif %} Workflow Research Object{% endblock %}
+{% block title %}{% if resource.uri %}Edit{% else %}New{% endif %} WRO Resource{% endblock %}
 {% block body %}
-<h1>WRO Resource<small>{% if resource.uri %}<button class="btn btn-xs copy" data-clipboard-text="{{ resource.uri }}">
-                <i class="glyphicon glyphicon-copy"></i>
-            </button> Edit{% else %}New{% endif %}</small></h1>
+<h1>WRO Resource<small> {% if resource.uri %}Edit{% else %}New{% endif %}</small></h1>
     
 {% for flashMessage in app.session.flashbag.get('success') %}
     <div class="alert alert-success">
@@ -29,16 +27,27 @@
             {{ form_errors(form.title) }}
         </div>
         <div class="form-group">
-            {{ form_label(form.title) }}
-            {{ form_widget(form.title, { 'attr': { 'class':'form-control' } }) }}
-            {{ form_errors(form.title) }}
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, { 'attr': { 'class':'form-control' } }) }}
+            {{ form_errors(form.description) }}
         </div> 
+        <div class="form-group">
+            {{ form_label(form.type) }}
+            {{ form_widget(form.type, { 'attr': { 'class':'form-control select' } }) }}
+            {{ form_errors(form.type) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.filename) }}
+            {{ form_widget(form.filename, { 'attr': { 'class':'form-control' } }) }}
+            {{ form_errors(form.filename) }}
+        </div>
     </div>
     <div class="panel-footer">            
         {{ form_widget(form.save) }}             
         {% if resource.uri %}
-            <a href="{{ path('wro-details', { 'wro_uri':resource.wro.uri|url_encode() }) }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-search"></i></a>                
+            <a href="{{ path('wro-resource-add', { 'wro_uri':resource.wro.uri|url_encode() }) }}" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> New</a>
         {% endif %}
+        <a href="{{ path('wro-details', { 'wro_uri':resource.wro.uri|url_encode() }) }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
     </div>
 </div>
 {{ form_end(form) }}                

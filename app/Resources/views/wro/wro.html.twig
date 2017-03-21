@@ -33,6 +33,7 @@
     </div>            
 {% endfor %}
 <h2>Resources</h2>
+<a href="{{ path('wro-resource-add', { 'wro_uri':wro.uri|url_encode() }) }}" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> New</a>
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
