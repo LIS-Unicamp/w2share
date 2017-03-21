@@ -170,7 +170,7 @@ class QualityAnnotationController extends Controller
         $model_qualitydimension = $this->get('model.qualitydimension'); 
         $quality_dimensions = $model_qualitydimension->findAllQualityDimensionsForm();
                 
-        $form = $this->createForm(new \AppBundle\Form\QualityAnnotationType($quality_dimensions), $qualityAnnotation);
+        $form = $this->createForm(new \AppBundle\Form\QualityAnnotationType($quality_dimensions, $model_qualitydimension), $qualityAnnotation);
         
         $form->handleRequest($request);
                 
