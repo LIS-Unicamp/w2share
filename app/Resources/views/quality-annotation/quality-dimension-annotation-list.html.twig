@@ -59,8 +59,8 @@
                                 {% if annotation.qualityMetricAnnotation %}
                                 <tr>
                                     <td> 
-                                        <a href="{{ path('quality-metric-delete', {'qualitymetric_uri':annotation.qualityMetricAnnotation.qualityMetric.uri|url_encode()} ) }}" title="Delete quality metric" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
-                                        <a href="{{ path('quality-metric-edit', {'qualitymetric_uri':annotation.qualityMetricAnnotation.qualityMetric.uri|url_encode()} ) }}" title="Edit quality metric"><i class="glyphicon glyphicon-edit"></i></a>
+                                        <a href="{{ path('quality-metric-annotation-delete', {'element_uri':element_uri|url_encode(), 'annotation_uri': annotation.uri|url_encode(), 'type': type} ) }}" title="Delete quality metric" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
+                                        <a href="{{ path('quality-metric-annotation-edit', {'element_uri':element_uri|url_encode(), 'annotation_uri': annotation.uri|url_encode(), 'type': type} ) }}" title="Edit quality metric"><i class="glyphicon glyphicon-edit"></i></a>
                                     </td>
                                     <td>{{ annotation.qualityMetricAnnotation.qualityMetric.metric }}</td>
                                     <td>{{ annotation.qualityMetricAnnotation.qualityMetric.description }}</td>

@@ -417,7 +417,7 @@ class QualityAnnotation
     
     public function deleteQualityAnnotation(\AppBundle\Entity\QualityAnnotation $qualityAnnotation)
     { 
-        $element_uri = $qualityAnnotation->getElementUri();
+       $element_uri = $qualityAnnotation->getElementUri();
         
        $query = 
         "DELETE data FROM <".$this->driver->getDefaultGraph('qualitydimension-annotation')."> 
@@ -459,6 +459,108 @@ class QualityAnnotation
         }";
         
         return $this->driver->getResults($query);    
+    }
+    
+    public function findQualityMetricAnnotation($uri)
+    {
+        $query = 
+        "SELECT DISTINCT ?qualityDimension ?qdName ?body ?metric_uri ?result ?metric 
+            ?description ?creator ?creator_name 
+         WHERE        
+        { 
+            <".$uri."> a w2share:QualityAnnotation.
+            <".$uri."> w2share:hasQualityDimension ?qualityDimension.
+            ?qualityDimension <w2share:qdName> ?qdName.
+            <".$uri."> oa:hasBody ?body.
+                ?body w2share:hasQualityMetric ?metric_uri. 
+                ?body w2share:hasQualityMetricResult ?result.
+                ?metric_uri <w2share:metric> ?metric.
+                ?metric_uri <rdfs:description> ?description. 
+                ?metric_uri <dc:creator> ?creator.
+                ?creator <foaf:name> ?creator_name.
+        }";   
+       
+        $quality_metric_annotation = $this->driver->getResults($query);
+        
+        $qualityMetricAnnotation = new \AppBundle\Entity\QualityMetricAnnotation();
+        $qualityMetric = new \AppBundle\Entity\QualityMetric();
+        
+        $qualityMetricAnnotation->setUri($uri);
+        
+        if (count($quality_metric_annotation) > 0) 
+        {
+            $qualityMetric = new \AppBundle\Entity\QualityMetric();
+            $qualityMetric->setUri($quality_metric_annotation[0]['metric_uri']['value']);
+            $qualityMetric->setMetric($quality_metric_annotation[0]['metric']['value']);
+            $qualityMetric->setDescription($quality_metric_annotation[0]['description']['value']);
+            
+            $creator = new \AppBundle\Entity\Person();
+            $creator->setUri($quality_metric_annotation[0]['creator']['value']);
+            $creator->setName($quality_metric_annotation[0]['creator_name']['value']);
+            
+            $qualityMetric->setCreator($creator);
+            
+            $qualityDimension = new \AppBundle\Entity\QualityDimension();
+            $qualityDimension->setUri($quality_metric_annotation[0]['qualityDimension']['value']);
+            $qualityDimension->setName($quality_metric_annotation[0]['qdName']['value']);
+            
+            $qualityMetric->setQualityDimension($qualityDimension);
+            
+            $qualityMetricAnnotation->setQualityMetric($qualityMetric);
+            $qualityMetricAnnotation->setResult($quality_metric_annotation[0]['result']['value']);
+                    
+            
+            return $qualityMetricAnnotation;
+        } 
+        
+        return null;
+    }
+    
+    public function updateQualityMetricAnnotation(\AppBundle\Entity\QualityMetricAnnotation $qualityMetricAnnotation, $user) 
+    {   
+        $now = new \DateTime();
+        $query = 
+        "   MODIFY <".$this->driver->getDefaultGraph('qualitymetric-annotation')."> 
+            DELETE 
+            { 
+                <".$qualityMetricAnnotation->getUri()."> a w2share:QualityAnnotation.
+                <".$qualityMetricAnnotation->getUri()."> oa:hasBody ?body.
+                    ?body w2share:hasQualityMetric <".$qualityMetricAnnotation->getQualityMetric()->getUri().">. 
+                    ?body w2share:hasQualityMetricResult ?result.
+            }
+            INSERT        
+            { 
+                <".$qualityMetricAnnotation->getUri()."> a w2share:QualityAnnotation;
+                oa:hasBody [ 
+                             w2share:hasQualityMetric <".$qualityMetricAnnotation->getQualityMetric()->getUri()."> ;
+                             w2share:hasQualityMetricResult '".$qualityMetricAnnotation->getResult()."' ].   
+                <".$qualityMetricAnnotation->getUri()."> oa:annotatedAt \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\".
+                <".$qualityMetricAnnotation->getUri()."> oa:annotatedBy <".$user->getUri().">. 
+            }
+            WHERE 
+            { 
+                <".$qualityMetricAnnotation->getUri()."> a w2share:QualityAnnotation.
+                <".$qualityMetricAnnotation->getUri()."> oa:hasBody ?body.
+                    ?body w2share:hasQualityMetric <".$qualityMetricAnnotation->getQualityMetric()->getUri().">. 
+                    ?body w2share:hasQualityMetricResult ?result.
+            }";
+        
+        return $this->driver->getResults($query);  
+    }
+    //TODO-ainda nao esta funcionando
+    public function deleteQualityMetricAnnotation(\AppBundle\Entity\QualityMetricAnnotation $qualityMetricAnnotation)
+    {
+       $query = 
+        "DELETE data FROM <".$this->driver->getDefaultGraph('qualitymetric-annotation')."> 
+            {
+                <".$qualityMetricAnnotation->getUri()."> a w2share:QualityAnnotation.
+                <".$qualityMetricAnnotation->getUri()."> oa:hasBody ?body.
+                    ?body w2share:hasQualityMetric <".$qualityMetricAnnotation->getQualityMetric()->getUri().">. 
+                    ?body w2share:hasQualityMetricResult ?result.
+            }";
+       echo $query;
+        
+        return $this->driver->getResults($query, true);
     }
     
 }

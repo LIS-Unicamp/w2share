@@ -293,4 +293,63 @@ class QualityAnnotationController extends Controller
                         )));        
     }  
     
+    /**
+     * @Route("/annotation/quality-metric/edit/{element_uri}/{annotation_uri}/{type}", name="quality-metric-annotation-edit")
+     */
+    public function editQualityMetricAnnotationAction(Request $request, $element_uri, $annotation_uri, $type)
+    {     
+        $annotation_uri = urldecode($annotation_uri);
+        $element_uri = urldecode($element_uri);
+        
+        $model_qualitymetric_annotation = $this->get('model.qualityannotation'); 
+        
+        $quality_metric_annotation = $model_qualitymetric_annotation->findQualityMetricAnnotation($annotation_uri);
+        
+        $form = $this->createForm(new \AppBundle\Form\QualityMetricAnnotationType(), $quality_metric_annotation);
+        
+        $form->handleRequest($request);
+        
+        if ($form->isValid()) 
+        {   
+            $user = $this->getUser();
+            $model_qualitymetric_annotation->updateQualityMetricAnnotation($quality_metric_annotation, $user); //TODO
+            
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Quality metric annotation edited!')
+            ;
+        }
+        
+        return $this->render('quality-annotation/quality-metric-annotation-form.html.twig', array(
+            'form' => $form->createView(),
+            'qualityMetricAnnotation' => $model_qualitymetric_annotation,
+            'element_uri' => $element_uri,
+            'type' => $type
+        )); 
+    }
+    
+    /**
+     * @Route("/annotation/quality-metric/delete/{element_uri}/{annotation_uri}/{type}", name="quality-metric-annotation-delete")
+     */
+    public function removeQualityMetricAnnotationAction(Request $request, $element_uri, $annotation_uri, $type)
+    {
+        $annotation_uri = urldecode($annotation_uri);
+        $element_uri = urldecode($element_uri);
+        
+        $model_qualitymetric_annotation = $this->get('model.qualityannotation'); 
+        
+        $quality_metric_annotation = $model_qualitymetric_annotation->findQualityMetricAnnotation($annotation_uri);
+
+        if ($quality_metric_annotation)
+        {   echo $quality_metric_annotation->getUri();   
+        
+            $model_qualitymetric_annotation->deleteQualityMetricAnnotation($quality_metric_annotation);
+            
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Quality Metric annotation deleted!');            
+        } 
+        
+        return $this->redirect($this->generateUrl('element-quality-dimension-annotation-list', array('type'=>$type, 'element_uri'=> urlencode($element_uri)))); 
+    }
 }
