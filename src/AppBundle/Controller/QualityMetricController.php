@@ -248,7 +248,7 @@ class QualityMetricController extends Controller
         $model_qualitymetric = $this->get('model.qualitymetric');         
         $model_qualitymetric->clearGraph();          
                     
-        return $this->redirect($this->generateUrl('quality-metric-list'));
+        return $this->redirect($this->generateUrl('quality-dimension-list'));
     }
     
 }
