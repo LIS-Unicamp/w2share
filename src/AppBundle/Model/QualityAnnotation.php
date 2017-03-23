@@ -479,7 +479,7 @@ class QualityAnnotation
                 ?metric_uri <dc:creator> ?creator.
                 ?creator <foaf:name> ?creator_name.
         }";   
-       
+        
         $quality_metric_annotation = $this->driver->getResults($query);
         
         $qualityMetricAnnotation = new \AppBundle\Entity\QualityMetricAnnotation();
@@ -547,20 +547,21 @@ class QualityAnnotation
         
         return $this->driver->getResults($query);  
     }
-    //TODO-ainda nao esta funcionando
+    
     public function deleteQualityMetricAnnotation(\AppBundle\Entity\QualityMetricAnnotation $qualityMetricAnnotation)
     {
        $query = 
-        "DELETE data FROM <".$this->driver->getDefaultGraph('qualitymetric-annotation')."> 
+        "DELETE WHERE {
+            GRAPH <".$this->driver->getDefaultGraph('qualitymetric-annotation')."> 
             {
                 <".$qualityMetricAnnotation->getUri()."> a w2share:QualityAnnotation.
                 <".$qualityMetricAnnotation->getUri()."> oa:hasBody ?body.
-                    ?body w2share:hasQualityMetric <".$qualityMetricAnnotation->getQualityMetric()->getUri().">. 
+                    ?body w2share:hasQualityMetric ?metric. 
                     ?body w2share:hasQualityMetricResult ?result.
-            }";
-       echo $query;
+            }
+        }";
         
-        return $this->driver->getResults($query, true);
+        $this->driver->getResults($query);
     }
     
 }

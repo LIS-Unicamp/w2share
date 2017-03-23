@@ -89,7 +89,7 @@ class QualityMetric
             $quality_metric_array[] = $qualityMetric;
             
         }
-        //echo $query; exit;
+        
         $this->driver->getResults($query); 
         
         return $quality_metric_array;

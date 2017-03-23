@@ -3,8 +3,12 @@
 {% block body %}
 
 <h2>Quality Metric Annotation <small>Edit</small>
-        <button class="btn btn-xs copy" data-clipboard-text=""> <i class="glyphicon glyphicon-copy"></i></button>       
+        <button class="btn btn-xs copy" data-clipboard-text="{{qualityMetricAnnotation.qualityMetric.uri}}"> <i class="glyphicon glyphicon-copy"></i></button>       
 </h2>
+<ul>
+    <li><strong>Metric:</strong> {{ qualityMetricAnnotation.qualityMetric.metric }}</li>
+    <li><strong>Description:</strong> {{ qualityMetricAnnotation.qualityMetric.description }}</li>
+</ul>
 
 {% for flashMessage in app.session.flashbag.get('success') %}
     <div class="alert alert-success">
@@ -35,7 +39,7 @@
     </div>
     <div class="panel-footer">        
         {{ form_widget(form.save) }}
-        <a href="{{ path('element-quality-dimension-annotation-list', {'element_uri':element_uri|url_encode(), 'type':type} ) }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> Return to Quality Annotation</a>
+        <a href="{{ path('element-quality-dimension-annotation-list', {'element_uri':element_uri|url_encode(), 'type':type} ) }}" class="btn btn-info"><i class="fa fa-arrow-left"></i> Return to Quality Annotation</a>
     </div>    
 </div>
 {{ form_end(form) }}

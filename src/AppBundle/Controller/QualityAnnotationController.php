@@ -312,7 +312,7 @@ class QualityAnnotationController extends Controller
         if ($form->isValid()) 
         {   
             $user = $this->getUser();
-            $model_qualitymetric_annotation->updateQualityMetricAnnotation($quality_metric_annotation, $user); //TODO
+            $model_qualitymetric_annotation->updateQualityMetricAnnotation($quality_metric_annotation, $user);
             
             $this->get('session')
                 ->getFlashBag()
@@ -322,7 +322,7 @@ class QualityAnnotationController extends Controller
         
         return $this->render('quality-annotation/quality-metric-annotation-form.html.twig', array(
             'form' => $form->createView(),
-            'qualityMetricAnnotation' => $model_qualitymetric_annotation,
+            'qualityMetricAnnotation' => $quality_metric_annotation,
             'element_uri' => $element_uri,
             'type' => $type
         )); 

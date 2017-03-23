@@ -13,10 +13,8 @@ class QualityMetricAnnotationType extends AbstractType
      * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options) 
-    {   //Como faco para acessar ao objeto no builder. Por exemplo, qualityMetric.metric
+    {   
         $builder
-           // ->add('qualityMetric.metric', 'text', array('label' => 'Metric'))
-            //->add('quality_metric', 'textarea', array('label' => 'Description'))
             ->add('result', 'text', array('label' => 'Result'))
             ->add('save', 'submit', array(
                     'label' => 'Save',
