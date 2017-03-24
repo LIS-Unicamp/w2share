@@ -43,7 +43,7 @@
                     <td>{{ annotation.qualityDimension.name }}</td>
                     <td>{{ annotation.value }}</td>
                     <td>{{ annotation.creator }}</td>
-                    <td>{{ annotation.createdAtTime }}</td>
+                    <td>{{ annotation.createdAtTime|date('H:i:s.v m-d-Y') }}</td>
                 </tr>
                 <tr>
                     <td colspan="5">
@@ -66,7 +66,7 @@
                                     </td>
                                     <td>{{ annotation.qualityMetricAnnotation.qualityMetric.metric }}</td>
                                     <td>{{ annotation.qualityMetricAnnotation.qualityMetric.description }}</td>
-                                    <td> <a href=""> <i class="glyphicon glyphicon-play-circle"></i></a> </td>
+                                    <td>  </td>
                                     <td>{{ annotation.qualityMetricAnnotation.result }}</td>
                                 </tr>
                                 {% else %}
