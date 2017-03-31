@@ -83,7 +83,7 @@ class QualityAnnotation
     {
         $query = 
         "SELECT DISTINCT ?uri ?qualityDimension ?qdValue ?qdName 
-                         ?creator ?metric_uri ?result ?metric ?description ?creator_name 
+                         ?creator ?metric_uri ?result ?metric ?description ?creator_name ?creation_date
          WHERE        
         { 
             ?uri a w2share:QualityAnnotation.
@@ -93,6 +93,7 @@ class QualityAnnotation
             ?qualityDimension <w2share:qdName> ?qdName.
             ?uri oa:annotatedBy ?creator.
             ?creator <foaf:name> ?creator_name.
+            ?uri oa:annotatedAt ?creation_date.
             OPTIONAL {  ?uri oa:hasBody ?body.
                         ?body w2share:hasQualityMetric ?metric_uri. 
                         ?body w2share:hasQualityMetricResult ?result.
@@ -142,6 +143,7 @@ class QualityAnnotation
             $creator->setName($quality_annotations[$i]['creator_name']['value']);
 
             $qualityAnnotation->setCreator($creator);
+            $qualityAnnotation->setCreatedAtTime($quality_annotations[$i]['creation_date']['value']);
             
             $quality_annotation_array[] = $qualityAnnotation;  
         }
@@ -449,12 +451,12 @@ class QualityAnnotation
         { 
             GRAPH <".$this->driver->getDefaultGraph('qualitymetric-annotation')."> 
             { 
-                <".$uri."> a w2share:QualityAnnotation;
+                <".$uri."> 
                 oa:hasBody [ 
-                             w2share:hasQualityMetric <".$qualityMetric->getUri()."> ;
-                             w2share:hasQualityMetricResult '".$result."' ].
-                <".$uri."> oa:annotatedAt \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\".
-                <".$uri."> oa:annotatedBy <".$user->getUri().">. 
+                            w2share:hasQualityMetric <".$qualityMetric->getUri()."> ;
+                            w2share:hasQualityMetricResult '".$result."';
+                            oa:annotatedAt \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\"; 
+                            oa:annotatedBy <".$user->getUri().">].
             }
         }";
         
@@ -468,16 +470,15 @@ class QualityAnnotation
             ?description ?creator ?creator_name 
          WHERE        
         { 
-            <".$uri."> a w2share:QualityAnnotation.
             <".$uri."> w2share:hasQualityDimension ?qualityDimension.
             ?qualityDimension <w2share:qdName> ?qdName.
             <".$uri."> oa:hasBody ?body.
                 ?body w2share:hasQualityMetric ?metric_uri. 
                 ?body w2share:hasQualityMetricResult ?result.
-                ?metric_uri <w2share:metric> ?metric.
-                ?metric_uri <rdfs:description> ?description. 
-                ?metric_uri <dc:creator> ?creator.
-                ?creator <foaf:name> ?creator_name.
+            ?metric_uri <w2share:metric> ?metric.
+            ?metric_uri <rdfs:description> ?description. 
+            ?metric_uri <dc:creator> ?creator.
+            ?creator <foaf:name> ?creator_name.
         }";   
         
         $quality_metric_annotation = $this->driver->getResults($query);
@@ -523,23 +524,20 @@ class QualityAnnotation
         "   MODIFY <".$this->driver->getDefaultGraph('qualitymetric-annotation')."> 
             DELETE 
             { 
-                <".$qualityMetricAnnotation->getUri()."> a w2share:QualityAnnotation.
                 <".$qualityMetricAnnotation->getUri()."> oa:hasBody ?body.
                     ?body w2share:hasQualityMetric <".$qualityMetricAnnotation->getQualityMetric()->getUri().">. 
                     ?body w2share:hasQualityMetricResult ?result.
             }
             INSERT        
             { 
-                <".$qualityMetricAnnotation->getUri()."> a w2share:QualityAnnotation;
-                oa:hasBody [ 
+                <".$qualityMetricAnnotation->getUri()."> oa:hasBody [ 
                              w2share:hasQualityMetric <".$qualityMetricAnnotation->getQualityMetric()->getUri()."> ;
-                             w2share:hasQualityMetricResult '".$qualityMetricAnnotation->getResult()."' ].   
-                <".$qualityMetricAnnotation->getUri()."> oa:annotatedAt \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\".
-                <".$qualityMetricAnnotation->getUri()."> oa:annotatedBy <".$user->getUri().">. 
+                             w2share:hasQualityMetricResult '".$qualityMetricAnnotation->getResult()."';
+                             oa:annotatedAt \"".$now->format('Y-m-d')."T".$now->format('H:i:s')."Z\"; 
+                             oa:annotatedBy <".$user->getUri().">].  
             }
             WHERE 
             { 
-                <".$qualityMetricAnnotation->getUri()."> a w2share:QualityAnnotation.
                 <".$qualityMetricAnnotation->getUri()."> oa:hasBody ?body.
                     ?body w2share:hasQualityMetric <".$qualityMetricAnnotation->getQualityMetric()->getUri().">. 
                     ?body w2share:hasQualityMetricResult ?result.
@@ -554,7 +552,6 @@ class QualityAnnotation
         "DELETE WHERE {
             GRAPH <".$this->driver->getDefaultGraph('qualitymetric-annotation')."> 
             {
-                <".$qualityMetricAnnotation->getUri()."> a w2share:QualityAnnotation.
                 <".$qualityMetricAnnotation->getUri()."> oa:hasBody ?body.
                     ?body w2share:hasQualityMetric ?metric. 
                     ?body w2share:hasQualityMetricResult ?result.

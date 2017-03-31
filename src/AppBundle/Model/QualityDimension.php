@@ -39,7 +39,8 @@ class QualityDimension
             }
         }"; 
 
-        return $this->driver->getResults($query);        
+        return $this->driver->getResults($query);    
+        
     }
     
     public function findOneQualityDimension($uri) 
@@ -112,8 +113,11 @@ class QualityDimension
         $query = 
         "SELECT * WHERE 
         {
-            ?uri a <w2share:QualityDimension>;
-            <w2share:qdName> ?name.
+            GRAPH <".$this->driver->getDefaultGraph('qualitydimension')."> 
+            {
+                ?uri a <w2share:QualityDimension>;
+                <w2share:qdName> ?name.
+            }
         }";
         
         $quality_dimension_array = array();
