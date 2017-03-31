@@ -341,8 +341,7 @@ class QualityAnnotationController extends Controller
         $quality_metric_annotation = $model_qualitymetric_annotation->findQualityMetricAnnotation($annotation_uri);
 
         if ($quality_metric_annotation)
-        {   echo $quality_metric_annotation->getUri();   
-        
+        {              
             $model_qualitymetric_annotation->deleteQualityMetricAnnotation($quality_metric_annotation);
             
             $this->get('session')
