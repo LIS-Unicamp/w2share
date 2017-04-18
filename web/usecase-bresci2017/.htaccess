@@ -1,0 +1,4 @@
+# see: https://websiteadvantage.com.au/HtAccess-301-Redirect-Generator#heading-ToolResult
+Options +FollowSymLinks
+RewriteEngine on
+RewriteRule ^$ http://w2share.lis.ic.unicamp.br/wro/details/http\%3A\%2F\%2Fwww.lis.ic.unicamp.br\%2Fw2share\%2Fworkflow-research-object\%2F4958d9723ff39ea25e7a710f0e87465355edfe3f? [R=302,L]

@@ -1,0 +1,3 @@
+Options +FollowSymLinks
+RewriteEngine on
+RewriteRule ^quality-flow.owl$ http://w2share.lis.ic.unicamp.br/images/qualityflow-ontology.png [R=302,L]
