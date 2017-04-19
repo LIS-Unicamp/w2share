@@ -112,6 +112,7 @@ class WRODAO
                 ?wro a ro:ResearchObject, wf4ever:WorkflowResearchObject.
                 ?wro ore:aggregates <".$uri.">.
                 <".$uri."> a ro:Resource, ?type.
+                FILTER ( ! regex(?type, \"Resource\", \"i\" ))
                 OPTIONAL { <".$uri."> dc:description ?description. }
                 OPTIONAL { <".$uri."> dc:title ?title. }
             }
@@ -151,22 +152,19 @@ class WRODAO
         "MODIFY <".$this->driver->getDefaultGraph('wro').">
         DELETE
         {
-            <".$resource->getWro()->getUri()."> ore:aggregates ?resource.
-            ?resource a ro:Resource, ?type.
-            ?resource dc:description ?description.
-            ?resource dc:title ?title.
+            <".$resource->getUri()."> a ro:Resource, ?type.
+            <".$resource->getUri()."> dc:description ?description.
+            <".$resource->getUri()."> dc:title ?title.
         }
         INSERT
         {             
-            <".$resource->getWro()->getUri()."> ore:aggregates <".$resource->getUri().">.
             <".$resource->getUri()."> a ro:Resource, <".$resource->getType().">.
             <".$resource->getUri()."> dc:description '".$resource->getDescription()."'.
             <".$resource->getUri()."> dc:title '".$resource->getTitle()."'.
         }
         WHERE
         {
-            <".$resource->getWro()->getUri()."> ore:aggregates ?resource.
-            ?resource a ro:Resource, ?type.
+            <".$resource->getUri()."> a ro:Resource, ?type.
             OPTIONAL { ?resource dc:description ?description. }
             OPTIONAL { ?resource dc:title ?title. }
         }";
@@ -347,7 +345,7 @@ class WRODAO
                 $query .= "<".$wro->getUri()."> ore:aggregates <".$resource->getFilename().">.\n"; 
                 $query .= "<".$resource->getFilename()."> dc:description '".$resource->getDescription()."'.\n";
                 $query .= "<".$resource->getFilename()."> dc:title '".$resource->getTitle()."'.\n";
-                $query .= "<".$resource->getFilename()."> a ".$resource->getType().".\n";
+                $query .= "<".$resource->getFilename()."> a ro:Resource, ".$resource->getType().".\n";
             }
             
         $query .= "   }

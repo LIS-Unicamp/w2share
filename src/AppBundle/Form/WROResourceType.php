@@ -48,6 +48,8 @@ class WROResourceType extends AbstractType
                     'attr' => array('class' => 'btn btn-primary')
                 ))
         ;
+        
+        $builder->get('type')->addModelTransformer(new DataTransformer\TypeToStringTransformer());
     }
 
     public function configureOptions(OptionsResolver $resolver)

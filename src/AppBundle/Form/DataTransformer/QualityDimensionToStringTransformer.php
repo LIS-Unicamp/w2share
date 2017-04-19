@@ -1,8 +1,6 @@
 <?php
 namespace AppBundle\Form\DataTransformer;
 
-use AppBundle\Entity\Issue;
-use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 

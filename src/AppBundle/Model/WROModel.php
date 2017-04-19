@@ -107,8 +107,7 @@ class WROModel
     }
     
     private function unzipWROBundle(\AppBundle\Entity\WRO $wro)
-    {
-            
+    {            
         $zip = new \ZipArchive; 
         if ($zip->open($wro->getWROAbsolutePath()))
         { 
@@ -180,8 +179,7 @@ class WROModel
             
             $file_path = $conversion->getAbstractWorkflowFilepath();
             $wro->addResourceBuilder(basename($file_path), basename($file_path), '', 'Workflow-like view of the script', 'wf4ever:Image');
-        }
-        
+        }        
     }        
     
     public function createWROScript(\AppBundle\Entity\WRO $wro)

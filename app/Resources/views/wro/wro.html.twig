@@ -11,7 +11,8 @@
 <h1>WRO<small>
             <button class="btn btn-xs copy" data-clipboard-text="{{ wro.uri }}">
                 <i class="glyphicon glyphicon-copy"></i>
-            </button>           
+            </button>
+            <a href="{{ path('wro-download', { 'wro_uri':wro.uri|url_encode() }) }}" title="Download WRO"><i class="glyphicon glyphicon-download"></i></a>
         </small>
 </h1>
 <ul>
