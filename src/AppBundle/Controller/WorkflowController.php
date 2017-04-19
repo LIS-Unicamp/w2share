@@ -36,7 +36,7 @@ class WorkflowController extends Controller
     {                
         $workflow = new \AppBundle\Entity\Workflow();
         
-        $form = $this->createForm(new \AppBundle\Form\WorkflowType(), $workflow, array(
+        $form = $this->createForm(new \AppBundle\Form\WorkflowAddType(), $workflow, array(
             'action' => $this->generateUrl('workflow-add'),
             'method' => 'POST'
         ));
@@ -57,7 +57,7 @@ class WorkflowController extends Controller
             return $this->redirect($this->generateUrl('workflows'));
         }
         
-        return $this->render('workflow/form.html.twig', array(
+        return $this->render('workflow/form-add.html.twig', array(
             'form' => $form->createView(),
             'workflow' => $workflow
         ));
@@ -108,13 +108,12 @@ class WorkflowController extends Controller
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Workflow not found!');
         }
         
-        $form = $this->createForm(new \AppBundle\Form\WorkflowType(), $workflow);
+        $form = $this->createForm(new \AppBundle\Form\WorkflowEditType(), $workflow);
         
         $form->handleRequest($request);
                 
         if ($form->isValid()) 
         {                                     
-            $workflow->preUpload();            
             $workflow->upload();
             
             $model = $this->get('model.workflow'); 
@@ -126,7 +125,7 @@ class WorkflowController extends Controller
             ; 
         }
         
-        return $this->render('workflow/form.html.twig', array(
+        return $this->render('workflow/form-edit.html.twig', array(
             'form' => $form->createView(),
             'workflow' => $workflow
         ));
@@ -191,6 +190,45 @@ class WorkflowController extends Controller
     }
     
     /**
+     * @Route("/workflow/process/edit/{process_uri}", name="workflow-process-edit")
+     */
+    public function editWorkflowProcessAction(Request $request, $process_uri)
+    {             
+        $process_uri = urldecode($process_uri);
+        
+        $model = $this->get('model.workflow');                                   
+        $process = $model->findProcess($process_uri);
+        
+        if (null === $process)
+        {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Process not found!');
+        }
+        
+        $workflow = $model->findWorkflow($process->getWorkflow()->getUri());
+        $process->setWorkflow($workflow);
+        
+        $form = $this->createForm(new \AppBundle\Form\ProcessType(), $process);
+        
+        $form->handleRequest($request);
+                
+        if ($form->isValid()) 
+        {                                                 
+            $dao = $this->get('dao.workflow'); 
+            $dao->updateProcess($process);
+            
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Process edited!')
+            ; 
+        }
+        
+        return $this->render('workflow/form-process-edit.html.twig', array(
+            'form' => $form->createView(),
+            'process' => $process
+        ));
+    }     
+    
+    /**
      * @Route("/workflow/details/{workflow_uri}", name="workflow-details")
      */
     public function workflowAction(Request $request, $workflow_uri)
@@ -215,6 +253,102 @@ class WorkflowController extends Controller
             'outputs' => $outputs,
             'workflow' => $workflow,
             'workflow_uri' => $workflow_uri
+        ));
+    }
+    
+    /**
+     * @Route("/{type}/output/edit/{output_uri}", name="workflow-output-edit")
+     */
+    public function editWorkflowOutputAction(Request $request, $output_uri, $type)
+    {             
+        $output_uri = urldecode($output_uri);
+        
+        $model = $this->get('model.workflow');
+        $dao = $this->get('dao.workflow');    
+        
+        if ($type == "workflow")
+        {
+            $output = $dao->findWorkflowOutput($output_uri);
+            $workflow = $model->findWorkflow($output->getWorkflow()->getUri());
+            $output->setWorkflow($workflow);
+        }
+        else
+        {
+            $output = $dao->findProcessOutput($output_uri);
+            $process = $model->findProcess($output->getProcess()->getUri());
+            $output->setProcess($process);
+        }
+        
+        if (null === $output)
+        {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Output not found!');
+        }
+        
+        $form = $this->createForm(new \AppBundle\Form\OutputType(), $output);
+        
+        $form->handleRequest($request);
+                
+        if ($form->isValid()) 
+        {                                                 
+            $dao->updateOutput($output);
+            
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Output edited!')
+            ; 
+        }
+        
+        return $this->render('workflow/form-output-edit.html.twig', array(
+            'form' => $form->createView(),
+            'output' => $output
+        ));
+    }
+    
+    /**
+     * @Route("/{type}/input/edit/{input_uri}", name="workflow-input-edit")
+     */
+    public function editWorkflowInputAction(Request $request, $input_uri, $type)
+    {             
+        $input_uri = urldecode($input_uri);
+        
+        $model = $this->get('model.workflow');
+        $dao = $this->get('dao.workflow');    
+        
+        if ($type == "workflow")
+        {
+            $input = $dao->findWorkflowInput($input_uri);
+            $workflow = $model->findWorkflow($input->getWorkflow()->getUri());
+            $input->setWorkflow($workflow);
+        }
+        else
+        {
+            $input = $dao->findProcessInput($input_uri);
+            $process = $model->findProcess($input->getProcess()->getUri());
+            $input->setProcess($process);
+        }
+        
+        if (null === $input)
+        {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Input not found!');
+        }
+        
+        $form = $this->createForm(new \AppBundle\Form\InputType(), $input);
+        
+        $form->handleRequest($request);
+                
+        if ($form->isValid()) 
+        {                                                 
+            $dao->updateInput($input);
+            
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Input edited!')
+            ; 
+        }
+        
+        return $this->render('workflow/form-input-edit.html.twig', array(
+            'form' => $form->createView(),
+            'input' => $input
         ));
     }
     

@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+{% block title %}Edit Process{% endblock %}
+{% block body %}
+{{ include('workflow/workflow-info.html.twig', { 'workflow': process.workflow }) }}
+
+{{ include('workflow/process-info.html.twig', { 'process': process }) }}
+
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{{ form_errors(form) }}
+
+{{ form_start(form) }}
+<div class="panel panel-default">
+    <div class="panel-heading">Edit Form</div>
+    <div class="panel-body">                   
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, { 'attr': { 'class':'form-control' } }) }}
+            {{ form_errors(form.description) }}
+        </div>                      
+    </div>
+    <div class="panel-footer">
+        {{ form_widget(form.save) }}         
+    </div>
+</div>
+{{ form_end(form) }}                
+
+{% endblock %}  
+{% block javascripts %}            
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 

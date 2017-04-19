@@ -46,12 +46,12 @@ class WRODAO
             
             $wro->setCreator($creator);     
             
-            if (array_key_exists('description', $wros[0]))
+            if (array_key_exists('description', $wros[$i]))
             {
                 $wro->setDescription($wros[$i]['description']['value']);
             }
             
-            if (array_key_exists('title', $wros[0]))
+            if (array_key_exists('title', $wros[$i]))
             {
                 $wro->setTitle($wros[$i]['title']['value']);
             }
@@ -203,7 +203,7 @@ class WRODAO
         DELETE
         {
             <".$wro->getUri()."> dc:title ?title.
-            <".$wro->getUri()."> dc:title ?description.         
+            <".$wro->getUri()."> dc:description ?description.         
         }
         INSERT
         {
@@ -212,8 +212,9 @@ class WRODAO
         }
         WHERE
         {
+            <".$wro->getUri()."> a ro:ResearchObject, wf4ever:WorkflowResearchObject.
             OPTIONAL { <".$wro->getUri()."> dc:title ?title. }
-            OPTIONAL { <".$wro->getUri()."> dc:title ?description. }    
+            OPTIONAL { <".$wro->getUri()."> dc:description ?description. }    
         }";
        
         $this->driver->getResults($query);
@@ -229,7 +230,7 @@ class WRODAO
             <".$uri."> dc:creator ?creator.            
             ?creator <foaf:name> ?name.
             OPTIONAL { <".$uri."> dc:title ?title. }
-            OPTIONAL { <".$uri."> dc:title ?description. }
+            OPTIONAL { <".$uri."> dc:description ?description. }
             OPTIONAL {  ?conversion <w2share:hasWorkflowResearchObject> <".$uri.">.
                         ?conversion <w2share:hash> ?hash 
                     }

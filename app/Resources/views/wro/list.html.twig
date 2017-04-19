@@ -21,9 +21,8 @@
             <tr>
                 <th style="width:100px">Action</th>
                 <th>Title</th>
-                <th>Creator</th>
                 <th>Description</th>
-                
+                <th>Creator</th>                
             </tr>
         </thead>
         <tbody>
@@ -36,8 +35,8 @@
                 <a href="{{ path('wro-delete', { 'wro_uri':wro.uri|url_encode() }) }}" title="Delete WRO" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
             </td> 
             <td>{{ wro.title }}</td>
-            <td>{{ wro.creator }}</a></td>
             <td>{{ wro.description }}</td> 
+            <td>{{ wro.creator }}</a></td>
         </tr>
     {% endfor %}
         </tbody>

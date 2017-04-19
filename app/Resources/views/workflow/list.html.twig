@@ -21,9 +21,8 @@
             <tr>
                 <th style="width:100px">Action</th>
                 <th>Title</th>
-                <th>Creator</th>
                 <th>Description</th>
-                
+                <th>Creator</th>                
             </tr>
         </thead>
         <tbody>
@@ -38,8 +37,8 @@
                 <a href="{{ path('element-quality-dimension-annotation-list', { 'element_uri':row.uri|url_encode(), 'type':'workflow' }) }}" title="Go to Quality Annotations"><i class="glyphicon glyphicon-pencil"></i></a>
             </td> 
             <td>{{ row.title }}</td>
-            <td>{{ row.creator }}</a></td>
             <td>{{ row.description }}</td> 
+            <td>{{ row.creator }}</a></td>
         </tr>
     {% endfor %}
         </tbody>

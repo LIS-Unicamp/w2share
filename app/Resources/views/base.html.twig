@@ -80,7 +80,7 @@
                     WRO <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">    
-                    <li{% if get_controller_name() == 'wro' %} class="active"{% endif %}><a href="{{ path('wro-list') }}">List</a></li>
+                    <li{% if get_controller_name() == 'wro' and get_action_name() == 'list' %} class="active"{% endif %}><a href="{{ path('wro-list') }}">List</a></li>
                     <li{% if get_controller_name() == 'workflow' %} class="active"{% endif %}><a href="{{ path('workflow-list') }}">Workflows</a></li>
                     <li{% if get_controller_name() == 'provenance' %} class="active"{% endif %}><a href="{{ path('provenance-workflows-run') }}">Workflow Runs</a></li>
                 </ul>

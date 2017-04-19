@@ -225,7 +225,7 @@ class WROModel
         $command = 'sh '.$wro->getWROScriptAbsolutePath().' > '.$wro->getUploadRootDir().'/../debug.log 2>&1';
         shell_exec($command);
         
-        unlink($wro->getWROScriptAbsolutePath());
+        //unlink($wro->getWROScriptAbsolutePath());
         \AppBundle\Utils\Utils::unlinkr($wro->getUploadRootDir());
         $fs->mkdir($wro->getUploadRootDir());        
     }

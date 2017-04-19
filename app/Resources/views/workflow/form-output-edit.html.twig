@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+{% block title %}Edit Output{% endblock %}
+{% block body %}
+
+{% if output.workflow %}
+{{ include('workflow/workflow-info.html.twig', { 'workflow': output.workflow }) }}
+{% endif %}
+
+{% if output.process %}
+{{ include('workflow/process-info.html.twig', { 'process': output.process }) }}    
+{% endif %}    
+
+<h3>Output</h3>
+<ul>
+    <li><strong>Description:</strong> {{ output.description }}</li>
+    <li><strong>Label:</strong> {{ output.label }}</li>
+    <li><strong>Example Data:</strong> {{ output.exampleData }}</li>
+</ul>
+
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{{ form_errors(form) }}
+
+{{ form_start(form) }}
+<div class="panel panel-default">
+    <div class="panel-heading">Edit Form</div>
+    <div class="panel-body">                   
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, { 'attr': { 'class':'form-control' } }) }}
+            {{ form_errors(form.description) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.example_data) }}
+            {{ form_widget(form.example_data, { 'attr': { 'class':'form-control' } }) }}
+            {{ form_errors(form.example_data) }}
+        </div>
+    </div>
+    <div class="panel-footer">
+        {{ form_widget(form.save) }}         
+    </div>
+</div>
+{{ form_end(form) }}                
+
+{% endblock %}  
+{% block javascripts %}            
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 

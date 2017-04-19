@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
-{% block title %}{% if workflow.uri %}Edit{% else %}Add{% endif %} Workflow{% endblock %}
+{% block title %}Edit Workflow{% endblock %}
 {% block body %}
-<h1>Workflow <small>{% if workflow.uri %}<button class="btn btn-xs copy" data-clipboard-text="{{ workflow.uri }}">
+<h1>Workflow <small><button class="btn btn-xs copy" data-clipboard-text="{{ workflow.uri }}">
                 <i class="glyphicon glyphicon-copy"></i>
-            </button> Edit{% else %}Add{% endif %}</small></h1>
+            </button> Edit</small></h1>
     {% if workflow.uri %}
     <ul>
         <li><strong>Title:</strong> {{ workflow.title }}</li>
@@ -29,7 +29,19 @@
 {{ form_start(form) }}
 <div class="panel panel-default">
     <div class="panel-heading">Upload Form</div>
-    <div class="panel-body">            
+    <div class="panel-body">   
+        <div class="form-group">
+            {{ form_label(form.title) }}
+            {{ form_widget(form.title, { 'attr': { 'class':'form-control' } }) }}
+            {{ form_errors(form.title) }}
+        </div>
+        
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, { 'attr': { 'class':'form-control' } }) }}
+            {{ form_errors(form.description) }}
+        </div>
+        
         <div class="form-group">
             {{ form_label(form.workflow_file) }}
             {{ form_widget(form.workflow_file, { 'attr': { 'class':'form-control' } }) }}
@@ -44,7 +56,7 @@
     </div>
     <div class="panel-footer">
             {{ form_widget(form.save) }} 
-            <a href="{{ path('workflows') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
+            <a href="{{ path('workflow-list') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
             {% if workflow.uri %}
                 <a href="{{ path('workflow-details', { 'workflow_uri':workflow.uri|url_encode() }) }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-search"></i></a>                
             {% endif %}

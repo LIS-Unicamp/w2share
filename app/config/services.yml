@@ -54,6 +54,10 @@ services:
         class: AppBundle\Model\Search
         arguments: ["@app.rest_api"]
         
+    dao.workflow:
+        class: AppBundle\Dao\WorkflowDAO
+        arguments: [@app.rest_api, @service_container]
+        
     model.workflow:
         class: AppBundle\Model\Workflow
         arguments: [@app.rest_api, @service_container]

@@ -21,14 +21,17 @@ class Workflow
     public function findAll()
     {
         $query = "
-            SELECT * WHERE {GRAPH <".$this->driver->getDefaultGraph()."> {
-                ?uri a wfdesc:Workflow.
-                OPTIONAL { ?uri dc:creator ?creator. }
-                ?uri <w2share:hash> ?hash.
-                OPTIONAL { ?uri rdfs:label ?label. }
-                OPTIONAL { ?uri dcterms:description ?description. }
-                OPTIONAL { ?uri dcterms:title ?title. }
-            }}
+            SELECT * WHERE 
+            {
+                GRAPH <".$this->driver->getDefaultGraph()."> {
+                    ?uri a wfdesc:Workflow.
+                    OPTIONAL { ?uri dc:creator ?creator. }
+                    ?uri <w2share:hash> ?hash.
+                    OPTIONAL { ?uri rdfs:label ?label. }
+                    OPTIONAL { ?uri dcterms:description ?description. }
+                    OPTIONAL { ?uri dcterms:title ?title. }
+                }
+            }
             ";
         
         $workflow_array = array();
@@ -367,6 +370,9 @@ class Workflow
             $this->driver->load($workflow->getWebPath()."/".basename($workflow->getWfdescAbsolutePath()));
             $this->getURIFromWfdesc($workflow);
         }
+        
+        $dao = $this->container->get('dao.workflow');
+        $dao->updateWorkflow($workflow);
     }     
     
     private function saveWorkflowHash(\AppBundle\Entity\Workflow $workflow) 
