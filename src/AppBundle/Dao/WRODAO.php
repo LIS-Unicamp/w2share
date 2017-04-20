@@ -106,8 +106,7 @@ class WRODAO
     public function findResource($uri)
     {
         $query = 
-        "SELECT * WHERE { 
-            GRAPH <".$this->driver->getDefaultGraph('wro')."> 
+        "SELECT * WHERE 
             { 
                 ?wro a ro:ResearchObject, wf4ever:WorkflowResearchObject.
                 ?wro ore:aggregates <".$uri.">.
@@ -115,7 +114,9 @@ class WRODAO
                 FILTER ( ! regex(?type, \"Resource\", \"i\" ))
                 OPTIONAL { <".$uri."> dc:description ?description. }
                 OPTIONAL { <".$uri."> dc:title ?title. }
-            }
+                OPTIONAL {  ?conversion <w2share:hasWorkflowResearchObject> ?wro.
+                            ?conversion <w2share:hash> ?hash 
+                }
         }";
        
         $result_array = $this->driver->getResults($query);
@@ -133,10 +134,15 @@ class WRODAO
             if (array_key_exists('title', $result_array[0]))
             {
                 $resource->setTitle($result_array[0]['title']['value']);
-            }
+            }                        
             
             $wro = new \AppBundle\Entity\WRO();
             $wro->setUri($result_array[0]['wro']['value']);
+            
+            if (array_key_exists('hash', $result_array[0]))
+            {
+                $wro->setHash($result_array[0]['hash']['value']);
+            }
             
             $resource->setWro($wro);
             
@@ -342,10 +348,13 @@ class WRODAO
         
             foreach($wro->getResources() as $resource)
             {
-                $query .= "<".$wro->getUri()."> ore:aggregates <".$resource->getFilename().">.\n"; 
-                $query .= "<".$resource->getFilename()."> dc:description '".$resource->getDescription()."'.\n";
-                $query .= "<".$resource->getFilename()."> dc:title '".$resource->getTitle()."'.\n";
-                $query .= "<".$resource->getFilename()."> a ro:Resource, ".$resource->getType().".\n";
+                $uri = \AppBundle\Utils\Utils::convertNameToUri('wro', '/'.$resource->getWro()->getHash().'/'.$resource->getFilename());
+                $resource->setUri($uri); 
+        
+                $query .= "<".$wro->getUri()."> ore:aggregates <".$resource->getUri().">.\n"; 
+                $query .= "<".$resource->getUri()."> dc:description '".$resource->getDescription()."'.\n";
+                $query .= "<".$resource->getUri()."> dc:title '".$resource->getTitle()."'.\n";
+                $query .= "<".$resource->getUri()."> a ro:Resource, ".$resource->getType().".\n";
             }
             
         $query .= "   }

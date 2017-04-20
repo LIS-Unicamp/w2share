@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Entity;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * ROResource
@@ -31,6 +32,16 @@ class WROResource
      * @var \AppBundle\Entity\WRO
      */
     private $wro;
+        
+    /**
+     * @var UploadedFile
+     */
+    private $file;
+
+    /**
+     * @var File
+     */
+    private $wro_temp;
 
     /**
      * Constructor
@@ -38,6 +49,92 @@ class WROResource
     public function __construct()
     {
         $this->annotations = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setFile(UploadedFile $file = null)
+    {     
+        $this->file = $file;        
+    }  
+    
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }  
+    
+    public function upload()
+    {
+        if (null === $this->getFile()) 
+        {
+            return;
+        }        
+        else
+        {
+            $this->filename = $this->getFile()->getClientOriginalName();
+            // if there is an error when moving the file, an exception will
+            // be automatically thrown by move(). This will properly prevent
+            // the entity from being persisted to the database on error
+            $this->getFile()->move($this->getUploadRootDir(), basename($this->getAbsolutePath()));
+
+            // check if we have an old image
+            if (isset($this->wro_temp) && $this->wro_temp != '') {
+                // delete the old image
+                @unlink($this->getUploadRootDir().'/'.$this->wro_temp);
+                // clear the temp image path
+                $this->wro_temp = null;
+            }
+            $this->file = null;
+        }                
+        
+    }
+
+    public function removeUpload()
+    {
+        @unlink($this->getAbsolutePath());
+    }
+    
+    public function getAbsolutePath()
+    {
+        return $this->getUploadRootDir().'/'.$this->getFilename();
+    }
+    
+    public function getFileContent()
+    {
+        return file_get_contents($this->getAbsolutePath());
+    }        
+    
+    public function getWebPath()
+    {
+        return $this->getUploadDir().'/'.$this->getFilename();
+    }
+
+    public function getUploadRootDir()
+    {
+        // the absolute directory path where uploaded
+        // documents should be saved
+        return __DIR__.'/../../../web/'.$this->getUploadDir();
+    }
+
+    protected function getUploadDir()
+    {
+        // get rid of the __DIR__ so it doesn't screw up
+        // when displaying uploaded doc/image in the view.
+        if ($this->getWro())
+        {
+            return 'uploads/documents/w2share/'.$this->getWro()->getHash();
+        }
+        else {
+            return 'uploads/documents/wro';
+        }
     }
     
     /**

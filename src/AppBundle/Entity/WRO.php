@@ -85,7 +85,7 @@ class WRO
             // if there is an error when moving the file, an exception will
             // be automatically thrown by move(). This will properly prevent
             // the entity from being persisted to the database on error
-            $this->getWROFile()->move($this->getUploadRootDir(), $this->wro_path);
+            $this->getWROFile()->move($this->getUploadRootDir(), basename($this->getWROAbsolutePath()));
 
             // check if we have an old image
             if (isset($this->wro_temp) && $this->wro_temp != '') {

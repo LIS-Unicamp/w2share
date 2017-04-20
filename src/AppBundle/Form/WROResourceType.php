@@ -36,6 +36,7 @@ class WROResourceType extends AbstractType
             ->add('filename', 'text', array('label' => 'Filename', 'required' => true))
             ->add('title', 'text', array('required' => true))
             ->add('description', 'text', array('required' => true))
+            ->add('file', 'file', array('label' => 'File', 'required' => false))
             ->add('type', 'choice', array(                    
                     'expanded' => false,
                     'empty_value' => '',

@@ -116,7 +116,8 @@ class WROController extends Controller
         if ($resource)
         {
             $dao->deleteWROResource($resource_uri);
-
+            $resource->removeUpload();
+            
             $this->get('session')
                     ->getFlashBag()
                     ->add('success', 'Resource deleted!')
@@ -153,6 +154,7 @@ class WROController extends Controller
         if ($form->isValid()) 
         {                                                 
             $dao->addResource($resource);
+            $resource->upload();
             
             $this->get('session')
                 ->getFlashBag()
@@ -188,6 +190,7 @@ class WROController extends Controller
         if ($form->isValid()) 
         {                                                 
             $dao->updateResource($resource);
+            $resource->upload();
             
             $this->get('session')
                 ->getFlashBag()
@@ -286,6 +289,44 @@ class WROController extends Controller
         return $this->render('wro/wro.html.twig', array(
             'wro' => $wro,
             'pagination'=>$pagination
+        ));
+    }
+    
+    /**
+     * @Route("/wro/resource/download/{resource_uri}", name="wro-resource-download")
+     */
+    public function downloadWROResourceAction($resource_uri)
+    {     
+        $dao = $this->get('dao.wro');
+        $resource = $dao->findResource($resource_uri);
+        
+        $file_path = $resource->getAbsolutePath();
+        $content = $resource->getFileContent();
+                
+        $response = new \Symfony\Component\HttpFoundation\Response();   
+        
+        // Set headers
+        $response->headers->set('Cache-Control', 'private');
+        $response->headers->set('Content-type', mime_content_type($file_path));
+        $response->headers->set('Content-Disposition', 'attachment; filename="'.basename($file_path).'";');
+        $response->headers->set('Content-length', filesize($file_path));
+
+        // Send headers before outputting anything
+        $response->sendHeaders();
+
+        return $response->setContent($content);
+    }
+    
+    /**
+     * @Route("/wro/resource/details/{resource_uri}", name="wro-resource-details")
+     */
+    public function WROResourceDetailsAction($resource_uri)
+    {     
+        $dao = $this->get('dao.wro');
+        $resource = $dao->findResource($resource_uri);
+        
+        return $this->render('wro/resource.html.twig', array(
+            'resource' => $resource
         ));
     }
     

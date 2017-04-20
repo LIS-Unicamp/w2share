@@ -13,6 +13,7 @@
                 <i class="glyphicon glyphicon-copy"></i>
             </button>
             <a href="{{ path('wro-download', { 'wro_uri':wro.uri|url_encode() }) }}" title="Download WRO"><i class="glyphicon glyphicon-download"></i></a>
+            <a href="{{ path('wro-edit', { 'wro_uri':wro.uri|url_encode() }) }}" title="Download WRO"><i class="glyphicon glyphicon-edit"></i></a>
         </small>
 </h1>
 <ul>
@@ -39,7 +40,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th style="width:100px">Action</th>
+                <th style="width:100px">Actions</th>
                 <th>File</th>
                 <th>Title</th>  
                 <th>Type</th> 
@@ -50,9 +51,10 @@
     {% for resource in pagination %}
         <tr>   
             <td>
-                <a href="{{ resource.uri }}" title="Go to resource details"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('wro-resource-details', { 'resource_uri':resource.uri|url_encode()}) }}" title="Go to resource details"><i class="glyphicon glyphicon-search"></i></a>
                 <a href="{{ path('wro-resource-edit', { 'resource_uri':resource.uri|url_encode()}) }}" title="Edit resource"><i class="glyphicon glyphicon-edit"></i></a>
-                <a href="{{ path('wro-resource-delete', { 'resource_uri':resource.uri|url_encode()}) }}" title="Delete resource" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
+                <a href="{{ path('wro-resource-download', { 'resource_uri':resource.uri|url_encode()}) }}" title="Download resource"><i class="glyphicon glyphicon-download"></i></a>
+                <a href="{{ path('wro-resource-delete', { 'resource_uri':resource.uri|url_encode()}) }}" title="Delete resource" class="delete"><i class="glyphicon glyphicon-trash"></i></a>                
             </td>
             <td>{{ resource.folder }}/{{ resource.filename }}</td> 
             <td>{{ resource.title }}</td>

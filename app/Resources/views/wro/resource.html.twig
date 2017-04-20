@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+{% block title %}WRO Resource{% endblock %}
+{% block body %}
+<h1>Resource <small>Details</small></h1>
+
+<h2>Abstract Workflow</h2>
+{#<a href="{{ app.request.basepath }}/{{ abstract_workflow }}"><img src="{{ app.request.basepath }}/{{ abstract_workflow }}" style="max-width: 1300px"></a>#}
+
+{% if resource.type|split('#')|last == "Script" %}
+<h2>Script</h2>
+<pre class="brush: bash">
+{{ resource.fileContent }}
+</pre>
+{% endif %}
+{% endblock %}  
+{% block javascripts %}  
+    <!-- Include required JS files -->
+<script src="http://agorbatchev.typepad.com/pub/sh/3_0_83/scripts/shCore.js" type="text/javascript"></script>
+<script src="http://agorbatchev.typepad.com/pub/sh/3_0_83/scripts/shBrushBash.js" type="text/javascript"></script>
+<!-- Finally, to actually run the highlighter, you need to include this JS on your page -->
+<script type="text/javascript">
+     SyntaxHighlighter.all()
+</script>
+{% endblock %}
+{% block stylesheets %}
+<!-- Include *at least* the core style and default theme -->
+<link href="http://alexgorbatchev.com/pub/sh/current/styles/shCore.css" rel="stylesheet" type="text/css" />
+<link href="http://alexgorbatchev.com/pub/sh/current/styles/shThemeDefault.css" rel="stylesheet" type="text/css" />
+{% endblock %} 
