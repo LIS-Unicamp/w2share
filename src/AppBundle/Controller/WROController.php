@@ -323,7 +323,12 @@ class WROController extends Controller
     public function WROResourceDetailsAction($resource_uri)
     {     
         $dao = $this->get('dao.wro');
-        $resource = $dao->findResource($resource_uri);
+        $resource = $dao->findResource($resource_uri);        
+        
+        if (null === $resource)
+        {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Resource not found!');
+        }
         
         return $this->render('wro/resource.html.twig', array(
             'resource' => $resource
