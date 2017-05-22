@@ -1,13 +1,34 @@
 {% extends 'base.html.twig' %}
 {% block title %}WRO Resource{% endblock %}
 {% block body %}
-<h1>Resource <small>Details</small></h1>
+ 
+<ol class="breadcrumb">
+    <li><a href="{{ path('homepage') }}">Home</a></li>
+    <li><a href="{{ path('wro-details', { 'wro_uri': resource.wro.uri|url_encode() }) }}">WRO</a></li>
+    <li class="active">Resource</li>
+</ol>
+{{ include('wro/wro-info.html.twig', { 'wro': resource.wro }) }}    
+    
+<h2>Resource <small>Details
+        <button class="btn btn-xs copy" data-clipboard-text="{{ resource.uri }}">
+                <i class="glyphicon glyphicon-copy"></i>
+            </button>
+            <a href="{{ path('wro-resource-download', { 'resource_uri':resource.uri|url_encode() }) }}" title="Download Resource"><i class="glyphicon glyphicon-download"></i></a>
+            <a href="{{ path('wro-resource-edit', { 'resource_uri':resource.uri|url_encode() }) }}" title="Edit Resource"><i class="glyphicon glyphicon-edit"></i></a>
+        </small>
+</h1>
+<ul>
+    <li><strong>Description:</strong> {{ resource.description }}</li>
+    <li><strong>Filename:</strong> {{ resource.filename }}</li>
+</ul>
 
-<h2>Abstract Workflow</h2>
-{#<a href="{{ app.request.basepath }}/{{ abstract_workflow }}"><img src="{{ app.request.basepath }}/{{ abstract_workflow }}" style="max-width: 1300px"></a>#}
+{% if resource.type|split('#')|last == "Image" %}
+<h3>Abstract Workflow</h3>
+<a href="{{ app.request.basepath }}/uploads/documents/w2share/{{ resource.wro.hash }}/{{ resource.filename }}"><img src="{{ app.request.basepath }}/uploads/documents/w2share/{{ resource.wro.hash }}/{{ resource.filename }}" style="max-width: 1300px"></a>
+{% endif %}
 
 {% if resource.type|split('#')|last == "Script" %}
-<h2>Script</h2>
+<h3>Script</h3>
 <pre class="brush: bash">
 {{ resource.fileContent }}
 </pre>
@@ -19,7 +40,7 @@
 <script src="http://agorbatchev.typepad.com/pub/sh/3_0_83/scripts/shBrushBash.js" type="text/javascript"></script>
 <!-- Finally, to actually run the highlighter, you need to include this JS on your page -->
 <script type="text/javascript">
-     SyntaxHighlighter.all()
+     SyntaxHighlighter.all();
 </script>
 {% endblock %}
 {% block stylesheets %}
