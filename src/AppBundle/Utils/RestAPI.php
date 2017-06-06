@@ -133,7 +133,7 @@ class RestAPI
                 ->getUrl("/".$file_path, null, true, true);
         
         $query = "LOAD <".$path_url."> INTO graph <".$this->getDefaultGraph($default_graph).">";
-        $this->getResults($query);
+        $this->getResults($query,true);
     }
     
     public function request($url){

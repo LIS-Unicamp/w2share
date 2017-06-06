@@ -44,7 +44,7 @@ services:
         
     model.wro:
         class: AppBundle\Model\WROModel
-        arguments: [@service_container]
+        arguments: [@app.rest_api, @service_container]
         
     dao.wro:
         class: AppBundle\Dao\WRODAO

@@ -54,7 +54,6 @@ class WROController extends Controller
                 
         if ($form->isValid()) 
         {       
-            $wro->preUpload();
             $wro->upload();
             
             $model = $this->get('model.wro');             
