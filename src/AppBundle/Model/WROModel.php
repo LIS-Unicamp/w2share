@@ -79,6 +79,14 @@ class WROModel
                 $model->getURIFromWfdesc($workflow, $wro->getUploadDir()."/wro/.ro/annotations/workflow.wfdesc.ttl");
                 $model->saveWorkflowHash($workflow);
                 echo "loaded!\n";
+                
+                $md5 = \AppBundle\Utils\Utils::extractMD5($workflow->getUri());
+                $workflow_path = $wro->getUploadRootDir()."/history/".$md5.".t2flow";
+                
+                $fs = new \Symfony\Component\Filesystem\Filesystem();    
+                $fs->copy($workflow_path, $workflow->getWorkflowAbsolutePath());
+                
+                $workflow->createWorkflowPNG();
             }
         } 
         exit;
