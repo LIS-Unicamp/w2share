@@ -293,24 +293,7 @@ class WRODAO
             }
         }"; 
         $this->driver->getResults($query);       
-    }                        
-    
-    private function loadIntoDB(\AppBundle\Entity\WRO $wro, $file_path)
-    {        
-        $env = $this->container->get('kernel')->getEnvironment();
-        
-        $path_url = '';
-        if ($env == 'dev')
-        {
-            $path_url = "http://"
-                . $this->container->get('request')->getHost();
-        }
-        $path_url .= $this->container->get('templating.helper.assets')
-                ->getUrl("/uploads/documents/wro/".$wro->getHash()."/".$file_path, null, true, true);
-        
-        $query = "LOAD <".$path_url."> INTO graph <".$this->driver->getDefaultGraph('wro').">";
-        $this->driver->getResults($query);
-    }
+    }                                
             
     public function clearGraph()
     {               
@@ -320,15 +303,15 @@ class WRODAO
     
     public function saveWRO(\AppBundle\Entity\WRO $wro)
     {
+        // ore:aggregates <script.".$wro->getScriptConversion()->getScriptExtension().">, <abstract-workflow.svg> ;
+        // dc:creator <".$wro->getCreator()->getUri().">.     
         $query = "        
         INSERT        
         { 
             GRAPH <".$this->driver->getDefaultGraph('wro')."> 
             { 
-                <".$wro->getUri()."> a ro:ResearchObject, ore:Aggregation, wf4ever:WorkflowResearchObject ; 
-                ore:aggregates <script.".$wro->getScriptConversion()->getScriptExtension().">, <abstract-workflow.svg> ;
-                dc:created '".$wro->getCreatedAt()->format(\DateTime::ISO8601)."' ;
-                dc:creator <".$wro->getCreator()->getUri().">.                
+                <".$wro->getUri()."> a ro:ResearchObject, ore:Aggregation, wf4ever:WorkflowResearchObject ;                 
+                dc:created '".$wro->getCreatedAt()->format(\DateTime::ISO8601)."' .                          
             }
         }"; 
 

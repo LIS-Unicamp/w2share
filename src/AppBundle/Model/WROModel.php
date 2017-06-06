@@ -20,11 +20,11 @@ class WROModel
     
     public function addWRO(\AppBundle\Entity\WRO $wro)
     {
-        $dao = $this->container->get('dao.wro');
         $this->unzipWROBundle($wro);
         $this->findManifest($wro);
         //$this->loadFiles($wro);
-        //$dao->saveWROHash($wro);        
+        $this->createWROUploaded($wro);
+        exit;
     }          
     
     private function findManifest(\AppBundle\Entity\WRO $wro)
@@ -87,9 +87,24 @@ class WROModel
                 $fs->copy($workflow_path, $workflow->getWorkflowAbsolutePath());
                 
                 $workflow->createWorkflowPNG();
+                $wro->setWorkflow($workflow);
             }
         } 
-        exit;
+    }
+    
+    public function createWROUploaded(\AppBundle\Entity\WRO $wro)
+    {
+        $dao = $this->container->get('dao.wro');
+        
+        $workflow = $wro->getWorkflow();
+        $wro->setHash($workflow->getHash());
+        $wro_uri = $uri = \AppBundle\Utils\Utils::convertNameToUri("Workflow Research Object", $wro->getHash());
+        $wro->setUri($wro_uri);
+        //$wro->setCreator($conversion->getCreator());
+        $this->addDefaultResources($wro);
+        $dao->saveWRO($wro);
+        $dao->saveWROResources($wro);
+        $this->createWROScript($wro);
     }
     
     private function loadManifestRDF(\AppBundle\Entity\WRO $wro)
@@ -196,7 +211,7 @@ class WROModel
             $wro->addResourceBuilder($wro->getWorkflow()->getUri(), basename($wro->getWorkflow()->getWorkflowImageFilepath()), '', 'Workflow Image', 'wf4ever:Image');
         }
         $conversion = $wro->getScriptConversion();
-        if ($conversion->getWorkflow()->getWorkflowRuns())
+        if ($conversion && $conversion->getWorkflow()->getWorkflowRuns())
         {
             $file_path = $conversion->getWorkflow()->getProvenanceAbsolutePath();
             $wro->addResourceBuilder(basename($file_path), basename($file_path), '', 'Provenance Data', 'wfprov:WorkflowRun');
