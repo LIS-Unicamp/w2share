@@ -25,8 +25,8 @@ class WRODAO
         { 
             ?uri a ro:ResearchObject.
             ?uri dc:created ?createdAt.
-            ?uri dc:creator ?creator.             
-            ?creator <foaf:name> ?name.
+            OPTIONAL { ?uri dc:creator ?creator.             
+            ?creator <foaf:name> ?name. }
             OPTIONAL { ?uri dc:description ?description. }
             OPTIONAL { ?uri dc:title ?title. }
         }";
@@ -40,12 +40,15 @@ class WRODAO
             $wro = new \AppBundle\Entity\WRO();            
             $wro->setUri($wros[$i]['uri']['value']);
             $wro->setCreatedAt($wros[$i]['createdAt']['value']); 
-            $creator = new \AppBundle\Entity\Person();
-            $creator->setUri($wros[$i]['creator']['value']);
-            $creator->setName($wros[$i]['name']['value']);
             
-            $wro->setCreator($creator);     
-            
+            if (array_key_exists('creator', $wros[$i]))
+            {
+                $creator = new \AppBundle\Entity\Person();
+                $creator->setUri($wros[$i]['creator']['value']);
+                $creator->setName($wros[$i]['name']['value']);
+
+                $wro->setCreator($creator);     
+            }
             if (array_key_exists('description', $wros[$i]))
             {
                 $wro->setDescription($wros[$i]['description']['value']);
@@ -231,8 +234,9 @@ class WRODAO
         { 
             <".$uri."> a ro:ResearchObject, wf4ever:WorkflowResearchObject.
             <".$uri."> dc:created ?createdAt.
-            <".$uri."> dc:creator ?creator.            
-            ?creator <foaf:name> ?name.
+            OPTIONAL {
+                <".$uri."> dc:creator ?creator.            
+                ?creator <foaf:name> ?name. }
             OPTIONAL { <".$uri."> dc:title ?title. }
             OPTIONAL { <".$uri."> dc:description ?description. }
             OPTIONAL {  ?conversion <w2share:hasWorkflowResearchObject> <".$uri.">.
@@ -247,11 +251,15 @@ class WRODAO
             $wro = new \AppBundle\Entity\WRO();            
             $wro->setUri($uri);
             $wro->setCreatedAt($result_array[0]['createdAt']['value']); 
-            $creator = new \AppBundle\Entity\Person();
-            $creator->setUri($result_array[0]['creator']['value']);
-            $creator->setName($result_array[0]['name']['value']);
+            
+            if (array_key_exists('creator', $result_array[0]))
+            {
+                $creator = new \AppBundle\Entity\Person();
+                $creator->setUri($result_array[0]['creator']['value']);
+                $creator->setName($result_array[0]['name']['value']);
 
-            $wro->setCreator($creator); 
+                $wro->setCreator($creator);
+            }
             
             if (array_key_exists('description', $result_array[0]))
             {
@@ -340,7 +348,7 @@ class WRODAO
         $query .= "   }
         }";                
 
-        $this->driver->getResults($query);
+        $this->driver->getResults($query, true);
     }
     
     public function addWorkflowWRO(\AppBundle\Entity\WRO $wro)
