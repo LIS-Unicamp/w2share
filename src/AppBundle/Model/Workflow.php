@@ -352,7 +352,6 @@ class Workflow
         
         foreach ($resources as $resource)
         {
-            echo $resource->getUri();
             $workflow->setUri($resource->getUri());
         }
     }

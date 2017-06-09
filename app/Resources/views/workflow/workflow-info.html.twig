@@ -6,6 +6,7 @@
                 </button>
             
                 <a href="{{ path('workflow-details', { 'workflow_uri': workflow.uri|url_encode() }) }}" class="btn btn-xs" title="Go to workflow"><i class="glyphicon glyphicon-search"></i></a>
+                <a href="{{ path('workflow-edit', { 'workflow_uri': workflow.uri|url_encode() }) }}" class="btn btn-xs" title="Edit workflow"><i class="glyphicon glyphicon-edit"></i></a>
                 <a href="{{ path('element-quality-dimension-annotation-list', { 'element_uri':workflow.uri|url_encode(), 'type':'workflow' }) }}" class="btn btn-xs" title="Go to Quality Annotations"><i class="glyphicon glyphicon-pencil"></i></a>
             </div>
         </small>
