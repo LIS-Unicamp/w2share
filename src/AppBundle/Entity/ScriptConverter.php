@@ -228,6 +228,22 @@ class ScriptConverter
         return $this->script_language;
     }
     
+    /**
+     * Get language
+     *
+     * @return string 
+     */
+    public function getScriptLanguageEnum()
+    {
+        switch ($this->script_language)
+        {
+            case "sh":  return "Bash";
+            case "r":   return "R";
+            case "py":  return "Python";
+        }                
+        return $this->script_language;
+    }
+    
     public function createGraph()
     {        
         $command = "java -jar ". __DIR__ . "/../../../src/AppBundle/Utils/yesworkflow-0.2.1.1-jar-with-dependencies.jar graph ".$this->getGraphProperties(). " " . $this->getScriptFilepath() . " > " . $this->getUploadRootDir() . "/wf.gv; /usr/bin/dot -Tsvg " . $this->getUploadRootDir() . "/wf.gv -o " . $this->getAbstractWorkflowFilepath();                              
