@@ -348,7 +348,7 @@ class WRODAO
         
             foreach($wro->getResources() as $resource)
             {
-                $uri = \AppBundle\Utils\Utils::convertNameToUri('wro', '/'.$wro->getHash().'/'.$resource->getFilename());
+                $uri = \AppBundle\Utils\Utils::convertNameToUri('wro', $wro->getHash()).'/'.$resource->getFilename();
                 $resource->setUri($uri); 
         
                 $query .= "<".$wro->getUri()."> ore:aggregates <".$resource->getUri().">.\n"; 

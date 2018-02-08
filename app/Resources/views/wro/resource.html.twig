@@ -1,13 +1,16 @@
 {% extends 'base.html.twig' %}
 {% block title %}WRO Resource{% endblock %}
 {% block body %}
-<h1>Resource <small>Details</small></h1>
+{{ include('wro/wro-info.html.twig', { 'wro': resource.wro }) }}
 
-<h2>Abstract Workflow</h2>
-{#<a href="{{ app.request.basepath }}/{{ abstract_workflow }}"><img src="{{ app.request.basepath }}/{{ abstract_workflow }}" style="max-width: 1300px"></a>#}
+<h2>Resource <small>Details</small><a href="{{ path('wro-resource-download', { 'resource_uri':resource.uri|url_encode()}) }}" title="Download resource"><i class="glyphicon glyphicon-download"></i></a></h2>
 
-{% if resource.type|split('#')|last == "Script" %}
-<h2>Script</h2>
+{% if resource.type|split('#')|last == "Workflow" %}
+<h3>Workflow</h3>
+<img src="{{ app.request.basepath }}/uploads/documents/w2share/{{ resource.wro.hash }}/workflow.svg">
+
+{% elseif resource.type|split('#')|last == "Script" %}
+<h3>Script</h3>
 <pre class="brush: bash">
 {{ resource.fileContent }}
 </pre>

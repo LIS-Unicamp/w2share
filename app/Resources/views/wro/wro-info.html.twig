@@ -1,0 +1,13 @@
+<h1>WRO<small>
+            <button class="btn btn-xs copy" data-clipboard-text="{{ wro.uri }}">
+                <i class="glyphicon glyphicon-copy"></i>
+            </button>
+            <a href="{{ path('wro-download', { 'wro_uri':wro.uri|url_encode() }) }}" title="Download WRO"><i class="glyphicon glyphicon-download"></i></a>
+            <a href="{{ path('wro-edit', { 'wro_uri':wro.uri|url_encode() }) }}" title="Edit WRO"><i class="glyphicon glyphicon-edit"></i></a>
+        </small>
+</h1>
+<ul>
+    <li><strong>Creator:</strong> {{ wro.creator }}</li>
+    <li><strong>Description:</strong> {{ wro.description }}</li>
+    <li><strong>Title:</strong> {{ wro.title }}</li>
+</ul>

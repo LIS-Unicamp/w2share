@@ -322,6 +322,7 @@ class WROController extends Controller
      */
     public function WROResourceDetailsAction($resource_uri)
     {     
+        $resource_uri = urldecode($resource_uri);
         $dao = $this->get('dao.wro');
         $resource = $dao->findResource($resource_uri);        
         
