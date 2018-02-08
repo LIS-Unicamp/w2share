@@ -14,7 +14,11 @@
             {{ flashMessage }}
     </div>            
 {% endfor %}
-<a class="btn btn-success" href="{{ path('script-converter-restart') }}"><i class="glyphicon glyphicon-plus"></i> New</a>
+{% if app.user %}
+    <a class="btn btn-success" href="{{ path('script-converter-restart') }}"><i class="glyphicon glyphicon-plus"></i> New</a>
+{% else %}
+    <a class="btn btn-success" href="{{ path('script-converter-editor') }}"><i class="glyphicon glyphicon-plus"></i> New</a>
+{% endif %}
     <table class="table table-striped">
         <thead>
             <tr>
@@ -46,7 +50,7 @@
                     </ul>
                 </label>
             </td> 
-            <td>{{ row.scriptLanguage }}</td>
+            <td>{{ row.scriptLanguageEnum }}</td>
             <td>
                 <label class="dropdown">
                     <label class="btn btn-xs btn-default dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">

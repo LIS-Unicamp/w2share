@@ -54,7 +54,7 @@ class WorkflowController extends Controller
                 ->getFlashBag()
                 ->add('success', 'Workflow added!')
             ; 
-            return $this->redirect($this->generateUrl('workflows'));
+            return $this->redirect($this->generateUrl('workflow-list'));
         }
         
         return $this->render('workflow/form-add.html.twig', array(
@@ -90,7 +90,7 @@ class WorkflowController extends Controller
                 ;
         }
         
-        return $this->redirect($this->generateUrl('workflows'));
+        return $this->redirect($this->generateUrl('workflow-list'));
     }
     
     /**
@@ -361,7 +361,7 @@ class WorkflowController extends Controller
         $model_workflow->clearGraph();
         $model_workflow->clearUploads();
                     
-        return $this->redirect($this->generateUrl('workflows'));
+        return $this->redirect($this->generateUrl('workflow-list'));
     }   
 }
 

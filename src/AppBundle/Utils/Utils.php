@@ -19,6 +19,13 @@ class Utils
 
        return $clean;
     }
+    
+    public static function extractMD5($uri)
+    {
+        # example: http://ns.taverna.org.uk/2010/workflowBundle/df21ec6e-46d7-432c-adff-f73f368e35cc/workflow/Workflow1/processor/get_gene_coordinate/
+        $str = explode("/", $uri);
+        return $str[5];
+    }
    
     public  static function convertNameToUri($module, $name) 
     {

@@ -115,15 +115,16 @@ class ScriptConverterController extends Controller
      * @Route("/script-converter/editor", name="script-converter-editor")
      */
     public function editorAction(Request $request)
-    {      
+    {              
         $converter = new \AppBundle\Entity\ScriptConverter();
+                
         if ($request->get("hash"))
         {
             $hash = $request->get('hash');
             $this->get('session')->set('hash', $hash);  
             $converter->setHash($hash);
         }
-        else if ($this->get('session')->get('hash'))
+        else if ($this->getUser() && $this->get('session')->get('hash'))
         {
             $hash = $this->get('session')->get('hash'); 
             $converter->setHash($hash);
@@ -132,16 +133,21 @@ class ScriptConverterController extends Controller
         {            
             $this->get('session')->set('hash', $converter->getHash());    
         }
-        
+
         if ($request->get('language'))
         {
             $language = $request->get('language');
             $this->get('session')->set('language', $language);
         }
-        else {
+        else if($this->getUser())
+        {
             $language = $this->get('session')->get('language');
         }
-                
+        else
+        {
+            $language = null;
+        }
+        
         $converter->setScriptLanguage($language);
         
         return $this->render('script-converter/editor.html.twig', array(

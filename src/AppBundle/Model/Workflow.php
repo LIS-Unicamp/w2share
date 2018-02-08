@@ -340,14 +340,14 @@ class Workflow
         $this->saveWorkflowHash($workflow);        
     }
     
-    public function getURIFromWfdesc(\AppBundle\Entity\Workflow $workflow)
+    public function getURIFromWfdesc(\AppBundle\Entity\Workflow $workflow, $path)
     {
         \EasyRdf_Namespace::set('ro', 'http://purl.org/wf4ever/ro#');
         \EasyRdf_Namespace::set('dc', 'http://purl.org/dc/elements/1.1/');
         \EasyRdf_Namespace::set('ore', 'http://www.openarchives.org/ore/terms/');
         
         $graph = new \EasyRdf_Graph();
-        $graph->parseFile($workflow->getWfdescAbsolutePath());
+        $graph->parseFile($path);
         $resources = $graph->allOfType('http://purl.org/wf4ever/wfdesc#Workflow');
         
         foreach ($resources as $resource)
@@ -368,14 +368,14 @@ class Workflow
             $workflow->createWorkflowPNG();
             $workflow->createWfdescFile();
             $this->driver->load($workflow->getWebPath()."/".basename($workflow->getWfdescAbsolutePath()));
-            $this->getURIFromWfdesc($workflow);
+            $this->getURIFromWfdesc($workflow, $workflow->getWfdescAbsolutePath());
         }
         
         $dao = $this->container->get('dao.workflow');
         $dao->updateWorkflow($workflow);
     }     
     
-    private function saveWorkflowHash(\AppBundle\Entity\Workflow $workflow) 
+    public function saveWorkflowHash(\AppBundle\Entity\Workflow $workflow) 
     {      
         $query = 
         "        

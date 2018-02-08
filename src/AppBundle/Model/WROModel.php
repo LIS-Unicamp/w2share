@@ -8,20 +8,23 @@ namespace AppBundle\Model;
  */
 class WROModel
 {        
+    private $driver;
+    
     private $container;
     
-    public function __construct(\Symfony\Component\DependencyInjection\ContainerInterface $container)
+    public function __construct($driver, \Symfony\Component\DependencyInjection\ContainerInterface $container)
     {
         $this->container = $container;
-    }                          
+        $this->driver = $driver;
+    }                           
     
     public function addWRO(\AppBundle\Entity\WRO $wro)
     {
-        $dao = $this->container->get('dao.wro');
         $this->unzipWROBundle($wro);
         $this->findManifest($wro);
         //$this->loadFiles($wro);
-        $dao->saveWROHash($wro);        
+        $this->createWROUploaded($wro);
+        exit;
     }          
     
     private function findManifest(\AppBundle\Entity\WRO $wro)
@@ -43,26 +46,65 @@ class WROModel
 
         foreach ($manifest_data['aggregates'] as $aggregate)
         {
-            $aggregate['folder'].$aggregate['file'];
-            if (in_array('mediatype', $aggregate))
+            echo $aggregate['file']."\n";
+            if (key_exists('mediatype', $aggregate))
             {
-                $aggregate['mediatype'];
-            }
+                echo $aggregate['mediatype']."\n";
+            }            
         }    
         
         foreach ($manifest_data['annotations'] as $aggregate)
         {
-            $aggregate['about'].$aggregate['content'];
-            if (in_array('annotation', $aggregate))
+            echo $aggregate['about'].$aggregate['content']."\n";
+            if (key_exists('annotation', $aggregate))
             {
-                $aggregate['annotation'];
+                echo $aggregate['annotation']."\n";
             }
             
             if ($aggregate['content'] == '/workflow.wfbundle')
             {
                 $this->unzipWFBundle($wro, $aggregate['content']);
             }
+            
+            if ($aggregate['content'] == "/workflowrun.prov.ttl")
+            {
+                $this->driver->load($wro->getUploadDir()."/wro/workflowrun.prov.ttl");
+            }
+            
+            if ($aggregate['content'] == "/.ro/annotations/workflow.wfdesc.ttl")
+            {
+                $model = $this->container->get('model.workflow');
+                $workflow = new \AppBundle\Entity\Workflow();
+                $this->driver->load($wro->getUploadDir()."/wro/.ro/annotations/workflow.wfdesc.ttl");
+                $model->getURIFromWfdesc($workflow, $wro->getUploadDir()."/wro/.ro/annotations/workflow.wfdesc.ttl");
+                $model->saveWorkflowHash($workflow);
+                echo "loaded!\n";
+                
+                $md5 = \AppBundle\Utils\Utils::extractMD5($workflow->getUri());
+                $workflow_path = $wro->getUploadRootDir()."/history/".$md5.".t2flow";
+                
+                $fs = new \Symfony\Component\Filesystem\Filesystem();    
+                $fs->copy($workflow_path, $workflow->getWorkflowAbsolutePath());
+                
+                $workflow->createWorkflowPNG();
+                $wro->setWorkflow($workflow);
+            }
         } 
+    }
+    
+    public function createWROUploaded(\AppBundle\Entity\WRO $wro)
+    {
+        $dao = $this->container->get('dao.wro');
+        
+        $workflow = $wro->getWorkflow();
+        $wro->setHash($workflow->getHash());
+        $wro_uri = $uri = \AppBundle\Utils\Utils::convertNameToUri("Workflow Research Object", $wro->getHash());
+        $wro->setUri($wro_uri);
+        //$wro->setCreator($conversion->getCreator());
+        $this->addDefaultResources($wro);
+        $dao->saveWRO($wro);
+        $dao->saveWROResources($wro);
+        $this->createWROScript($wro);
     }
     
     private function loadManifestRDF(\AppBundle\Entity\WRO $wro)
@@ -81,7 +123,7 @@ class WROModel
         //echo($resource);
         foreach ($aggregates as $aggregate)
         {
-            $aggregate.$aggregate->type();
+            echo $aggregate.$aggregate->type();
         }
         exit;
     }
@@ -89,6 +131,7 @@ class WROModel
     private function unzipWFBundle(\AppBundle\Entity\WRO $wro, $wfbundle_filename)
     {            
         $wfbundle_path = $wro->getUploadRootDir().$wfbundle_filename;
+        echo $wfbundle_path." - path\n";
         $zip = new \ZipArchive; 
         if ($zip->open($wfbundle_path))
         { 
@@ -99,16 +142,17 @@ class WROModel
             }
             catch(\Symfony\Component\Debug\Exception\ContextErrorException $e)
             {
-                $e->getMessage();
+                echo $e->getMessage();
             }
             
         }
-        @unlink($wfbundle_path);
+        //@unlink($wfbundle_path);
     }
     
     private function unzipWROBundle(\AppBundle\Entity\WRO $wro)
     {            
         $zip = new \ZipArchive; 
+        echo $wro->getWROAbsolutePath();
         if ($zip->open($wro->getWROAbsolutePath()))
         { 
             $zip->extractTo($wro->getUploadRootDir()); 
@@ -167,7 +211,7 @@ class WROModel
             $wro->addResourceBuilder($wro->getWorkflow()->getUri(), basename($wro->getWorkflow()->getWorkflowImageFilepath()), '', 'Workflow Image', 'wf4ever:Image');
         }
         $conversion = $wro->getScriptConversion();
-        if ($conversion->getWorkflow()->getWorkflowRuns())
+        if ($conversion && $conversion->getWorkflow()->getWorkflowRuns())
         {
             $file_path = $conversion->getWorkflow()->getProvenanceAbsolutePath();
             $wro->addResourceBuilder(basename($file_path), basename($file_path), '', 'Provenance Data', 'wfprov:WorkflowRun');

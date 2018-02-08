@@ -38,6 +38,7 @@ class WROController extends Controller
     }
     
     /**
+     * Create a new WRO using a form.
      * @Route("/wro/add", name="wro-add")
      */
     public function addWROAction(Request $request)
@@ -53,7 +54,6 @@ class WROController extends Controller
                 
         if ($form->isValid()) 
         {       
-            $wro->preUpload();
             $wro->upload();
             
             $model = $this->get('model.wro');             
@@ -324,12 +324,16 @@ class WROController extends Controller
     {     
         $resource_uri = urldecode($resource_uri);
         $dao = $this->get('dao.wro');
-        $resource = $dao->findResource($resource_uri);        
+        $resource_uri = urldecode($resource_uri);
+        $resource = $dao->findResource($resource_uri);                  
         
         if (null === $resource)
         {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Resource not found!');
         }
+        
+        $wro = $dao->findWro($resource->getWro()->getUri());
+        $resource->setWro($wro);
         
         return $this->render('wro/resource.html.twig', array(
             'resource' => $resource

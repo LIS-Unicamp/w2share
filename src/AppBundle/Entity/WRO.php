@@ -107,7 +107,7 @@ class WRO
     
     public function getWROAbsolutePath()
     {
-        return $this->getUploadRootDir().'/../wro-bundle.zip';
+        return $this->getUploadRootDir().'/wro-bundle.zip';
     }
     
     public function getWROFileContent()
@@ -132,7 +132,7 @@ class WRO
         return __DIR__.'/../../../web/'.$this->getUploadDir().'/wro';
     }
 
-    protected function getUploadDir()
+    public function getUploadDir()
     {
         // get rid of the __DIR__ so it doesn't screw up
         // when displaying uploaded doc/image in the view.
@@ -253,14 +253,14 @@ class WRO
      * @param \AppBundle\Entity\WROResource $resources
      * @return ResearchObject
      */
-    public function addResourceBuilder($uri, $filename, $folder, $description, $type, $title = null)
+    public function addResourceBuilder($workflow_uri, $filename, $folder, $description, $type, $title = null)
     {
         $resource = new WROResource();
         $resource->setFilename($filename);
         $resource->setDescription($description);
         $resource->setFolder($folder);
         $resource->setTitle($title);
-        $resource->setUri($uri);
+        $resource->setUri($workflow_uri+"/"+$filename);
         $resource->setType($type);
         $this->resources[] = $resource;
     
