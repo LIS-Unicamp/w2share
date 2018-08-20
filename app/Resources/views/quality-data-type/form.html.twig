@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+{% form_theme form _self %}
+
+
+{% block title %}Add Quality Data Type{% endblock %}
+{% block body %}
+
+    <h2>Quality Data Type <small>{% if qdt.uri %}Edit{% else %}Add{% endif %}</small></h2>
+
+    {% for flashMessage in app.session.flashbag.get('success') %}
+        <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+    {% for flashMessage in app.session.flashbag.get('error') %}
+        <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+    {{ form_errors(form) }}
+
+    {{ form_start(form) }}
+    <div class="panel panel-default">
+        <div class="panel-heading">Form</div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        {{ form_label(form.name) }}
+                        {{ form_widget(form.name, { 'attr': { 'class':'form-control' } }) }}
+                        {{ form_errors(form.name) }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <b>Quality Dimensions</b>
+                        <p>
+                        <div>
+                        {{ form_widget(form.qualitydimensions) }}
+                        {{ form_errors(form.qualitydimensions) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            {{ form_widget(form.save) }}
+            {% if qdt.uri %}
+                <a class="btn btn-success" href="{{ path('quality-data-type-add') }}"><i class="glyphicon glyphicon-plus"></i> New</a>
+            {% endif %}
+            <a href="{{ path('quality-data-type-list') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}  
+{% block javascripts %}
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 

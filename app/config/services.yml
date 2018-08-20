@@ -72,8 +72,12 @@ services:
         
     model.qualitydimension:
         class: AppBundle\Model\QualityDimension
-        arguments: ["@app.rest_api"] 
-        
+        arguments: ["@app.rest_api"]
+
+    model.qualitydatatype:
+        class: AppBundle\Model\QualityDataType
+        arguments: ["@app.rest_api"]
+
     model.qualitymetric:
         class: AppBundle\Model\QualityMetric
         arguments: ["@app.rest_api"] 

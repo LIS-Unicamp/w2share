@@ -1,0 +1,12 @@
+AppBundle\Entity\QualityDataType:
+  type: entity
+  id:
+    uri:
+      type: string
+  fields:
+    name:
+      type: string
+  oneToMany:
+    qualitydimensions:
+      targetEntity: QualityDimension
+      mappedBy: quality_data_type

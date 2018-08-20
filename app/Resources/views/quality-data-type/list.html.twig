@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+{% block title %}Quality Data Type{% endblock %}
+{% block body %}
+    <h1>Quality Data Type</h1>
+    {% for flashMessage in app.session.flashbag.get('success') %}
+        <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+    {% for flashMessage in app.session.flashbag.get('error') %}
+        <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+    <div class="row">
+        <div class="col-md-1">
+            <a class="btn btn-success" href="{{ path('quality-data-type-add') }}"><i class="glyphicon glyphicon-plus"></i> New</a>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th style="width:120px">Action</th>
+                <th>Name</th>
+                <th> Quality Dimensions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for qdt in pagination %}
+                <tr>
+                    <td>
+                        <a href="{{ path('quality-data-type-edit', { 'qualitydatatype_uri':qdt.uri|url_encode }) }}" title="Edit quality data type" ><i class="glyphicon glyphicon-edit"></i></a>
+                        <a href="{{ path('quality-data-type-delete', { 'qualitydatatype_uri':qdt.uri|url_encode }) }}" title="Delete quality data type " class="delete"><i class="glyphicon glyphicon-trash"></i></a>
+                                         </td>
+                    <td>{{ qdt.name }}</td>
+                    <td>
+                        {% for qd in qdt.qualitydimensions %} {{ qd.name }} {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="navigation">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            {{ app_pagination_render(pagination) }}
+        </div>
+    </div>
+{% endblock %}  
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function()
+        {
+            $('button.habilitar').click(function (e) {
+                e.preventDefault();
+                $('#filtrar-avancado').collapse('toggle');
+                if ($(this).children('i').hasClass('glyphicon-collapse-down'))
+                {
+                    $(this).children('i').removeClass('glyphicon-collapse-down');
+                    $(this).children('i').addClass('glyphicon-collapse-up');
+                }
+                else
+                {
+                    $(this).children('i').removeClass('glyphicon-collapse-up');
+                    $(this).children('i').addClass('glyphicon-collapse-down');
+                }
+            });
+
+            $('button.reset').click(function(e) {
+                e.preventDefault();
+                $(':input, :button, :hidden')
+                    .val('')
+                    .removeAttr('checked')
+                    .removeAttr('selected');
+                $('.select').val([]).trigger('change');
+            });
+        });
+    </script>
+{% endblock %}
+{% block stylesheets %}
+{% endblock %}
