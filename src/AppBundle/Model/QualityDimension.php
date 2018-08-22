@@ -197,7 +197,8 @@ class QualityDimension
     }
     
     public function deleteQualityDimension(\AppBundle\Entity\QualityDimension $qd)
-    {  
+    {
+
         $query = 
         "DELETE data FROM <".$this->driver->getDefaultGraph('qualitydimension')."> 
             {
@@ -242,7 +243,19 @@ class QualityDimension
         return $this->driver->getResults($query);
         
     }
-    
+
+
+    public function qualityDimensionBeingUsed(\AppBundle\Entity\QualityDimension $qd)
+    {
+        $query = "SELECT ?qdt WHERE
+        { ?qdt <w2share:describesQualityDimension> <".$qd->getUri() . "> . 
+        }";
+        if (count( $this->driver->getResults($query)) > 0) {
+            return true;
+        }
+        return false;
+    }
+
     public function clearGraph()
     {
         $query = "CLEAR GRAPH <".$this->driver->getDefaultGraph('qualitydimension').">";        

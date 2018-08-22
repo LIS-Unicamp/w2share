@@ -128,13 +128,20 @@ class QualityDimensionController extends Controller
         $qualityDimension = $model->findOneQualityDimension($uri);
         
         if ($qualityDimension)
-        {                          
-            $model->deleteQualityDimension($qualityDimension);
+        {
+            if($model->qualityDimensionBeingUsed($qualityDimension)){
+                $this->get('session')
+                    ->getFlashBag()
+                    ->add(
+                    'notice', 'This quality dimension is being used by a quality data type and it cannot be deleted' );
+            }
+            else {
+                $model->deleteQualityDimension($qualityDimension);
 
-            $this->get('session')
-                ->getFlashBag()
-                ->add('success', 'Quality dimension deleted!')
-            ;
+                $this->get('session')
+                    ->getFlashBag()
+                    ->add('success', 'Quality dimension deleted!');
+            }
         }
         //TO-DO verificar
         return $this->redirect($this->generateUrl('quality-dimension-list'));
