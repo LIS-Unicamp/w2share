@@ -89,7 +89,8 @@ class QualityDataType
      */
     public function removeQualityDimension(\AppBundle\Entity\QualityDimension $dimension)
     {
-        $this->qualitydimensions->removeElement($dimension);
+        $key = array_search($dimension, $this->qualitydimensions);
+        unset($this->qualitydimensions[$key]);
     }
 
     /**

@@ -22,9 +22,7 @@ class QualityDataType
 
     public function insertQualityDataType(\AppBundle\Entity\QualityDataType $qdt)
     {
-        echo "insertqdt";
         $uri = Utils::convertNameToUri("Quality Data Type", $qdt->getName());
-        echo $qdt->getName();
         $qdt->setUri($uri);
         $query =
             "INSERT        
@@ -69,11 +67,14 @@ class QualityDataType
             {
                 <" .$qdt->getUri() . "> a <w2share:QualityDataType>.
                 <" . $qdt->getUri() . "> <w2share:qdtName>  '" . $qdt->getName(). "' .
+                <" .$qdt->getUri() . "> ?property ?object.
             }
             WHERE 
             {
                 <" .$qdt->getUri() . "> a <w2share:QualityDataType>.
                 <" . $qdt->getUri() . "> <w2share:qdtName>  '" . $qdt->getName(). "' .
+                <" .$qdt->getUri() . "> ?property ?object .
+
             }";
 
          return $this->driver->getResults($query);
@@ -104,6 +105,17 @@ class QualityDataType
         }
 
         return $qualityDataType;
+    }
+
+    public function updateQualityDataType(\AppBundle\Entity\QualityDataType $qdt)
+    {
+        echo sizeof($qdt->getQualityDimensions());
+        $this->deleteQualityDataType($qdt);
+        echo sizeof($this->findAllDimensionsByQDT($qdt));
+        $this->insertQualityDataType($qdt);
+        $this->insertQualityDimensions($qdt);
+        echo sizeof($this->findAllDimensionsByQDT($qdt));
+
     }
 
     public function findAllDimensionsByQDT(\AppBundle\Entity\QualityDataType $qdt)
@@ -145,11 +157,11 @@ class QualityDataType
     public function findAllQualityDataTypes()
     {
         $query =
-            "SELECT * WHERE 
-        {
-            ?uri a <w2share:QualityDataType> ;
-            <w2share:qdtName> ?name .
-        }";
+                "SELECT * WHERE 
+            {
+                ?uri a <w2share:QualityDataType> ;
+                <w2share:qdtName> ?name .
+            }";
 
         $qdt_array = array();
         $qdts = $this->driver->getResults($query);

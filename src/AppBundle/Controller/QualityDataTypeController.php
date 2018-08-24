@@ -76,13 +76,14 @@ class QualityDataTypeController extends Controller
     /**
      * @Route("/quality-data-type/edit/{qualitydatatype_uri}", name="quality-data-type-edit")
      */
-    public function editAction(Request $request, $qdt_uri)
+    public function editAction(Request $request, $qualitydatatype_uri)
     {
         $model = $this->get('model.qualitydatatype');
-        $uri = urldecode($qdt_uri);
-        $qdt = $model->findOneQualityDimension($uri);
+        $uri = urldecode($qualitydatatype_uri);
+        $qdt = $model->findOneQDT($uri);
+        $modelQD = $this->get('model.qualitydimension');
 
-        $form = $this->createForm(new \AppBundle\Form\QualityDataTypeType(), $qdt);
+        $form = $this->createForm(new \AppBundle\Form\QualityDataTypeType($modelQD), $qdt);
 
         $form->handleRequest($request);
 
@@ -98,7 +99,7 @@ class QualityDataTypeController extends Controller
 
         return $this->render('quality-data-type/form.html.twig', array(
             'form' => $form->createView(),
-            'qualitydatatype' => $qdt
+            'qdt' => $qdt
         ));
     }
 
