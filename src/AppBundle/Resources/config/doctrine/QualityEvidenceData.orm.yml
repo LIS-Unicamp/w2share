@@ -1,0 +1,15 @@
+AppBundle\Entity\QualityEvidenceData:
+  type: entity
+  id:
+    uri:
+      type: string
+  fields:
+    creator:
+      type: string
+    created_at_time:
+      type: datetime
+  oneToMany:
+    resource:
+      targetEntity: WROResource
+    qualitydatatype:
+      targetEntity: QualityDataType

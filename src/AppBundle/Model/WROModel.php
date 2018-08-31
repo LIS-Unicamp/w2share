@@ -84,7 +84,7 @@ class WROModel
                 $workflow_path = $wro->getUploadRootDir()."/history/".$md5.".t2flow";
                 
                 $fs = new \Symfony\Component\Filesystem\Filesystem();    
-                $fs->copy($workflow_path, $workflow->getWorkflowAbsolutePath());
+                //$fs->copy($workflow_path, $workflow->getWorkflowAbsolutePath());
                 
                 $workflow->createWorkflowPNG();
                 $wro->setWorkflow($workflow);

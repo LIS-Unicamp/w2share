@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+{% block title %}{% if qed.uri %}Edit{% else %}New{% endif %} Quality Evidence Data{% endblock %}
+{% block body %}
+<h1>Quality Evidence Data<small> {% if qed.uri %}Edit{% else %}New{% endif %}</small></h1>
+    
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alert alert-success">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert"></button>
+            {{ flashMessage }}
+    </div>            
+{% endfor %}
+{{ form_errors(form) }}
+
+{{ form_start(form) }}
+<div class="panel panel-default">
+    <div class="panel-heading">Form</div>
+    <div class="panel-body">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <b>Resource </b>
+                    <p>
+                    <div>
+                        {{ form_widget(form.resource) }}
+                        {{ form_errors(form.resource) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <b>Quality Data Type</b>
+                    <p>
+                    <div>
+                        {{ form_widget(form.qualitydatatype) }}
+                        {{ form_errors(form.qualitydatatype) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">            
+        {{ form_widget(form.save) }}             
+        {% if qed.uri %}
+            <a href="{{ path('wro-list') }}" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> New</a>
+        {% endif %}
+        <a href="{{ path('wro-details', { 'wro_uri':qed.wro.uri|url_encode() }) }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
+    </div>
+</div>
+{{ form_end(form) }}                
+
+{% endblock %}  
+{% block javascripts %}            
+{% endblock %}
+{% block stylesheets %}
+{% endblock %} 

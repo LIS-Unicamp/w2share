@@ -53,6 +53,38 @@
         </tbody>
     </table>
 </div>
+
+    <h2>Quality Evidence Data</h2>
+    <a href="{{ path('wro-qed-add', { 'wro_uri':wro.uri|url_encode() }) }}" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> New</a>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th style="width:100px">Actions</th>
+                <th>Resource</th>
+                <th>Quality Data Type</th>
+                <th>Creator</th>
+                <th>Last modified</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for qed in qeds %}
+                <tr>
+                    <td>
+                        <a href="{{ path('wro-resource-edit', { 'resource_uri':qed.uri|url_encode()}) }}" title="Edit resource"><i class="glyphicon glyphicon-edit"></i></a>
+                        <a href="{{ path('wro-qed-delete', { 'qed_uri':qed.uri|url_encode()}) }}" title="Delete Quality Evidence Data" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
+                    </td>
+                    <td>{{ qed.resource.filename }}</td>
+                    <td>{{ qed.qualitydatatype.name }}</td>
+                    <td>{{ qed.creator}}</td>
+                    <td>{{ qed.createdattime|date('H:i:s.v m-d-Y') }}</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 <div class="row">
     <div class="col-sm-12">
         <div class="navigation">

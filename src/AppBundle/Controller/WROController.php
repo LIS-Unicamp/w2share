@@ -202,9 +202,76 @@ class WROController extends Controller
             'form' => $form->createView(),
             'resource' => $resource
         ));
-    } 
-    
-    
+    }
+
+    /**
+     * @Route("/wro/qed/add/{wro_uri}", name="wro-qed-add")
+     */
+    public function addQEDAction(Request $request, $wro_uri)
+    {
+        $wro_uri = urldecode($wro_uri);
+
+        $dao = $this->get('dao.wro');
+        $wro = $dao->findWRO($wro_uri);
+        $model = $this->get('model.qualitydatatype');
+        $qed = new \AppBundle\Entity\QualityEvidenceData();
+
+        $form = $this->createForm(new \AppBundle\Form\QualityEvidenceDataType($dao, $model, $wro), $qed);
+        $qed->setWro($wro);
+
+        $form->handleRequest($request);
+
+        if ($form->isValid())
+        {
+
+            $now = new \Datetime();
+            $qed->setCreator($this->getUser());
+            $qed->setCreatedAtTime($now);
+            $dao->addQED($qed);
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Quality Evidence Data added!')
+            ;
+
+        }
+
+        return $this->render('wro/qed-form.html.twig', array(
+            'form' => $form->createView(),
+            'qed' => $qed
+        ));
+    }
+
+
+    /**
+     * @Route("/wro/qed/delete/{qed_uri}", name="wro-qed-delete")
+     */
+    public function removeQEDAction($qed_uri)
+    {
+        $qed_uri = urldecode($qed_uri);
+
+        $dao = $this->get('dao.wro');
+        $qed = $dao->findQED($qed_uri);
+        echo $qed->getResource()->getFilename();
+
+        if ($qed)
+        {
+            $dao->deleteQED($qed_uri);
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Resource deleted!')
+            ;
+        }
+        else
+        {
+            $this->get('session')
+                ->getFlashBag()
+                ->add('error', 'Resource not found!')
+            ;
+        }
+
+        return $this->redirect($this->generateUrl('wro-details', array('wro_uri'=>  urlencode($qed->getWro()->getUri()))));
+    }
+
     /**
      * @Route("/wro/edit/{wro_uri}", name="wro-edit")
      */
@@ -288,9 +355,11 @@ class WROController extends Controller
                 
         return $this->render('wro/wro.html.twig', array(
             'wro' => $wro,
-            'pagination'=>$pagination
+            'pagination'=>$pagination,
+            'qeds'=> $wro->getQualityEvidenceData()
         ));
     }
+
     
     /**
      * @Route("/wro/resource/download/{resource_uri}", name="wro-resource-download")

@@ -24,7 +24,10 @@ AppBundle\Entity\WRO:
             mappedBy: wro
         annotations:
             targetEntity: WROAnnotation
-            mappedBy: wro       
+            mappedBy: wro
+        qualityevidencedata:
+            targetEntity: QualityEvidenceData
+            mappedBy: wro
     manyToOne:
         creator:
             targetEntity: Person  

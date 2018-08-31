@@ -39,6 +39,11 @@ class WRO
     private $annotations;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $qualityevidencedata;
+
+    /**
      * @var \AppBundle\Entity\Person
      */
     private $creator;    
@@ -60,6 +65,7 @@ class WRO
     {
         $this->resources = new \Doctrine\Common\Collections\ArrayCollection();
         $this->annotations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->qualityevidencedata = new \Doctrine\Common\Collections\ArrayCollection();
         $this->created_at = new \Datetime();
         $this->updated_at = new \Datetime();
     }
@@ -314,6 +320,53 @@ class WRO
     }
 
     /**
+     * Add Quality Evidence Data
+     *
+     * @param array $qeds
+     * @return ResearchObject
+     */
+    public function setQualityEvidenceData($qeds)
+    {
+        $this->qualityevidencedata = $qeds;
+
+        return $this;
+    }
+
+    /**
+     * Add Quality Evidence Data
+     *
+     * @param \AppBundle\Entity\QualityEvidenceData $qed
+     * @return ResearchObject
+     */
+    public function addQualityEvidenceData(\AppBundle\Entity\QualityEvidenceData $qed)
+    {
+        $this->qualityevidencedata[] = $qed;
+
+        return $this;
+    }
+
+    /**
+     * Remove Quality Evidence Data
+     *
+     * @param \AppBundle\Entity\WROResource $qed
+     */
+    public function removeQualityEvidenceData(\AppBundle\Entity\QualityEvidenceData $qed)
+    {
+        $this->qualityevidencedata->removeElement($qed);
+    }
+
+    /**
+     * Get Quality Evidence Data
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getQualityEvidenceData()
+    {
+        return $this->qualityevidencedata;
+    }
+
+
+    /**
      * Add annotations
      *
      * @param \AppBundle\Entity\WROAnnotation $annotations
@@ -345,6 +398,7 @@ class WRO
     {
         return $this->annotations;
     }
+
 
     /**
      * Set creator
