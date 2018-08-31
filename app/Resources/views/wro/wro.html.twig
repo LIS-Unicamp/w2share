@@ -54,7 +54,22 @@
     </table>
 </div>
 
-    <h2>Quality Evidence Data</h2>
+    <h2>Quality Evidence Data
+        <br>
+        <div style="float: right">
+            <div class="progress" style="width: 400px;">
+                {% if percent >=50 %}
+                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow={{percent}} aria-valuemin="0" aria-valuemax="100" style="width: {{ percent }}%;">
+                {% endif %}
+                {% if percent <50 %}
+                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow={{percent}} aria-valuemin="0" aria-valuemax="100" style="width: {{ percent }}%;">
+                {%  endif %}
+                    <span class="sr-only"></span>
+                </div>
+            </div>
+        </div>
+    </h2>
+
     <a href="{{ path('wro-qed-add', { 'wro_uri':wro.uri|url_encode() }) }}" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> New</a>
     <div class="table-responsive">
         <table class="table table-striped">

@@ -343,8 +343,10 @@ class WROController extends Controller
     {       
         $wro_uri = urldecode($wro_uri);
         
-        $dao = $this->get('dao.wro');                                   
+        $dao = $this->get('dao.wro');
+        $qdtmodel = $this->get('model.qualitydatatype');
         $wro = $dao->findWRO($wro_uri);
+        $percent = (sizeof($wro->getQualityEvidenceData()) /sizeof($qdtmodel->findAllQualityDataTypes()))*100;
         
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
@@ -356,7 +358,8 @@ class WROController extends Controller
         return $this->render('wro/wro.html.twig', array(
             'wro' => $wro,
             'pagination'=>$pagination,
-            'qeds'=> $wro->getQualityEvidenceData()
+            'qeds'=> $wro->getQualityEvidenceData(),
+            'percent'=> $percent
         ));
     }
 
