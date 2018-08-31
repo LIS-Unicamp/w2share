@@ -108,41 +108,45 @@ class WRODAO
 
     public function findAllQEDByWRO(\AppBundle\Entity\WRO $wro)
     {
+        
         $query =
             "SELECT DISTINCT * WHERE        
         { 
-            GRAPH <".$this->driver->getDefaultGraph('wro')."> 
-            { 
+          
+          
                <".$wro->getUri()."> <w2share:hasQualityEvidenceData> ?qed.
                ?qed a <w2share:QualityEvidenceData> ;
                 <w2share:contains> ?resource ;
                 <w2share:hasDataType> ?qdt ;
-                <dc:date> ?date.
-                
-            }
+                <dc:date> ?date;
+                <dc:creator> ?creator.
+                ?creator <foaf:name> ?name.
+            
         }";
 
         $result_array = $this->driver->getResults($query);
 
         $results_array = array();
-       
+
+
         for ($i = 0; $i < count($result_array); $i++)
         {
             $qed = new \AppBundle\Entity\QualityEvidenceData();
             $qed->setUri($result_array[$i]['qed']['value']);
             $qed->setCreatedAtTime($result_array[$i]['date']['value']);
 
-            /*$creator = new \AppBundle\Entity\Person();
+            $creator = new \AppBundle\Entity\Person();
             $creator->setUri($result_array[$i]['creator']['value']);
             $creator->setName($result_array[$i]['name']['value']);
 
-            $qed->setCreator($creator);*/
+            $qed->setCreator($creator);
             $qed->setResource($this->findResource($result_array[$i]['resource']['value']));
             $qed->setQualityDataType($this->findOneQDT($result_array[$i]['qdt']['value']));
 
             $results_array[] = $qed;
         }
 
+       
         return $results_array;
     }
 
@@ -157,7 +161,9 @@ class WRODAO
                <".$uri.">  a <w2share:QualityEvidenceData> ;
                 <w2share:contains> ?resource ;
                 <w2share:hasDataType> ?qdt ;
-                <dc:date> ?date.
+                <dc:date> ?date;
+                <dc:creator> ?creator.
+                ?creator <foaf:name> ?name.
               
                 
             }
@@ -169,10 +175,11 @@ class WRODAO
         if (count($result_array) > 0){
             $qed = new \AppBundle\Entity\QualityEvidenceData();
             $qed->setCreatedAtTime($result_array[0]['date']['value']);
-            /*$creator = new \AppBundle\Entity\Person();
+
+            $creator = new \AppBundle\Entity\Person();
             $creator->setUri($result_array[$i]['creator']['value']);
             $creator->setName($result_array[$i]['name']['value']);
-            $qed->setCreator($creator);*/
+            $qed->setCreator($creator);
 
             $qed->setResource($this->findResource($result_array[0]['resource']['value']));
             $qed->setQualityDataType($this->findOneQDT($result_array[0]['qdt']['value']));
@@ -345,7 +352,7 @@ class WRODAO
         return $resource;
     }
 
-    public function addQED(\AppBundle\Entity\QualityEvidenceData $qed)
+    public function addQED(\AppBundle\Entity\QualityEvidenceData $qed, $user)
     {
         $uri = \AppBundle\Utils\Utils::convertNameToUri('wro', '/'.$qed->getWro()->getHash().'/'.$qed->getResource()->getFilename().'/'.$qed->getQualityDataType()->getName());
         $qed->setUri($uri);
@@ -360,7 +367,7 @@ class WRODAO
                 <w2share:contains> '".$qed->getResource()->getUri()."' ;
                 <w2share:hasDataType> '".$qed->getQualityDataType()->getUri()."' ;
                 <dc:date> '".$qed->getCreatedAtTime()->format('Y-m-d')."T".$qed->getCreatedAtTime()->format('H:i:s')."';
-                <dc:creator> '".$qed->getCreator()->getUri()."'.
+                <dc:creator> <".$user->getUri().">.
             }
         }";
 

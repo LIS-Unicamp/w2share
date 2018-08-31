@@ -225,9 +225,9 @@ class WROController extends Controller
         {
 
             $now = new \Datetime();
-            $qed->setCreator($this->getUser());
             $qed->setCreatedAtTime($now);
-            $dao->addQED($qed);
+            $user = $this->getUser();
+            $dao->addQED($qed, $user);
             $this->get('session')
                 ->getFlashBag()
                 ->add('success', 'Quality Evidence Data added!')
