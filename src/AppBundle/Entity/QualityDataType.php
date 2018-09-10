@@ -24,6 +24,11 @@ class QualityDataType
     private $name;
 
     /**
+     * @var boolean
+     */
+    private $isMandatory;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $qualitydimensions;
@@ -53,6 +58,30 @@ class QualityDataType
     public function getUri()
     {
         return $this->uri;
+    }
+
+
+    /**
+     * Set isMandatory
+     *
+     * @param boolean $isMandatory
+     * @return QualityDataType
+     */
+    public function setIsMandatory($isMandatory)
+    {
+        $this->isMandatory = $isMandatory;
+
+        return $this;
+    }
+
+    /**
+     * Get isMandatory
+     *
+     * @return string
+     */
+    public function getIsMandatory()
+    {
+        return $this->isMandatory;
     }
 
 

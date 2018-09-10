@@ -31,6 +31,8 @@ class QualityDataType
             { 
                 <" . $qdt->getUri() . "> a <w2share:QualityDataType>.
                 <" . $qdt->getUri() . "> <w2share:qdtName> '" . $qdt->getName() . "'.
+                <" . $qdt->getUri() . "> <w2share:isMandatory> '" . $qdt->getIsMandatory() . "'.
+                
             }
         }";
 
@@ -89,6 +91,7 @@ class QualityDataType
             { 
                 <".$uri."> a <w2share:QualityDataType>.
                 <".$uri."> <w2share:qdtName> ?name.
+                <".$uri."> <w2share:isMandatory> ?bool.
             }
         }";
 
@@ -98,6 +101,7 @@ class QualityDataType
         try {
             $qualityDataType->setUri($uri);
             $qualityDataType->setName($qdt[0]['name']['value']);
+            $qualityDataType->setIsMandatory($qdt[0]['bool']['value']);
             $qualitydimensions = $this->findAllDimensionsByQDT($qualityDataType);
             $qualityDataType->setQualityDimensions($qualitydimensions);
         } catch (\Symfony\Component\Debug\Exception\ContextErrorException $ex) {
@@ -109,12 +113,9 @@ class QualityDataType
 
     public function updateQualityDataType(\AppBundle\Entity\QualityDataType $qdt)
     {
-        echo sizeof($qdt->getQualityDimensions());
         $this->deleteQualityDataType($qdt);
-        echo sizeof($this->findAllDimensionsByQDT($qdt));
         $this->insertQualityDataType($qdt);
         $this->insertQualityDimensions($qdt);
-        echo sizeof($this->findAllDimensionsByQDT($qdt));
 
     }
 
@@ -160,7 +161,8 @@ class QualityDataType
                 "SELECT * WHERE 
             {
                 ?uri a <w2share:QualityDataType> ;
-                <w2share:qdtName> ?name .
+                <w2share:qdtName> ?name ;
+                <w2share:isMandatory> ?bool.
             }";
 
         $qdt_array = array();
@@ -170,6 +172,7 @@ class QualityDataType
             $qdt = new \AppBundle\Entity\QualityDataType();
             $qdt->setUri($qdts[$i]['uri']['value']);
             $qdt->setName($qdts[$i]['name']['value']);
+            $qdt->setIsMandatory($qdts[$i]['bool']['value']);
             $qdt->setQualityDimensions($this->findAllDimensionsByQDT($qdt));
             $qdt_array[$qdt->getUri()] = $qdt;
         }

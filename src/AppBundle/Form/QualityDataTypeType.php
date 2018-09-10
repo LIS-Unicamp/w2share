@@ -32,6 +32,10 @@ class QualityDataTypeType extends AbstractType
                 },
                 'multiple' => true,
                 'expanded' => true
+            ))
+            ->add('ismandatory', 'checkbox', array(
+                'label'    => 'Is this a mandatory Quality Data Type?',
+                'required' => false,
             ));
 
     }

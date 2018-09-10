@@ -26,6 +26,7 @@
                 <th style="width:120px">Action</th>
                 <th>Name</th>
                 <th> Quality Dimensions</th>
+                <th>Mandatory?</th>
             </tr>
             </thead>
             <tbody>
@@ -39,6 +40,7 @@
                     <td>
                         {% for qd in qdt.qualitydimensions %} {{ qd.name }} {% endfor %}
                     </td>
+                    <td> {% if qdt.isMandatory == true %}Yes{% endif %}{% if qdt.isMandatory == false %}No{% endif %}</td>
                 </tr>
             {% endfor %}
             </tbody>
