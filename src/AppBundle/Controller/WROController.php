@@ -269,6 +269,44 @@ class WROController extends Controller
         return $this->redirect($this->generateUrl('wro-details', array('wro_uri'=>  urlencode($qed->getWro()->getUri()))));
     }
 
+
+    /**
+     * @Route("/wro/qed/edit/{qed_uri}", name="wro-qed-edit")
+     */
+    public function editQEDAction(Request $request, $qed_uri)
+    {
+        $qed_uri = urldecode($qed_uri);
+
+        $dao = $this->get('dao.wro');
+        $qed = $dao->findQED($qed_uri);
+
+        if (null === $qed)
+        {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Quality Evidence Data not found!');
+        }
+
+        $form = $this->createForm(new \AppBundle\Form\QualityEvidenceDataType($dao, $qed->getWRO()), $qed);
+        $form->handleRequest($request);
+
+        if ($form->isValid())
+        {
+            $now = new \Datetime();
+            $qed->setCreatedAtTime($now);
+            $user = $this->getUser();
+            $dao->updateQED($qed_uri, $qed, $user);
+
+            $this->get('session')
+                ->getFlashBag()
+                ->add('success', 'Quality Evidence Data edited!')
+            ;
+        }
+
+        return $this->render('wro/qed-form.html.twig', array(
+            'form' => $form->createView(),
+            'qed' => $qed
+        ));
+    }
+
     /**
      * @Route("/wro/edit/{wro_uri}", name="wro-edit")
      */

@@ -359,7 +359,12 @@ class WRODAO
         
         return null;
     }
-    
+
+    public function updateQED($qed_uri, \AppBundle\Entity\QualityEvidenceData $qed, \AppBundle\Entity\Person $user){
+        $this->deleteQED($qed_uri);
+        $this->addQED($qed, $user);
+    }
+
     public function updateResource(\AppBundle\Entity\WROResource $resource)
     {
         $query = 

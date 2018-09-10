@@ -87,7 +87,7 @@
             {% for qed in qeds %}
                 <tr>
                     <td>
-                        <a href="{{ path('wro-resource-edit', { 'resource_uri':qed.uri|url_encode()}) }}" title="Edit resource"><i class="glyphicon glyphicon-edit"></i></a>
+                        <a href="{{ path('wro-qed-edit', { 'qed_uri':qed.uri|url_encode()}) }}" title="Edit Quality Evidence Data"><i class="glyphicon glyphicon-edit"></i></a>
                         <a href="{{ path('wro-qed-delete', { 'qed_uri':qed.uri|url_encode()}) }}" title="Delete Quality Evidence Data" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
                     </td>
                     <td>{{ qed.resource.filename }}</td>
