@@ -17,9 +17,8 @@ class QualityEvidenceDataType extends AbstractType
 {
 
 
-    public function __construct(\AppBundle\Dao\WRODAO $WROdao, \AppBundle\Model\QualityDataType $model, \AppBundle\Entity\WRO $wro) {
+    public function __construct(\AppBundle\Dao\WRODAO $WROdao, \AppBundle\Entity\WRO $wro) {
         $this->dao = $WROdao;
-        $this->model = $model;
         $this->wro  = $wro;
 
     }
@@ -28,14 +27,14 @@ class QualityEvidenceDataType extends AbstractType
         $builder
 
             ->add('qualitydatatype', 'choice', array(
-                'choices' => $this->model->findAllQualityDataTypes(),
+                'choices' => $this->dao->findUnusedQDTByWRO($this->wro),
                 'choices_as_values' => true,
                 'choice_label' => function($qd, $key, $index){
                     return $qd->getName();
                 }
             ))
             ->add('resource', 'choice', array(
-                'choices' => $this->dao->findAllResourcesByWRO($this->wro),
+                'choices' => $this->dao->findUnusedResourcesByWRO($this->wro),
                 'choices_as_values' => true,
                 'choice_label' => function($qd, $key, $index){
                     return $qd->getFilename();

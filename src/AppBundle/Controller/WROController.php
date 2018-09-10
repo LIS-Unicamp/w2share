@@ -213,10 +213,9 @@ class WROController extends Controller
 
         $dao = $this->get('dao.wro');
         $wro = $dao->findWRO($wro_uri);
-        $model = $this->get('model.qualitydatatype');
         $qed = new \AppBundle\Entity\QualityEvidenceData();
 
-        $form = $this->createForm(new \AppBundle\Form\QualityEvidenceDataType($dao, $model, $wro), $qed);
+        $form = $this->createForm(new \AppBundle\Form\QualityEvidenceDataType($dao, $wro), $qed);
         $qed->setWro($wro);
 
         $form->handleRequest($request);
@@ -248,10 +247,8 @@ class WROController extends Controller
     public function removeQEDAction($qed_uri)
     {
         $qed_uri = urldecode($qed_uri);
-
         $dao = $this->get('dao.wro');
         $qed = $dao->findQED($qed_uri);
-        echo $qed->getResource()->getFilename();
 
         if ($qed)
         {

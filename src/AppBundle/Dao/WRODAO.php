@@ -1,6 +1,9 @@
 <?php
 namespace AppBundle\Dao;
 
+use AppBundle\AppBundle;
+use http\QueryString;
+
 /**
  * Description of the Research Object model
  *
@@ -114,10 +117,10 @@ class WRODAO
         { 
           
           
-               <".$wro->getUri()."> <w2share:hasQualityEvidenceData> ?qed.
-               ?qed a <w2share:QualityEvidenceData> ;
-                <w2share:contains> ?resource ;
-                <w2share:hasDataType> ?qdt ;
+                   <".$wro->getUri()."> <w2share:hasQualityEvidenceData> ?qed.
+                   ?qed a <w2share:QualityEvidenceData> ;
+                    <w2share:contains> ?resource ;
+                    <w2share:hasDataType> ?qdt ;
                 <dc:date> ?date;
                 <dc:creator> ?creator.
                 ?creator <foaf:name> ?name.
@@ -154,8 +157,7 @@ class WRODAO
     {
         $query =
             "SELECT DISTINCT * WHERE        
-        { 
-            GRAPH <".$this->driver->getDefaultGraph('wro')."> 
+        {  
             { 
                ?wro <w2share:hasQualityEvidenceData>  <".$uri.">.
                <".$uri.">  a <w2share:QualityEvidenceData> ;
@@ -171,14 +173,13 @@ class WRODAO
 
 
         $result_array = $this->driver->getResults($query);
-
         if (count($result_array) > 0){
             $qed = new \AppBundle\Entity\QualityEvidenceData();
             $qed->setCreatedAtTime($result_array[0]['date']['value']);
 
             $creator = new \AppBundle\Entity\Person();
-            $creator->setUri($result_array[$i]['creator']['value']);
-            $creator->setName($result_array[$i]['name']['value']);
+            $creator->setUri($result_array[0]['creator']['value']);
+            $creator->setName($result_array[0]['name']['value']);
             $qed->setCreator($creator);
 
             $qed->setResource($this->findResource($result_array[0]['resource']['value']));
@@ -253,6 +254,61 @@ class WRODAO
         }
 
         return $qualityDataType;
+    }
+
+    public function findUnusedQDTByWRO(\AppBundle\Entity\WRO $wro){
+     $query = "
+        SELECT * WHERE {
+            ?qdt a <w2share:QualityDataType>;
+            <w2share:qdtName> ?name;
+            <w2share:isMandatory> ?bool.
+            MINUS {
+                <".$wro->getUri()."> <w2share:hasQualityEvidenceData> ?qed.
+                ?qed a <w2share:QualityEvidenceData> ;
+                <w2share:hasDataType> ?qdt.
+
+            }
+        }
+
+    ";
+        $qdt_array = array();
+        $qdts = $this->driver->getResults($query);
+
+        for ($i = 0; $i < count($qdts); $i++)
+        {
+            $qdt = new \AppBundle\Entity\QualityDataType();
+            $qdt->setUri($qdts[$i]['qdt']['value']);
+            $qdt->setName($qdts[$i]['name']['value']);
+            $qdt->setIsMandatory($qdts[$i]['bool']['value']);
+            $qdt->setQualityDimensions($this->findAllDimensionsByQDT($qdt));
+            $qdt_array[$qdt->getUri()] = $qdt;
+        }
+
+        return $qdt_array;
+    }
+
+    public function findUnusedResourcesByWRO( \AppBundle\Entity\WRO $wro){
+        $query = "
+        SELECT * WHERE {
+            <".$wro->getUri()."> ore:aggregates ?resource.
+            ?resource a ro:Resource
+            MINUS {
+                <".$wro->getUri()."> <w2share:hasQualityEvidenceData> ?qed.
+                ?qed a <w2share:QualityEvidenceData> ;
+                <w2share:contains> ?resource.
+            
+            }
+        }";
+
+        $resource_array = array();
+        $results = $this->driver->getResults($query);
+
+        for ($i = 0; $i < count($results); $i++) {
+            $resource = $this->findResource($results[$i]['resource']['value']);
+            $resource_array[$resource->getUri()] = $resource;
+        }
+        return $resource_array;
+
     }
 
     public function findResource($uri)
@@ -364,8 +420,8 @@ class WRODAO
             { 
                 <".$qed->getWro()->getUri()."> <w2share:hasQualityEvidenceData> <".$qed->getUri().">.
                 <".$qed->getUri()."> a <w2share:QualityEvidenceData> ;
-                <w2share:contains> '".$qed->getResource()->getUri()."' ;
-                <w2share:hasDataType> '".$qed->getQualityDataType()->getUri()."' ;
+                <w2share:contains> <".$qed->getResource()->getUri()."> ;
+                <w2share:hasDataType> <".$qed->getQualityDataType()->getUri()."> ;
                 <dc:date> '".$qed->getCreatedAtTime()->format('Y-m-d')."T".$qed->getCreatedAtTime()->format('H:i:s')."';
                 <dc:creator> <".$user->getUri().">.
             }
