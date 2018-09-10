@@ -81,6 +81,7 @@ class QualityDataTypeController extends Controller
         $model = $this->get('model.qualitydatatype');
         $uri = urldecode($qualitydatatype_uri);
         $qdt = $model->findOneQDT($uri);
+        echo $qdt->getIsMandatory();
         $modelQD = $this->get('model.qualitydimension');
 
         $form = $this->createForm(new \AppBundle\Form\QualityDataTypeType($modelQD), $qdt);
@@ -116,12 +117,26 @@ class QualityDataTypeController extends Controller
 
         if ($qdt)
         {
-            $model->deleteQualityDataType($qdt);
+            if($model->qualityDataTypeBeingUsed($qdt)){
+                $this->get('session')
+                    ->getFlashBag()
+                    ->add(
+                        'error', 'This quality data type is being used by a quality evidence data and it cannot be deleted' );
+            }
 
-            $this->get('session')
-                ->getFlashBag()
-                ->add('success', 'Quality data type deleted!')
-            ;
+            if($qdt->getIsMandatory()){
+                $this->get('session')
+                    ->getFlashBag()
+                    ->add(
+                        'error', 'This quality data type is mandatory and it cannot be deleted' );
+            }
+            else {
+                $model->deleteQualityDataType($qdt);
+
+                $this->get('session')
+                    ->getFlashBag()
+                    ->add('success', 'Quality data type deleted!');
+            }
         }
         //TO-DO verificar
         return $this->redirect($this->generateUrl('quality-data-type-list'));

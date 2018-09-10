@@ -179,4 +179,16 @@ class QualityDataType
 
         return $qdt_array;
     }
+
+    public function qualityDataTypeBeingUsed(\AppBundle\Entity\QualityDataType $qdt)
+    {
+        $query = "SELECT ?qed WHERE
+        { ?qed <w2share:hasDataType> <".$qdt->getUri() . "> . 
+        }";
+        if (count( $this->driver->getResults($query)) > 0) {
+            return true;
+        }
+        return false;
+    }
+
 }
