@@ -214,8 +214,10 @@ class WROController extends Controller
         $dao = $this->get('dao.wro');
         $wro = $dao->findWRO($wro_uri);
         $qed = new \AppBundle\Entity\QualityEvidenceData();
+        $resources = $dao->findUnusedResourcesByWRO($wro);
+        $qdts = $dao->findUnusedQDTByWRO($wro);
 
-        $form = $this->createForm(new \AppBundle\Form\QualityEvidenceDataType($dao, $wro), $qed);
+        $form = $this->createForm(new \AppBundle\Form\QualityEvidenceDataType($resources, $qdts), $qed);
         $qed->setWro($wro);
 
         $form->handleRequest($request);
@@ -285,7 +287,13 @@ class WROController extends Controller
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Quality Evidence Data not found!');
         }
 
-        $form = $this->createForm(new \AppBundle\Form\QualityEvidenceDataType($dao, $qed->getWRO()), $qed);
+
+        $resources = $dao->findUnusedResourcesByWRO($qed->getWRO());
+        $qdts = $dao->findUnusedQDTByWRO($qed->getWRO());
+        $resources[$qed->getResource()->getUri()] = $qed->getResource();
+        $qdts[$qed->getQualityDataType()->getUri()] = $qed->getQualityDataType();
+
+        $form = $this->createForm(new \AppBundle\Form\QualityEvidenceDataType($resources, $qdts ), $qed);
         $form->handleRequest($request);
 
         if ($form->isValid())
