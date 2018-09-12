@@ -124,7 +124,7 @@ class QualityDataTypeController extends Controller
                         'error', 'This quality data type is being used by a quality evidence data and it cannot be deleted' );
             }
 
-            if($qdt->getIsMandatory()){
+            elseif ($qdt->getIsMandatory()){
                 $this->get('session')
                     ->getFlashBag()
                     ->add(

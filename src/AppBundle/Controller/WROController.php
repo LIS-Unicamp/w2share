@@ -390,7 +390,8 @@ class WROController extends Controller
         $qdtmodel = $this->get('model.qualitydatatype');
         $wro = $dao->findWRO($wro_uri);
         $percent = (sizeof($wro->getQualityEvidenceData()) /sizeof($qdtmodel->findAllQualityDataTypes()))*100;
-        
+        $unusedqdts = $dao->findUnusedQDTByWRO($wro);
+        echo sizeof($unusedqdts);
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $wro->getResources(), /* query NOT result */
@@ -402,7 +403,8 @@ class WROController extends Controller
             'wro' => $wro,
             'pagination'=>$pagination,
             'qeds'=> $wro->getQualityEvidenceData(),
-            'percent'=> $percent
+            'percent'=> $percent,
+            'unused' => $unusedqdts
         ));
     }
 

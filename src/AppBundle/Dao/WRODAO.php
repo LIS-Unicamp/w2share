@@ -234,10 +234,11 @@ class WRODAO
         $query =
             "SELECT * WHERE        
         { 
-            GRAPH <" . $this->driver->getDefaultGraph('qualitydatatype') . "> 
+            GRAPH <".$this->driver->getDefaultGraph('qualitydatatype')."> 
             { 
-                <" . $uri . "> a <w2share:QualityDataType>.
-                <" . $uri . "> <w2share:qdtName> ?name.
+                <".$uri."> a <w2share:QualityDataType>.
+                <".$uri."> <w2share:qdtName> ?name.
+                <".$uri."> <w2share:isMandatory> ?bool.
             }
         }";
 
@@ -247,6 +248,7 @@ class WRODAO
         try {
             $qualityDataType->setUri($uri);
             $qualityDataType->setName($qdt[0]['name']['value']);
+            $qualityDataType->setIsMandatory($qdt[0]['bool']['value']);
             $qualitydimensions = $this->findAllDimensionsByQDT($qualityDataType);
             $qualityDataType->setQualityDimensions($qualitydimensions);
         } catch (\Symfony\Component\Debug\Exception\ContextErrorException $ex) {
