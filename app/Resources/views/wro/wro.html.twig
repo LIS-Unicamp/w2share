@@ -75,25 +75,47 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th style="width:100px">Actions</th>
-                <th>Resource</th>
+                <th style="width:100px">
+                </th>
                 <th>Quality Data Type</th>
+                <th>Resource</th>
+                <th>Quality Dimensions</th>
                 <th>Creator</th>
                 <th>Last modified</th>
+                <th style="width:100px">Actions</th>
 
             </tr>
             </thead>
             <tbody>
+
             {% for qed in qeds %}
                 <tr>
+                    <td>{% if qed.qualitydatatype.isMandatory == true %} <i class="glyphicon glyphicon-ok-sign" style="font-size: x-large; color: #1CB94A" title="Mandatory Quality Data Type"> {% endif %}
+                            {% if qed.qualitydatatype.isMandatory == false %} <i class="glyphicon glyphicon-plus-sign" style="font-size: x-large; color: darkorange" title="Optional Quality Data Type"> {% endif %}</td>
+                    <td>{{ qed.qualitydatatype.name }}</td>
+                    <td>{{ qed.resource.filename }}</td>
+                    <td> {% for qd in qed.qualitydatatype.qualitydimensions %} {{ qd.name }} {% endfor %}</td>
+                    <td>{{ qed.creator.name}}</td>
+                    <td>{{ qed.createdattime|date('H:i:s.v m-d-Y') }}</a></td>
                     <td>
                         <a href="{{ path('wro-qed-edit', { 'qed_uri':qed.uri|url_encode()}) }}" title="Edit Quality Evidence Data"><i class="glyphicon glyphicon-edit"></i></a>
                         <a href="{{ path('wro-qed-delete', { 'qed_uri':qed.uri|url_encode()}) }}" title="Delete Quality Evidence Data" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
                     </td>
-                    <td>{{ qed.resource.filename }}</td>
-                    <td>{{ qed.qualitydatatype.name }}</td>
-                    <td>{{ qed.creator.name}}</td>
-                    <td>{{ qed.createdattime|date('H:i:s.v m-d-Y') }}</a></td>
+                </tr>
+
+            {% endfor %}
+            {% for qdt in unused %}
+                <tr>
+                {% if qdt.isMandatory == true %}
+                    <td> <i class="glyphicon glyphicon-remove-sign" style="font-size: x-large; color: red" title="Mandatory Quality Data Type"></td>
+                    <td>{{ qdt.name }}</td>
+                    <td></td>
+                    <td> {% for qd in qdt.qualitydimensions %} {{ qd.name }} {% endfor %}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                {% endif %}
+
                 </tr>
             {% endfor %}
             </tbody>
