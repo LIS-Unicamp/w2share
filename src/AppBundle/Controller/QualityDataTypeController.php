@@ -81,7 +81,6 @@ class QualityDataTypeController extends Controller
         $model = $this->get('model.qualitydatatype');
         $uri = urldecode($qualitydatatype_uri);
         $qdt = $model->findOneQDT($uri);
-        echo $qdt->getIsMandatory();
         $modelQD = $this->get('model.qualitydimension');
 
         $form = $this->createForm(new \AppBundle\Form\QualityDataTypeType($modelQD), $qdt);

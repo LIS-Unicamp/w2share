@@ -101,7 +101,7 @@ class QualityDataType
         try {
             $qualityDataType->setUri($uri);
             $qualityDataType->setName($qdt[0]['name']['value']);
-            $qualityDataType->setIsMandatory($qdt[0]['bool']['value']);
+            $qualityDataType->setIsMandatory(boolval($qdt[0]['bool']['value']));
             $qualitydimensions = $this->findAllDimensionsByQDT($qualityDataType);
             $qualityDataType->setQualityDimensions($qualitydimensions);
         } catch (\Symfony\Component\Debug\Exception\ContextErrorException $ex) {
