@@ -57,6 +57,7 @@ class QualityDataTypeController extends Controller
 
         if ($form->isValid())
         {
+            if(sizeof($qdt->getQualityDimensions())!=0){
             $model->insertQualityDataType($qdt);
             $model->insertQualityDimensions($qdt);
             $this->get('session')
@@ -65,6 +66,16 @@ class QualityDataTypeController extends Controller
             ;
 
             return $this->redirect($this->generateUrl('quality-data-type-add'));
+            }
+            else{
+                $this->get('session')
+                    ->getFlashBag()
+                    ->add('error', 'No Quality Dimension selected!')
+                ;
+
+                return $this->redirect($this->generateUrl('quality-data-type-add'));
+
+            }
         }
 
         return $this->render('quality-data-type/form.html.twig', array(
@@ -89,12 +100,20 @@ class QualityDataTypeController extends Controller
 
         if ($form->isValid())
         {
-            $model->updateQualityDataType($qdt);
+            if(sizeof($qdt->getQualityDimensions())!=0) {
+                $model->updateQualityDataType($qdt);
 
-            $this->get('session')
-                ->getFlashBag()
-                ->add('success', 'Quality data type edited!')
-            ;
+                $this->get('session')
+                    ->getFlashBag()
+                    ->add('success', 'Quality data type edited!');
+            }
+            else{
+                $this->get('session')
+                    ->getFlashBag()
+                    ->add('error', 'No Quality Dimension selected!')
+                ;
+
+            }
         }
 
         return $this->render('quality-data-type/form.html.twig', array(
