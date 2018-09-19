@@ -98,6 +98,7 @@
                     <td>{{ qed.creator.name}}</td>
                     <td>{{ qed.createdattime|date('H:i:s.v m-d-Y') }}</a></td>
                     <td>
+                        <a href="{{ path('wro-resource-details', { 'resource_uri':qed.resource  .uri|url_encode()}) }}" title="Go to resource details"><i class="glyphicon glyphicon-search"></i></a>
                         <a href="{{ path('wro-qed-edit', { 'qed_uri':qed.uri|url_encode()}) }}" title="Edit Quality Evidence Data"><i class="glyphicon glyphicon-edit"></i></a>
                         <a href="{{ path('wro-qed-delete', { 'qed_uri':qed.uri|url_encode()}) }}" title="Delete Quality Evidence Data" class="delete"><i class="glyphicon glyphicon-trash"></i></a>
                     </td>

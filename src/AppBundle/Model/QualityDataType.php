@@ -180,6 +180,31 @@ class QualityDataType
         return $qdt_array;
     }
 
+    public function findAllMandatoryQualityDataTypes()
+    {
+        $query =
+            "SELECT * WHERE 
+            {
+                ?uri a <w2share:QualityDataType> ;
+                <w2share:qdtName> ?name ;
+                <w2share:isMandatory> '1'.
+            }";
+
+        $qdt_array = array();
+        $qdts = $this->driver->getResults($query);
+        for ($i = 0; $i < count($qdts); $i++)
+        {
+            $qdt = new \AppBundle\Entity\QualityDataType();
+            $qdt->setUri($qdts[$i]['uri']['value']);
+            $qdt->setName($qdts[$i]['name']['value']);
+            $qdt->setIsMandatory(true);
+            $qdt->setQualityDimensions($this->findAllDimensionsByQDT($qdt));
+            $qdt_array[$qdt->getUri()] = $qdt;
+        }
+
+        return $qdt_array;
+    }
+
     public function qualityDataTypeBeingUsed(\AppBundle\Entity\QualityDataType $qdt)
     {
         $query = "SELECT ?qed WHERE
