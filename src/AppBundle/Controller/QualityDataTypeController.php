@@ -101,7 +101,7 @@ class QualityDataTypeController extends Controller
         if ($form->isValid())
         {
             if(sizeof($qdt->getQualityDimensions())!=0) {
-                $model->updateQualityDataType($qdt);
+                $model->updateQualityDataType($uri, $qdt);
 
                 $this->get('session')
                     ->getFlashBag()
@@ -135,21 +135,21 @@ class QualityDataTypeController extends Controller
 
         if ($qdt)
         {
-            if($model->qualityDataTypeBeingUsed($qdt)){
+            if ($model->qualityDataTypeBeingUsed($qdt)){
                 $this->get('session')
                     ->getFlashBag()
                     ->add(
                         'error', 'This quality data type is being used by a quality evidence data and it cannot be deleted' );
             }
-
-            elseif ($qdt->getIsMandatory()){
+            elseif
+            ($qdt->getIsMandatory()){
                 $this->get('session')
                     ->getFlashBag()
                     ->add(
                         'error', 'This quality data type is mandatory and it cannot be deleted' );
             }
             else {
-                $model->deleteQualityDataType($qdt);
+                $model->deleteQualityDataType($qdt->getUri());
 
                 $this->get('session')
                     ->getFlashBag()

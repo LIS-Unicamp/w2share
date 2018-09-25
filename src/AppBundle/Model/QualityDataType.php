@@ -62,20 +62,18 @@ class QualityDataType
 
 
 
-    public function deleteQualityDataType(\AppBundle\Entity\QualityDataType $qdt)
+    public function deleteQualityDataType($uri)
     {
         $query =
             "DELETE FROM <" . $this->driver->getDefaultGraph('qualitydatatype') . "> 
             {
-                <" .$qdt->getUri() . "> a <w2share:QualityDataType>.
-                <" . $qdt->getUri() . "> <w2share:qdtName>  '" . $qdt->getName(). "' .
-                <" .$qdt->getUri() . "> ?property ?object.
+                <" .$uri. "> a <w2share:QualityDataType>.
+                <" .$uri . "> ?property ?object.
             }
             WHERE 
             {
-                <" .$qdt->getUri() . "> a <w2share:QualityDataType>.
-                <" . $qdt->getUri() . "> <w2share:qdtName>  '" . $qdt->getName(). "' .
-                <" .$qdt->getUri() . "> ?property ?object .
+                <" .$uri. "> a <w2share:QualityDataType>.
+                <" .$uri . "> ?property ?object .
 
             }";
 
@@ -111,9 +109,9 @@ class QualityDataType
         return $qualityDataType;
     }
 
-    public function updateQualityDataType(\AppBundle\Entity\QualityDataType $qdt)
+    public function updateQualityDataType($uri, \AppBundle\Entity\QualityDataType $qdt)
     {
-        $this->deleteQualityDataType($qdt);
+        $this->deleteQualityDataType($uri);
         $this->insertQualityDataType($qdt);
         $this->insertQualityDimensions($qdt);
 
