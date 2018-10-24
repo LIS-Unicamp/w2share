@@ -2,10 +2,10 @@
 {% form_theme form _self %}
 
 
-{% block title %}Add Quality Data Type{% endblock %}
+{% block title %}Add Quality Data Nature{% endblock %}
 {% block body %}
 
-    <h2>Quality Data Type <small>{% if qdt.uri %}Edit{% else %}Add{% endif %}</small></h2>
+    <h2>Quality Data Nature <small>{% if qdn.uri %}Edit{% else %}Add{% endif %}</small></h2>
 
     {% for flashMessage in app.session.flashbag.get('success') %}
         <div class="alert alert-success">
@@ -58,10 +58,10 @@
         </div>
         <div class="panel-footer">
             {{ form_widget(form.save) }}
-            {% if qdt.uri %}
-                <a class="btn btn-success" href="{{ path('quality-data-type-add') }}"><i class="glyphicon glyphicon-plus"></i> New</a>
+            {% if qdn.uri %}
+                <a class="btn btn-success" href="{{ path('quality-data-nature-add') }}"><i class="glyphicon glyphicon-plus"></i> New</a>
             {% endif %}
-            <a href="{{ path('quality-data-type-list') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
+            <a href="{{ path('quality-data-nature-list') }}" class="btn btn-info"><i class="glyphicon glyphicon-list"></i> List</a>
         </div>
     </div>
     {{ form_end(form) }}

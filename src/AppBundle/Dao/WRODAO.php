@@ -120,7 +120,7 @@ class WRODAO
                    <".$wro->getUri()."> <w2share:hasQualityEvidenceData> ?qed.
                    ?qed a <w2share:QualityEvidenceData> ;
                     <w2share:contains> ?resource ;
-                    <w2share:hasDataType> ?qdt ;
+                    <w2share:hasDataNature> ?qdn ;
                 <dc:date> ?date;
                 <dc:creator> ?creator.
                 ?creator <foaf:name> ?name.
@@ -144,7 +144,7 @@ class WRODAO
 
             $qed->setCreator($creator);
             $qed->setResource($this->findResource($result_array[$i]['resource']['value']));
-            $qed->setQualityDataType($this->findOneQDT($result_array[$i]['qdt']['value']));
+            $qed->setQualityDataNature($this->findOneQDN($result_array[$i]['qdn']['value']));
 
             $results_array[] = $qed;
         }
@@ -162,7 +162,7 @@ class WRODAO
                ?wro <w2share:hasQualityEvidenceData>  <".$uri.">.
                <".$uri.">  a <w2share:QualityEvidenceData> ;
                 <w2share:contains> ?resource ;
-                <w2share:hasDataType> ?qdt ;
+                <w2share:hasDataNature> ?qdn ;
                 <dc:date> ?date;
                 <dc:creator> ?creator.
                 ?creator <foaf:name> ?name.
@@ -183,7 +183,7 @@ class WRODAO
             $qed->setCreator($creator);
 
             $qed->setResource($this->findResource($result_array[0]['resource']['value']));
-            $qed->setQualityDataType($this->findOneQDT($result_array[0]['qdt']['value']));
+            $qed->setQualityDataNature($this->findOneQDN($result_array[0]['qdn']['value']));
             $qed->setWro($this->findWRO($result_array[0]['wro']['value']));
 
             return $qed;
@@ -192,12 +192,12 @@ class WRODAO
 
 
 
-    public function findAllDimensionsByQDT(\AppBundle\Entity\QualityDataType $qdt)
+    public function findAllDimensionsByQDN(\AppBundle\Entity\QualityDataNature $qdn)
     {
         $query =
             "SELECT DISTINCT * WHERE        
         { 
-            <".$qdt->getUri()."> <w2share:describesQualityDimension> ?dimension .
+            <".$qdn->getUri()."> <w2share:describesQualityDimension> ?dimension .
             ?dimension a <w2share:QualityDimension> ;
             <w2share:qdName> ?name ;
             <w2share:valueType> ?valueType ;
@@ -229,64 +229,64 @@ class WRODAO
     }
 
 
-    public function findOneQDT($uri)
+    public function findOneQDN($uri)
     {
         $query =
             "SELECT * WHERE        
         { 
-            GRAPH <".$this->driver->getDefaultGraph('qualitydatatype')."> 
+            GRAPH <".$this->driver->getDefaultGraph('qualitydatanature')."> 
             { 
-                <".$uri."> a <w2share:QualityDataType>.
-                <".$uri."> <w2share:qdtName> ?name.
+                <".$uri."> a <w2share:QualityDataNature>.
+                <".$uri."> <w2share:qdnName> ?name.
                 <".$uri."> <w2share:isMandatory> ?bool.
             }
         }";
 
-        $qdt = $this->driver->getResults($query);
+        $qdn = $this->driver->getResults($query);
 
-        $qualityDataType = new \AppBundle\Entity\QualityDataType();
+        $qualityDataNature = new \AppBundle\Entity\QualityDataNature();
         try {
-            $qualityDataType->setUri($uri);
-            $qualityDataType->setName($qdt[0]['name']['value']);
-            $qualityDataType->setIsMandatory($qdt[0]['bool']['value']);
-            $qualitydimensions = $this->findAllDimensionsByQDT($qualityDataType);
-            $qualityDataType->setQualityDimensions($qualitydimensions);
+            $qualityDataNature->setUri($uri);
+            $qualityDataNature->setName($qdn[0]['name']['value']);
+            $qualityDataNature->setIsMandatory($qdn[0]['bool']['value']);
+            $qualitydimensions = $this->findAllDimensionsByQDN($qualityDataNature);
+            $qualityDataNature->setQualityDimensions($qualitydimensions);
         } catch (\Symfony\Component\Debug\Exception\ContextErrorException $ex) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Data Type not found!");
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Data Nature not found!");
         }
 
-        return $qualityDataType;
+        return $qualityDataNature;
     }
 
-    public function findUnusedQDTByWRO(\AppBundle\Entity\WRO $wro){
+    public function findUnusedQDNByWRO(\AppBundle\Entity\WRO $wro){
      $query = "
         SELECT * WHERE {
-            ?qdt a <w2share:QualityDataType>;
-            <w2share:qdtName> ?name;
+            ?qdn a <w2share:QualityDataNature>;
+            <w2share:qdnName> ?name;
             <w2share:isMandatory> ?bool.
             MINUS {
                 <".$wro->getUri()."> <w2share:hasQualityEvidenceData> ?qed.
                 ?qed a <w2share:QualityEvidenceData> ;
-                <w2share:hasDataType> ?qdt.
+                <w2share:hasDataNature> ?qdn.
 
             }
         }
 
     ";
-        $qdt_array = array();
-        $qdts = $this->driver->getResults($query);
+        $qdn_array = array();
+        $qdns = $this->driver->getResults($query);
 
-        for ($i = 0; $i < count($qdts); $i++)
+        for ($i = 0; $i < count($qdns); $i++)
         {
-            $qdt = new \AppBundle\Entity\QualityDataType();
-            $qdt->setUri($qdts[$i]['qdt']['value']);
-            $qdt->setName($qdts[$i]['name']['value']);
-            $qdt->setIsMandatory($qdts[$i]['bool']['value']);
-            $qdt->setQualityDimensions($this->findAllDimensionsByQDT($qdt));
-            $qdt_array[$qdt->getUri()] = $qdt;
+            $qdn = new \AppBundle\Entity\QualityDataNature();
+            $qdn->setUri($qdns[$i]['qdn']['value']);
+            $qdn->setName($qdns[$i]['name']['value']);
+            $qdn->setIsMandatory($qdns[$i]['bool']['value']);
+            $qdn->setQualityDimensions($this->findAllDimensionsByQDN($qdn));
+            $qdn_array[$qdn->getUri()] = $qdn;
         }
 
-        return $qdt_array;
+        return $qdn_array;
     }
 
     public function findUnusedResourcesByWRO( \AppBundle\Entity\WRO $wro){
@@ -417,7 +417,7 @@ class WRODAO
 
     public function addQED(\AppBundle\Entity\QualityEvidenceData $qed, $user)
     {
-        $uri = \AppBundle\Utils\Utils::convertNameToUri('wro', '/'.$qed->getWro()->getHash().'/'.$qed->getResource()->getFilename().'/'.$qed->getQualityDataType()->getName());
+        $uri = \AppBundle\Utils\Utils::convertNameToUri('wro', '/'.$qed->getWro()->getHash().'/'.$qed->getResource()->getFilename().'/'.$qed->getQualityDataNature()->getName());
         $qed->setUri($uri);
 
         $query =
@@ -428,7 +428,7 @@ class WRODAO
                 <".$qed->getWro()->getUri()."> <w2share:hasQualityEvidenceData> <".$qed->getUri().">.
                 <".$qed->getUri()."> a <w2share:QualityEvidenceData> ;
                 <w2share:contains> <".$qed->getResource()->getUri()."> ;
-                <w2share:hasDataType> <".$qed->getQualityDataType()->getUri()."> ;
+                <w2share:hasDataNature> <".$qed->getQualityDataNature()->getUri()."> ;
                 <dc:date> '".$qed->getCreatedAtTime()->format('Y-m-d')."T".$qed->getCreatedAtTime()->format('H:i:s')."';
                 <dc:creator> <".$user->getUri().">.
             }
@@ -649,6 +649,20 @@ class WRODAO
         
     public function deleteWROResource($uri)
     {
+        $query =
+            "SELECT DISTINCT * WHERE        
+        {  
+            { 
+                ?qed  a <w2share:QualityEvidenceData> ;
+                <w2share:contains> <".$uri.">;
+ 
+            }
+        }";
+
+        $result_array = $this->driver->getResults($query);
+        if (count($result_array) > 0){
+            $this->deleteQED($result_array[0]['qed']['value']);
+        }
         $query = "
             DELETE FROM <".$this->driver->getDefaultGraph('wro')."> {
                 <".$uri."> ?property ?object.                

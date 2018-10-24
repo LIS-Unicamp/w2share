@@ -92,7 +92,7 @@
                <ul class="dropdown-menu">
                 <li{% if get_controller_name() == 'qualitydimension' %} class="active"{% endif %}><a href="{{ path('quality-dimension-list') }}">Quality Dimensions </a></li>
                 <li{% if get_controller_name() == 'qualityannotation' %} class="active"{% endif %}><a href="{{ path('quality-annotation-list') }}">Quality Annotations</a></li>
-                   <li{% if get_controller_name() == 'qualitydatatype' %} class="active"{% endif %}><a href="{{ path('quality-data-type-list') }}">Quality Data Types </a></li>
+                   <li{% if get_controller_name() == 'qualitydatanature' %} class="active"{% endif %}><a href="{{ path('quality-data-nature-list') }}">Quality Data Natures </a></li>
               </ul>
             </li> 
             <li{% if get_controller_name() == 'default' and get_action_name() == 'about' %} class="active"{% endif %}><a href="{{ path('about') }}">About</a></li>

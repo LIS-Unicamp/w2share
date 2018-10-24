@@ -7,11 +7,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Description of QualityDataTypeType
+ * Description of QualityDataNatureType
  *
  * @author leila
  */
-class QualityDataTypeType extends AbstractType
+class QualityDataNatureType extends AbstractType
 {
     public function __construct(\AppBundle\Model\QualityDimension $model) {
         $this->model = $model;
@@ -34,7 +34,7 @@ class QualityDataTypeType extends AbstractType
                 'expanded' => true
             ))
             ->add('ismandatory', 'checkbox', array(
-                'label'    => 'Is this a mandatory Quality Data Type?',
+                'label'    => 'Is this a mandatory Quality Data Nature?',
                 'required' => false,
             ));
 
@@ -43,13 +43,13 @@ class QualityDataTypeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\QualityDataType',
+            'data_class' => 'AppBundle\Entity\QualityDataNature',
         ));
     }
 
     public function getName()
     {
-        return 'qualitydatatype';
+        return 'qualitydatanature';
     }
 
 }

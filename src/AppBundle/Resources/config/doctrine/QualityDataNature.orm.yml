@@ -9,4 +9,4 @@ AppBundle\Entity\QualityDataType:
   oneToMany:
     qualitydimensions:
       targetEntity: QualityDimension
-      mappedBy: quality_data_type
+      mappedBy: quality_data_nature

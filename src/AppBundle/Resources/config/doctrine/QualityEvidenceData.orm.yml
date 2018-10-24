@@ -12,4 +12,4 @@ AppBundle\Entity\QualityEvidenceData:
     resource:
       targetEntity: WROResource
     qualitydatatype:
-      targetEntity: QualityDataType
+      targetEntity: QualityDataNature

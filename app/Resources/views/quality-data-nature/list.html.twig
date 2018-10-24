@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
-{% block title %}Quality Data Type{% endblock %}
+{% block title %}Quality Data Nature{% endblock %}
 {% block body %}
-    <h1>Quality Data Type</h1>
+    <h1>Quality Data Nature</h1>
     {% for flashMessage in app.session.flashbag.get('success') %}
         <div class="alert alert-success">
             <button class="close" data-dismiss="alert"></button>
@@ -16,7 +16,7 @@
     {% endfor %}
     <div class="row">
         <div class="col-md-1">
-            <a class="btn btn-success" href="{{ path('quality-data-type-add') }}"><i class="glyphicon glyphicon-plus"></i> New</a>
+            <a class="btn btn-success" href="{{ path('quality-data-nature-add') }}"><i class="glyphicon glyphicon-plus"></i> New</a>
         </div>
     </div>
     <div class="table-responsive">
@@ -30,17 +30,17 @@
             </tr>
             </thead>
             <tbody>
-            {% for qdt in pagination %}
+            {% for qdn in pagination %}
                 <tr>
                     <td>
-                        <a href="{{ path('quality-data-type-edit', { 'qualitydatatype_uri':qdt.uri|url_encode }) }}" title="Edit quality data type" ><i class="glyphicon glyphicon-edit"></i></a>
-                        <a href="{{ path('quality-data-type-delete', { 'qualitydatatype_uri':qdt.uri|url_encode }) }}" title="Delete quality data type " class="delete"><i class="glyphicon glyphicon-trash"></i></a>
+                        <a href="{{ path('quality-data-nature-edit', { 'qualitydatanature_uri':qdn.uri|url_encode }) }}" title="Edit quality data nature" ><i class="glyphicon glyphicon-edit"></i></a>
+                        <a href="{{ path('quality-data-nature-delete', { 'qualitydatanature_uri':qdn.uri|url_encode }) }}" title="Delete quality data nature " class="delete"><i class="glyphicon glyphicon-trash"></i></a>
                                          </td>
-                    <td>{{ qdt.name }}</td>
+                    <td>{{ qdn.name }}</td>
                     <td>
-                        {% for qd in qdt.qualitydimensions %} {{ qd.name }} {% endfor %}
+                        {% for qd in qdn.qualitydimensions %} {{ qd.name }} {% endfor %}
                     </td>
-                    <td> {% if qdt.isMandatory == true %}Yes{% endif %}{% if qdt.isMandatory == false %}No{% endif %}</td>
+                    <td> {% if qdn.isMandatory == true %}Yes{% endif %}{% if qdn.isMandatory == false %}No{% endif %}</td>
                 </tr>
             {% endfor %}
             </tbody>

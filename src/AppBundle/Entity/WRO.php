@@ -323,7 +323,7 @@ class WRO
      * Add Quality Evidence Data
      *
      * @param array $qeds
-     * @return ResearchObject
+     * @return WRO
      */
     public function setQualityEvidenceData($qeds)
     {
@@ -336,7 +336,7 @@ class WRO
      * Add Quality Evidence Data
      *
      * @param \AppBundle\Entity\QualityEvidenceData $qed
-     * @return ResearchObject
+     * @return WRO
      */
     public function addQualityEvidenceData(\AppBundle\Entity\QualityEvidenceData $qed)
     {
@@ -362,7 +362,11 @@ class WRO
      */
     public function getQualityEvidenceData()
     {
-        return $this->qualityevidencedata;
+        $aux = $this->qualityevidencedata;
+        usort ($aux, function ($left, $right) {
+            return $left->getQualityDataNature()->getIsMandatory() - $right->getQualityDataNature()->getIsMandatory() ;
+        });
+        return $aux;
     }
 
 

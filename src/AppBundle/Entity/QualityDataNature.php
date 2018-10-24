@@ -10,7 +10,7 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 
-class QualityDataType
+class QualityDataNature
 {
 
     /**
@@ -41,7 +41,7 @@ class QualityDataType
      * Set uri
      *
      * @param string $uri
-     * @return QualityDataType
+     * @return QualityDataNature
      */
     public function setUri($uri)
     {
@@ -65,7 +65,7 @@ class QualityDataType
      * Set isMandatory
      *
      * @param boolean $isMandatory
-     * @return QualityDataType
+     * @return QualityDataNature
      */
     public function setIsMandatory($isMandatory)
     {
@@ -88,7 +88,7 @@ class QualityDataType
     /**
      * Add dimensions
      *
-     * @return QualityDataType
+     * @return QualityDataNature
      */
     public function setQualityDimensions($qualitydimensions)
     {
@@ -102,7 +102,7 @@ class QualityDataType
      * Add dimension
      *
      * @param \AppBundle\Entity\QualityDimension $dimension
-     * @return QualityDataType
+     * @return QualityDataNature
      */
     public function addQualityDimension(\AppBundle\Entity\QualityDimension $dimension)
     {
@@ -136,7 +136,7 @@ class QualityDataType
      * Set name
      *
      * @param string $name
-     * @return QualityDataType
+     * @return QualityDataNature
      */
     public function setName($name)
     {

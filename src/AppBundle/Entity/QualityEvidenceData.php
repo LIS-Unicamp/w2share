@@ -34,9 +34,9 @@ class QualityEvidenceData
     private $resource;
 
     /**
-     * @var \AppBundle\Entity\QualityDataType
+     * @var \AppBundle\Entity\QualityDataNature
      */
-    private $qualitydatatype;
+    private $qualitydatanature;
 
 
 
@@ -142,26 +142,26 @@ class QualityEvidenceData
 
 
     /**
-     * Set Quality Data TYpe
+     * Set Quality Data Nature
      *
-     * @param \AppBundle\Entity\QualityDataType $qdt
+     * @param \AppBundle\Entity\QualityDataNature $qdn
      * @return QualityEvidenceData
      */
-    public function setQualityDataType(\AppBundle\Entity\QualityDataType $qdt)
+    public function setQualityDataNature(\AppBundle\Entity\QualityDataNature $qdn)
     {
-        $this->qualitydatatype = $qdt;
+        $this->qualitydatanature = $qdn;
 
         return $this;
     }
 
     /**
-     * Get Quality Data Type
+     * Get Quality Data Nature
      *
-     * @return \AppBundle\Entity\QualityDataType
+     * @return \AppBundle\Entity\QualityDataNature
      */
-    public function getQualityDataType()
+    public function getQualityDataNature()
     {
-        return $this->qualitydatatype;
+        return $this->qualitydatanature;
     }
 
     /**

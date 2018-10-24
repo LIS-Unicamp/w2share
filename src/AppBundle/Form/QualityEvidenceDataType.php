@@ -26,7 +26,7 @@ class QualityEvidenceDataType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
 
-            ->add('qualitydatatype', 'choice', array(
+            ->add('qualitydatanature', 'choice', array(
                 'choices' => $this->qdts,
                 'choices_as_values' => true,
                 'choice_label' => function($qd, $key, $index){

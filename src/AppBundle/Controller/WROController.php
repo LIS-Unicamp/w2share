@@ -215,9 +215,9 @@ class WROController extends Controller
         $wro = $dao->findWRO($wro_uri);
         $qed = new \AppBundle\Entity\QualityEvidenceData();
         $resources = $dao->findUnusedResourcesByWRO($wro);
-        $qdts = $dao->findUnusedQDTByWRO($wro);
+        $qdns = $dao->findUnusedQDNByWRO($wro);
 
-        $form = $this->createForm(new \AppBundle\Form\QualityEvidenceDataType($resources, $qdts), $qed);
+        $form = $this->createForm(new \AppBundle\Form\QualityEvidenceDataType($resources, $qdns), $qed);
         $qed->setWro($wro);
 
         $form->handleRequest($request);
@@ -289,11 +289,11 @@ class WROController extends Controller
 
 
         $resources = $dao->findUnusedResourcesByWRO($qed->getWRO());
-        $qdts = $dao->findUnusedQDTByWRO($qed->getWRO());
+        $qdns = $dao->findUnusedQDNByWRO($qed->getWRO());
         $resources[$qed->getResource()->getUri()] = $qed->getResource();
-        $qdts[$qed->getQualityDataType()->getUri()] = $qed->getQualityDataType();
+        $qdns[$qed->getQualityDataNature()->getUri()] = $qed->getQualityDataNature();
 
-        $form = $this->createForm(new \AppBundle\Form\QualityEvidenceDataType($resources, $qdts ), $qed);
+        $form = $this->createForm(new \AppBundle\Form\QualityEvidenceDataType($resources, $qdns ), $qed);
         $form->handleRequest($request);
 
         if ($form->isValid())
@@ -387,10 +387,10 @@ class WROController extends Controller
         $wro_uri = urldecode($wro_uri);
         
         $dao = $this->get('dao.wro');
-        $qdtmodel = $this->get('model.qualitydatatype');
+        $qdnmodel = $this->get('model.qualitydatanature');
         $wro = $dao->findWRO($wro_uri);
-        $unusedqdts = $dao->findUnusedQDTByWRO($wro);
-        $percent = (sizeof($wro->getQualityEvidenceData()) /sizeof($qdtmodel->findAllMandatoryQualityDataTypes()))*100;
+        $unusedqdns = $dao->findUnusedQDNByWRO($wro);
+        $percent = (sizeof($wro->getQualityEvidenceData()) /sizeof($qdnmodel->findAllMandatoryQualityDataNatures()))*100;
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $wro->getResources(), /* query NOT result */
@@ -403,7 +403,7 @@ class WROController extends Controller
             'pagination'=>$pagination,
             'qeds'=> $wro->getQualityEvidenceData(),
             'percent'=> $percent,
-            'unused' => $unusedqdts
+            'unused' => $unusedqdns
         ));
     }
 
